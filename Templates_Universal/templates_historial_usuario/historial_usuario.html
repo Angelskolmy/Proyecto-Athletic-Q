@@ -1,0 +1,187 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Movimientos de Empleados
+{% endblock %}
+
+{% block content %}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8">
+        <h3 class="mb-0">
+          <i class="bi bi-arrow-left-right me-1"></i> Movimientos de Empleados
+        </h3>
+      </div>
+      <div class="col-sm-4">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Movimientos</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::App Content Header-->
+
+<!--begin::App Content-->
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="card shadow-sm">
+
+      <!-- Barra de filtros compacta -->
+      <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto">
+
+          <!-- Filtro: Empleado -->
+          <div class="input-group input-group-sm" style="width: 180px;">
+            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control" placeholder="Empleado...">
+          </div>
+
+          <!-- Filtro: Tipo -->
+          <select class="form-select form-select-sm" style="width: 150px;">
+            <option selected disabled>Tipo...</option>
+            <option value="venta">Venta</option>
+            <option value="membresia">Membresía</option>
+            <option value="stock">Stock</option>
+            <option value="usuario">Usuario</option>
+          </select>
+
+          <!-- Filtro: Módulo -->
+          <select class="form-select form-select-sm" style="width: 150px;">
+            <option selected disabled>Módulo...</option>
+            <option value="usuarios">Usuarios</option>
+            <option value="productos">Productos</option>
+            <option value="ventas">Ventas</option>
+            <option value="membresias">Membresías</option>
+          </select>
+
+          <!-- Filtro: Fecha -->
+          <div class="input-group input-group-sm" style="width: 170px;">
+            <span class="input-group-text bg-light"><i class="bi bi-calendar"></i></span>
+            <input type="date" class="form-control">
+          </div>
+
+          <!-- Botones -->
+          <button class="btn btn-sm btn-primary btn-search">
+            <i class="bi bi-search me-1"></i> Buscar
+          </button>
+
+          <button class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-repeat me-1"></i> Limpiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle mb-0 text-center">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Empleado</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+              </tr>
+            </thead> 
+            {% for alhistU in HistU %}
+            <tbody>
+              <tr>
+                <td>{{ alhistU.Id_historial  }}</td>
+                <td>{{ alhistU.id_usuario.first_name }}</td>
+                <td>{{ alhistU.Descripcion }}</td>
+                <td>{{ alhistU.Fecha_y_hora }}</td>
+              </tr>
+            </tbody> 
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      <!-- Paginación -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <!-- Paginación -->
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item"><a class="page-link" href="#">«</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">»</a></li>
+        </ul>
+
+        <!-- Texto centrado -->
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+        </div>
+
+        <!-- Dropdown Exportar -->
+        <div class="dropdown">
+          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Estilos Responsivos -->
+<style>
+  @media (max-width: 768px) {
+
+    /* Filtros apilados */
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    .card-header .d-flex {
+      flex-direction: column !important;
+      width: 100% !important;
+      gap: 0.5rem !important;
+    }
+
+    .card-header .input-group,
+    .card-header select,
+    .card-header button {
+      width: 100% !important;
+    }
+
+    /* Tabla desplazable */
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th,
+    table td {
+      white-space: nowrap;
+    }
+
+    /* Footer adaptable */
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  }
+</style>
+
+{% endblock %}

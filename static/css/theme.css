@@ -1,0 +1,232 @@
+/* ================================
+   🎨 THEME CONFIGURATION
+   ================================ */
+
+/* Paleta principal (modo claro) */
+:root {
+  /* 🎯 Color principal */
+  --color-primary: #b11226;       /* Rojo oscuro personalizado */
+  --color-primary-dark: #8f0e1f;
+
+  /* 🌈 Colores secundarios más oscuros y sobrios */
+  --color-success: #1f6f43;       /* Verde más oscuro */
+  --color-success-dark: #155932;
+
+  --color-warning: #d7a603;       /* Amarillo más oscuro */
+  --color-warning-dark: #c99803;
+
+  --color-info: #107d93;          /* Azul petróleo oscuro */
+  --color-info-dark: #157386;
+
+  --color-danger: #b11226;        /* Usa el rojo principal */
+  --color-danger-dark: #960d1f;
+
+  --color-secondary: #495057;
+  --color-light: #f8f9fa;
+  --color-dark: #212529;
+
+  --color-navbar-bg: #f1f3f5; /* Gris claro elegante */ 
+  --color-sidebar-bg: #a40919; /* Sidebar rojo oscuro */ 
+  --color-sidebar-hover: #dc3545; /* Hover más claro */ 
+  
+  --color-text: #212529; 
+  --color-text-light: #ffffff;
+}
+
+/* ================================
+   🎨 REEMPLAZO DE CLASES BOOTSTRAP
+   ================================ */
+
+/* Cards y fondos */
+.bg-primary    { background-color: var(--color-info) !important; }
+.bg-success    { background-color: var(--color-success) !important; }
+.bg-warning    { background-color: var(--color-warning) !important; }
+.bg-info       { background-color: var(--color-info) !important; }
+.bg-danger     { background-color: var(--color-danger) !important; }
+
+/* Hover states */
+.bg-primary:hover    { background-color: var(--color-info-dark) !important; }
+.bg-success:hover    { background-color: var(--color-success-dark) !important; }
+.bg-warning:hover    { background-color: var(--color-warning-dark) !important; }
+.bg-info:hover       { background-color: var(--color-info-dark) !important; }
+.bg-danger:hover     { background-color: var(--color-danger-dark) !important; }
+
+/* Botones */
+.btn-primary, .btn-success, .btn-warning, .btn-info, .btn-danger {
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary { background-color: var(--color-info) !important; }
+.btn-success { background-color: var(--color-success) !important; }
+.btn-warning { background-color: var(--color-warning) !important; }
+.btn-info    { background-color: var(--color-info) !important; }
+.btn-danger  { background-color: var(--color-danger) !important; }
+
+.btn-primary:hover { background-color: var(--color-info-dark) !important; }
+.btn-success:hover { background-color: var(--color-success-dark) !important; }
+.btn-warning:hover { background-color: var(--color-warning-dark) !important; }
+.btn-info:hover    { background-color: var(--color-info-dark) !important; }
+.btn-danger:hover  { background-color: var(--color-danger-dark) !important; }
+
+
+/* ================================
+   🌐 GLOBAL STYLES
+   ================================ */
+
+body {
+  color: var(--color-text);
+  background-color: #f8f9fa;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+/* ================================
+   🔺 NAVBAR
+   ================================ */
+
+.navbar {
+  background-color: var(--color-navbar-bg) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.breadcrumb a {
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover,
+.breadcrumb a:hover {
+  color: var(--color-primary-dark);
+}
+
+/* ================================
+    SIDEBAR
+   ================================ */
+
+.app-sidebar {
+  background-color: var(--color-sidebar-bg) !important;
+  color: var(--color-text-light) !important;
+}
+
+.app-sidebar .nav-link {
+  color: var(--color-text-light) !important;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.app-sidebar .nav-icon {
+  color: var(--color-text-light);
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link.active {
+  background-color: var(--color-sidebar-hover);
+  color: var(--color-text-light) !important;
+}
+
+.app-sidebar .nav-treeview .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.app-sidebar .nav-treeview .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-light) !important;
+}
+
+/* 🔹 Tamaño de texto general en los enlaces */
+.app-sidebar .nav-link p {
+  font-size: 1.1rem !important; /* antes 0.9rem */
+  font-weight: 500;
+}
+
+/* 🔹 Tamaño y color de los encabezados del sidebar */
+.app-sidebar .nav-header {
+  font-size: 0.9rem !important;
+  font-weight: 700;
+  color: #dddada !important; /* negro */
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ================================
+    BOTONES Y ELEMENTOS INTERACTIVOS
+   ================================ */
+
+/* Todos los botones primarios (excepto los de acciones) */
+.btn-search,
+.btn-success,
+.btn-outline-primary,
+.btn-outline-success{
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary-dark) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-outline-primary:hover,
+.btn-outline-success:hover {
+  background-color: var(--color-primary-dark) !important;
+  color: #fff !important;
+}
+
+.btn-outline-success {
+  background-color: transparent !important;
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-primary) !important;
+}
+
+.btn-outline-success:hover {
+  background-color: transparent !important;
+  color: var(--color-primary-dark) !important;
+  border-color: var(--color-primary-dark) !important;
+}
+
+
+/* ================================
+   🔺 LINKS Y PAGINACIÓN
+   ================================ */
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+.page-link {
+  color: var(--color-primary);
+  border-color: rgba(220, 53, 69, 0.25);
+}
+
+.page-link:hover {
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.page-link.active,
+.page-item.active .page-link {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary-dark) !important;
+  color: #fff !important;
+}
+
+/* ================================
+   🔺 OTROS ELEMENTOS
+   ================================ */
+
+.badge.text-bg-primary {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
+}

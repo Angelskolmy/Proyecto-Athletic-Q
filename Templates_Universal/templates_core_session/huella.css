@@ -1,0 +1,55 @@
+/* Fondo igual al login */
+body {
+  background: url('../img/body_login.png');
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100vh;
+  margin: 0;
+
+  /* Centrado total */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Contenedor principal */
+.huella-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Tarjeta */
+.huella-card {
+  width: 100%;
+  max-width: 400px;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.45);
+}
+
+/* Logo */
+.huella-logo {
+  width: 80px;
+  filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+}
+
+/* Animaciones */
+.bi-fingerprint {
+  transition: color 0.5s ease;
+}
+
+.ultimo-registro {
+  border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Responsivo */
+@media (max-width: 576px) {
+  .huella-card {
+    margin: 0 1rem;
+    padding: 2rem;
+  }
+}

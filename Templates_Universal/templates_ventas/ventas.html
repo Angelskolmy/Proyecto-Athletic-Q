@@ -1,0 +1,264 @@
+{% extends 'base.html' %}
+{% block title %}Ventas{% endblock %}
+
+{% block content %}
+<!--begin::Encabezado-->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8">
+        <h3 class="mb-0"><i class="bi bi-graph-up-arrow me-1"></i> Gestión de Ventas</h3>
+      </div>
+      <div class="col-sm-4">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Ventas</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::Encabezado-->
+
+<!--begin::Contenido-->
+<div class="app-content">
+  <div class="container-fluid">
+
+    <!-- Cards resumen -->
+    <div class="row mb-4">
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-primary text-white shadow-sm">
+          <div class="inner">
+            <h3>38</h3>
+            <p>Ventas del día</p>
+          </div>
+          <i class="bi bi-calendar2-check small-box-icon"></i>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-success text-white shadow-sm">
+          <div class="inner">
+            <h3>$2.480.000</h3>
+            <p>Total del día</p>
+          </div>
+          <i class="bi bi-currency-dollar small-box-icon"></i>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning text-white shadow-sm">
+          <div class="inner">
+            <h3>8</h3>
+            <p>En proceso</p>
+          </div>
+          <i class="bi bi-hourglass-split small-box-icon"></i>
+        </div>
+      </div>
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger text-white shadow-sm">
+          <div class="inner">
+            <h3>3</h3>
+            <p>Anuladas</p>
+          </div>
+          <i class="bi bi-x-octagon-fill small-box-icon"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tarjeta principal -->
+    <div class="card shadow-sm">
+
+      <!-- Barra de filtros compacta -->
+      <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+          <div class="input-group input-group-sm" style="width: 180px;">
+            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control" placeholder="Cliente...">
+          </div>
+
+          <select class="form-select form-select-sm" style="width: 150px;">
+            <option selected disabled>Estado...</option>
+            <option value="completada">Completada</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="anulada">Anulada</option>
+          </select>
+
+          <div class="input-group input-group-sm" style="width: 170px;">
+            <span class="input-group-text bg-light"><i class="bi bi-calendar"></i></span>
+            <input type="date" class="form-control">
+          </div>
+
+          <button class="btn btn-sm btn-primary btn-search">
+            <i class="bi bi-search me-1"></i> Buscar
+          </button>
+
+          <button class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-repeat me-1"></i> Limpiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-striped table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Acciones</th>
+              </tr>
+            </thead> 
+            {% for compVent in Ventas %}
+            <tbody>
+              <tr>
+                <td>{{ compVent.Id_venta }}</td>
+                <td>{{ compVent.id_usuario.first_name }}</td>
+                <td>{{ compVent.Fecha }}</td>
+                <td><span class="badge text-bg-success estado" style="cursor:pointer;">{{ compVent.Total }}</span></td>
+                <td>
+                  <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalDetalle"><i class="bi bi-eye"></i></button>
+                  <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Paginación -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item"><a class="page-link" href="#">«</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">»</a></li>
+        </ul>
+
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small">Mostrando 1–10 de 58 registros</span>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::Contenido-->
+
+<!-- Modal Detalle Venta -->
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title" id="modalDetalleLabel">
+          <i class="bi bi-receipt me-2"></i> Detalle de la Venta
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-md-6"><strong>ID:</strong> V001</div>
+          <div class="col-md-6"><strong>Cliente:</strong> Laura Pérez</div>
+          <div class="col-md-6"><strong>Empleado:</strong> Carlos Gómez</div>
+          <div class="col-md-6"><strong>Fecha:</strong> 2025-10-06 09:30</div>
+          <div class="col-12 mt-2">
+            <strong>Detalle:</strong>
+            <p>Venta de proteína Whey (1 und) y Creatina (1 und). Total: $250.000</p>
+          </div>
+          <div class="col-md-6">
+            <strong>Estado:</strong> <span class="badge text-bg-success">Completada</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i> Cerrar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  document.querySelectorAll('.estado').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const estados = [
+        { texto: 'Completada', clase: 'text-bg-success' },
+        { texto: 'Pendiente', clase: 'text-bg-warning' },
+        { texto: 'Anulada', clase: 'text-bg-danger' }
+      ];
+      const actual = estados.findIndex(e => badge.textContent.trim() === e.texto);
+      const siguiente = (actual + 1) % estados.length;
+      badge.textContent = estados[siguiente].texto;
+      badge.className = `badge estado ${estados[siguiente].clase}`;
+    });
+  });
+</script>
+
+<!-- Estilos Responsivos -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    .card-header .d-flex {
+      flex-direction: column !important;
+      width: 100% !important;
+      gap: 0.5rem !important;
+    }
+
+    .card-header .input-group,
+    .card-header select,
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-footer .dropdown .btn {
+      width: auto;
+    }
+  }
+</style>
+
+{% endblock %}

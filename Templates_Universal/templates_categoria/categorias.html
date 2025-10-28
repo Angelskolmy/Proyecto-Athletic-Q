@@ -1,0 +1,232 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Categorías
+{% endblock %}
+
+{% block content %}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-sm-8">
+        <h3 class="mb-0">
+          <i class="bi bi-tags-fill me-1"></i> Gestión de Categorías
+        </h3>
+      </div>
+      <div class="col-sm-4 text-end">
+        <ol class="breadcrumb float-sm-end mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Categorías</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::App Content Header-->
+
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="card shadow-sm border-0">
+
+      <!-- Cabecera -->
+      <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <!-- Botón Agregar -->
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarCategoria">
+          <i class="bi bi-plus-circle me-1"></i> Agregar Categoría
+        </button>
+
+        <!-- Buscador -->
+        <div class="input-group input-group-sm" style="max-width: 270px; margin-left: auto;">
+          <input type="text" id="buscarCategoria" class="form-control" placeholder="Buscar categoría...">
+          <button class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead> 
+            {% for Carte in Categorias %}
+            <tbody>
+              <tr>
+                <td>{{ Carte.Id_categoria }}</td>
+                <td class="fw-semibold">{{ Carte.Nombre }}</td>
+                <td><span class="badge text-bg-success">{{ Carte.Estado }}</span></td>
+                <td>
+                  <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarCategoria" title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" title="Eliminar">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody> 
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item"><a class="page-link" href="#">«</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">»</a></li>
+        </ul>
+
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR CATEGORÍA -->
+<div class="modal fade" id="modalAgregarCategoria" tabindex="-1" aria-labelledby="modalAgregarCategoriaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-success text-white py-2">
+        <h5 class="modal-title" id="modalAgregarCategoriaLabel">
+          <i class="bi bi-tag-plus me-2"></i>Agregar Categoría
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-body p-3">
+          <div class="mb-3">
+            <label for="nombreCategoria" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="nombreCategoria" name="nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="descripcionCategoria" class="form-label">Descripción</label>
+            <textarea class="form-control" id="descripcionCategoria" name="descripcion" rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR CATEGORÍA -->
+<div class="modal fade" id="modalEditarCategoria" tabindex="-1" aria-labelledby="modalEditarCategoriaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-warning py-2">
+        <h5 class="modal-title text-dark" id="modalEditarCategoriaLabel">
+          <i class="bi bi-pencil-square me-2"></i>Editar Categoría
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+        <input type="hidden" id="editCategoriaId" name="id">
+        <div class="modal-body p-3">
+          <div class="mb-3">
+            <label for="editNombreCategoria" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="editNombreCategoria" name="nombre" required>
+          </div>
+          <div class="mb-3">
+            <label for="editDescripcionCategoria" class="form-label">Descripción</label>
+            <textarea class="form-control" id="editDescripcionCategoria" name="descripcion" rows="2"></textarea>
+          </div>
+          <div class="mb-3">
+            <label for="editEstadoCategoria" class="form-label">Estado</label>
+            <select class="form-select" id="editEstadoCategoria" name="estado">
+              <option value="activo">Activo</option>
+              <option value="inactivo">Inactivo</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-warning btn-sm text-dark">Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buscarCategoria = document.getElementById('buscarCategoria');
+    const filas = document.querySelectorAll('table tbody tr');
+
+    buscarCategoria.addEventListener('input', function () {
+      const texto = buscarCategoria.value.toLowerCase();
+      filas.forEach(fila => {
+        const nombre = fila.cells[1].textContent.toLowerCase();
+        fila.style.display = nombre.includes(texto) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<!-- ESTILOS RESPONSIVOS -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 0.75rem !important;
+    }
+
+    .card-header .input-group {
+      width: 100% !important;
+      margin-left: 0 !important;
+    }
+
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+</style>
+
+{% endblock %}

@@ -1,0 +1,86 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registro de Huella | Gimnasio</title>
+
+  <!-- Icono -->
+  <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
+
+  <!-- AdminLTE -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
+
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
+
+  <!-- Fuente -->
+  <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
+
+  <!-- Estilos personalizados -->
+  <link rel="stylesheet" href="{% static 'css/huella.css' %}">
+</head>
+
+<body>
+  <div class="huella-container">
+    <div class="huella-card shadow-lg rounded-4 p-4 text-center">
+      <div class="text-center mb-3">
+        <img src="{% static 'img/logo.png' %}" alt="Logo Gimnasio" class="huella-logo mb-2">
+        <h3 class="fw-bold text-white">Registro de Asistencia</h3>
+        <p class="text-white-50">Coloca tu dedo en el lector para registrar tu ingreso</p>
+      </div>
+
+      <div class="d-flex flex-column align-items-center justify-content-center mt-3">
+        <i class="bi bi-fingerprint display-1 text-danger mb-3" id="fingerIcon"></i>
+        <h5 class="fw-semibold text-white mb-2" id="estadoTexto">Esperando huella...</h5>
+        <div class="spinner-border text-danger" id="spinner" role="status"></div>
+      </div>
+
+      <div class="text-center mt-4">
+        <div class="ultimo-registro bg-dark bg-opacity-50 rounded-3 py-2 px-3 text-white-50 small shadow-sm" id="ultimoRegistro">
+          <i class="bi bi-person-check me-1 text-success"></i>
+          <span><strong>Último ingreso:</strong> —</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap -->
+  <script src="{% static 'bootstrap-5.3.3/dist/js/bootstrap.min.js' %}"></script>
+
+  <!-- Script simulador -->
+  <script>
+    const icono = document.getElementById('fingerIcon');
+    const texto = document.getElementById('estadoTexto');
+    const spinner = document.getElementById('spinner');
+    const registro = document.getElementById('ultimoRegistro');
+
+    setInterval(() => {
+      icono.classList.toggle('text-danger');
+      icono.classList.toggle('text-primary');
+    }, 1000);
+
+    function simularHuella() {
+      texto.textContent = "Huella detectada...";
+      spinner.classList.add('text-success');
+      icono.classList.replace('text-danger', 'text-success');
+
+      setTimeout(() => {
+        texto.textContent = "Asistencia registrada ✅";
+        registro.innerHTML = `
+          <i class="bi bi-person-check me-1 text-success"></i>
+          <span><strong>Último ingreso:</strong> Juan Pérez – ${new Date().toLocaleTimeString()}</span>
+        `;
+        setTimeout(() => {
+          icono.classList.replace('text-success', 'text-danger');
+          texto.textContent = "Esperando huella...";
+          spinner.classList.remove('text-success');
+        }, 4000);
+      }, 1500);
+    }
+
+    setInterval(simularHuella, 8000);
+  </script>
+</body>
+</html>

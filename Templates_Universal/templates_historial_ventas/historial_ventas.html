@@ -1,0 +1,278 @@
+{% extends 'base.html' %}
+{% block title %}Historial de Ventas{% endblock %}
+
+{% block content %}
+<!-- begin::Encabezado -->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-sm-8">
+        <h3 class="mb-0"><i class="bi bi-clock-history me-1"></i> Historial de Ventas</h3>
+      </div>
+      <div class="col-sm-4 text-end">
+        <ol class="breadcrumb float-sm-end mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Historial</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end::Encabezado -->
+
+<!-- begin::Contenido -->
+<div class="app-content">
+  <div class="container-fluid">
+
+    <!-- Tarjeta principal -->
+    <div class="card shadow-sm">
+
+      <!-- Filtro compacto -->
+      <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+        <div class="d-flex flex-wrap align-items-center gap-2">
+
+          <div class="input-group input-group-sm" style="width: 180px;">
+            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+            <input type="text" class="form-control" placeholder="Cliente...">
+          </div>
+
+          <div class="input-group input-group-sm" style="width: 180px;">
+            <span class="input-group-text bg-light"><i class="bi bi-person-workspace"></i></span>
+            <input type="text" class="form-control" placeholder="Empleado...">
+          </div>
+
+          <select class="form-select form-select-sm" style="width: 150px;">
+            <option selected disabled>Estado...</option>
+            <option value="completada">Completada</option>
+            <option value="pendiente">Pendiente</option>
+            <option value="cancelada">Cancelada</option>
+          </select>
+
+          <div class="input-group input-group-sm" style="width: 170px;">
+            <span class="input-group-text bg-light"><i class="bi bi-calendar"></i></span>
+            <input type="date" class="form-control">
+          </div>
+
+          <button class="btn btn-sm btn-primary btn-search">
+            <i class="bi bi-search me-1"></i> Buscar
+          </button>
+          <button class="btn btn-sm btn-outline-secondary">
+            <i class="bi bi-arrow-repeat me-1"></i> Limpiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Empleado</th>
+                <th>Fecha</th>
+                <th>Total</th>
+                <th>Método de Pago</th>
+                <th>Acciones</th>
+              </tr>
+            </thead> 
+            {% for allhistven in AllHV %}
+            <tbody>
+              <tr>
+                <td>{{ allhistven.id_registro }}</td>
+                <td>{{ allhistven.id_usuario.first_name }}</td>
+                <td>{{ allhistven.fecha_venta }}</td>
+                <td>{{ allhistven.Monto	 }}</td>
+                <td>{{ allhistven.metodo_pago }}</td>
+                <td>
+                  <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#modalVerVenta">
+                    <i class="bi bi-eye"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
+                </td>
+              </tr>
+            </tbody> 
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      <!-- Paginación -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item"><a class="page-link" href="#">«</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">»</a></li>
+        </ul>
+
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end::Contenido -->
+
+<!-- Modal Ver Venta -->
+<div class="modal fade" id="modalVerVenta" tabindex="-1" aria-labelledby="modalVerVentaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-danger text-white py-2">
+        <h6 class="modal-title fw-semibold" id="modalVerVentaLabel">
+          <i class="bi bi-receipt-cutoff me-2"></i> Detalle de Venta
+        </h6>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-3">
+        <div class="row small mb-2">
+          <div class="col-md-4"><strong>ID:</strong> <span class="text-muted">#001</span></div>
+          <div class="col-md-4"><strong>Fecha:</strong> <span class="text-muted">2025-10-01</span></div>
+          <div class="col-md-4"><strong>Estado:</strong> <span class="badge text-bg-success">Completada</span></div>
+        </div>
+
+        <div class="row small mb-3">
+          <div class="col-md-6"><strong>Cliente:</strong> <span class="text-muted">Juan Pérez</span></div>
+          <div class="col-md-6"><strong>Empleado:</strong> <span class="text-muted">María López</span></div>
+        </div>
+
+        <div class="table-responsive small mb-2">
+          <table class="table table-sm table-striped align-middle mb-0 text-center">
+            <thead class="table-light">
+              <tr>
+                <th>#</th>
+                <th>Producto</th>
+                <th>Categoría</th>
+                <th>Cant.</th>
+                <th>Precio</th>
+                <th>Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Proteína Whey</td>
+                <td>Suplementos</td>
+                <td>2</td>
+                <td>$120.000</td>
+                <td>$240.000</td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Guantes Gym</td>
+                <td>Accesorios</td>
+                <td>1</td>
+                <td>$60.000</td>
+                <td>$60.000</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="text-end small mt-2">
+          <p><strong>Subtotal:</strong> $300.000</p>
+          <p><strong>IVA (19%):</strong> $57.000</p>
+          <h6 class="fw-semibold text-danger mb-0"><strong>Total:</strong> $357.000</h6>
+        </div>
+
+        <hr class="my-2">
+        <div class="row small">
+          <div class="col-md-6"><strong>Método:</strong> <span class="text-muted">Efectivo</span></div>
+          <div class="col-md-6"><strong>Observaciones:</strong> <span class="text-muted">Cliente frecuente</span></div>
+        </div>
+      </div>
+
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i> Cerrar
+        </button>
+        <button type="button" class="btn btn-outline-danger btn-sm">
+          <i class="bi bi-printer me-1"></i> Imprimir
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Script -->
+<script>
+  document.querySelectorAll('.estado').forEach(badge => {
+    badge.addEventListener('click', () => {
+      const estados = [
+        { texto: 'Completada', clase: 'text-bg-success' },
+        { texto: 'Pendiente', clase: 'text-bg-warning' },
+        { texto: 'Cancelada', clase: 'text-bg-danger' }
+      ];
+      const actual = estados.findIndex(e => badge.textContent.trim() === e.texto);
+      const siguiente = (actual + 1) % estados.length;
+      badge.textContent = estados[siguiente].texto;
+      badge.className = `badge estado ${estados[siguiente].clase}`;
+    });
+  });
+</script>
+
+<!-- Estilos Responsivos -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    .card-header .d-flex {
+      flex-direction: column !important;
+      width: 100% !important;
+      gap: 0.5rem !important;
+    }
+
+    .card-header .input-group,
+    .card-header select,
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-footer .dropdown .btn {
+      width: auto;
+    }
+  }
+</style>
+
+{% endblock %}

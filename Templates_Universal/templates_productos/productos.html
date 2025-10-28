@@ -1,0 +1,330 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Productos
+{% endblock %}
+
+{% block content %}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-sm-8">
+        <h3 class="mb-0">
+          <i class="bi bi-box-seam me-1"></i> Gestión de Productos
+        </h3>
+      </div>
+      <div class="col-sm-4 text-end">
+        <ol class="breadcrumb float-sm-end mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Productos</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::App Content Header-->
+
+<div class="app-content">
+  <div class="container-fluid">
+
+    <div class="card shadow-sm">
+      <!-- Cabecera -->
+      <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <!-- Botón Agregar -->
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto">
+          <i class="bi bi-plus-circle me-1"></i> Agregar Producto
+        </button>
+
+        <!-- Filtro + Buscador -->
+        <div class="d-flex align-items-center gap-2 ms-auto flex-wrap"> 
+          <select id="filtroCategoria" class="form-select form-select-sm" style="width: 180px;">
+            {% for Categos_filter in Categorias %}
+            <option value="{{ Categos_filter.Id_categoria }}">{{ Categos_filter.Nombre }}</option>
+            {% endfor %}
+          </select>
+
+          <div class="input-group input-group-sm" style="width: 250px;">
+            <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto...">
+            <button class="btn btn-outline-secondary" type="button">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Imagen</th>
+                <th>Nombre</th>
+                <th>Categoría</th>
+                <th>Stock</th>
+                <th>Compra</th> 
+                <th>Venta</th> 
+                <th>Descripción</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead> 
+            {% for Infor_Prod in Productos %}
+            <tbody> 
+              <tr>
+                <td>{{ Infor_Prod.Id_producto }}</td>
+                <td>
+                  <img src="/static/img/producto1.jpg" alt="Producto" class="rounded-circle border" width="38" height="38">
+                </td>
+                <td class="fw-semibold">{{ Infor_Prod.Nombre }}</td>
+                <td><span class="badge text-bg-info">{{ Infor_Prod.Catego_Id.Id_categoria }}</span></td>
+                <td><span class="badge text-bg-success">{{ Infor_Prod.Stock }}</span></td>
+                <td>{{ Infor_Prod.Precio_de_compra }}</td> 
+                <td>{{ Infor_Prod.Precio_de_venta }}</td>
+                <td>{{ Infor_Prod.Descripcion }}</td>
+                <td><span class="badge text-bg-primary">{{ Infor_Prod.Estado }}</span></td>
+                <td>
+                  <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" title="Eliminar">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody> 
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      <!-- Paginación -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item"><a class="page-link" href="#">«</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">»</a></li>
+        </ul>
+
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL AGREGAR PRODUCTO -->
+<div class="modal fade" id="modalAgregarProducto" tabindex="-1" aria-labelledby="modalAgregarProductoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-success text-white py-2">
+        <h5 class="modal-title" id="modalAgregarProductoLabel">
+          <i class="bi bi-box-seam me-2"></i>Agregar Producto
+        </h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="modal-body p-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="codigoProducto" class="form-label">Código</label>
+              <input type="text" class="form-control" id="codigoProducto" name="codigo" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="nombreProducto" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombreProducto" name="nombre" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="categoriaProducto" class="form-label">Categoría</label>
+              <select class="form-select" id="categoriaProducto" name="categoria" required>
+                <option value="">Seleccione...</option>
+                <option value="suplementos">Suplementos</option>
+                <option value="accesorios">Accesorios</option>
+                <option value="equipos">Equipos</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="precioProducto" class="form-label">Precio</label>
+              <input type="number" step="0.01" class="form-control" id="precioProducto" name="precio" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="stockProducto" class="form-label">Stock</label>
+              <input type="number" class="form-control" id="stockProducto" name="stock" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="imagenProducto" class="form-label">Imagen</label>
+              <input type="file" class="form-control" id="imagenProducto" name="imagen" accept="image/*">
+              <img id="previewImagen" src="" class="mt-2 rounded shadow-sm" style="width:80px; height:80px; display:none;">
+            </div>
+
+            <div class="col-12">
+              <label for="descripcionProducto" class="form-label">Descripción</label>
+              <textarea class="form-control" id="descripcionProducto" name="descripcion" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success btn-sm">Guardar Producto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL EDITAR PRODUCTO -->
+<div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarProductoLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-warning py-2">
+        <h5 class="modal-title text-dark" id="modalEditarProductoLabel">
+          <i class="bi bi-pencil-square me-2"></i>Editar Producto
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <input type="hidden" id="editProductoId" name="id">
+
+        <div class="modal-body p-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label for="editCodigoProducto" class="form-label">Código</label>
+              <input type="text" class="form-control" id="editCodigoProducto" name="codigo" readonly>
+            </div>
+
+            <div class="col-md-6">
+              <label for="editNombreProducto" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="editNombreProducto" name="nombre" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="editCategoriaProducto" class="form-label">Categoría</label>
+              <select class="form-select" id="editCategoriaProducto" name="categoria" required>
+                <option value="">Seleccione...</option>
+                <option value="suplementos">Suplementos</option>
+                <option value="accesorios">Accesorios</option>
+                <option value="equipos">Equipos</option>
+              </select>
+            </div>
+
+            <div class="col-md-6">
+              <label for="editPrecioProducto" class="form-label">Precio</label>
+              <input type="number" step="0.01" class="form-control" id="editPrecioProducto" name="precio" required>
+            </div>
+
+            <div class="col-md-6">
+              <label for="editStockProducto" class="form-label">Stock</label>
+              <input type="number" class="form-control" id="editStockProducto" name="stock" required>
+            </div>
+
+            <div class="col-md-6">
+              <label class="form-label">Imagen actual</label>
+              <img id="editProductoImagenPreview" src="" class="img-thumbnail mb-2" style="width:80px; height:80px;">
+              <input type="file" class="form-control" id="editImagenProducto" name="imagen" accept="image/*">
+            </div>
+
+            <div class="col-12">
+              <label for="editDescripcionProducto" class="form-label">Descripción</label>
+              <textarea class="form-control" id="editDescripcionProducto" name="descripcion" rows="2"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer py-2">
+          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+          <button type="submit" class="btn btn-warning btn-sm text-dark">Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+  // Vista previa de imagen en modal agregar
+  document.getElementById('imagenProducto').addEventListener('change', function (e) {
+    const img = document.getElementById('previewImagen');
+    const file = e.target.files[0];
+    if (file) {
+      img.src = URL.createObjectURL(file);
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+  });
+</script>
+
+<!-- ESTILOS RESPONSIVOS -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 0.75rem !important;
+    }
+
+    .card-header .d-flex {
+      flex-direction: column !important;
+      width: 100% !important;
+      gap: 0.5rem !important;
+    }
+
+    .card-header select,
+    .card-header .input-group,
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+</style>
+
+{% endblock %}

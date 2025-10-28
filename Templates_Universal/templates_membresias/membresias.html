@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Membresías
+{% endblock %}
+
+{% block content %}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-sm-8">
+        <h3 class="mb-0">
+          <i class="bi bi-card-text me-2"></i> Gestión de Membresías
+        </h3>
+      </div>
+      <div class="col-sm-4 text-end">
+        <ol class="breadcrumb float-sm-end mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Membresías</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::App Content Header-->
+
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="card shadow-sm border-0">
+
+      <!-- Header -->
+      <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <!-- Botón Agregar -->
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarMembresia">
+          <i class="bi bi-plus-circle me-1"></i> Nueva Membresía
+        </button>
+
+        <!-- Filtro + Buscador -->
+        <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+          <select id="filtroCategoria" class="form-select form-select-sm" style="width: 180px;">
+            <option selected>Filtrar por...</option>
+            <option value="activa">Activa</option>
+            <option value="vencida">Vencida</option>
+            <option value="porvencer">Por vencer</option>
+          </select>
+
+          <div class="input-group input-group-sm" style="width: 250px;">
+            <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar cliente...">
+            <button class="btn btn-outline-secondary" type="button">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Estado</th> 
+                <th>Duracion</th>
+                <th>Acciones</th>
+              </tr>
+            </thead> 
+            {% for artMemb in AllMebs %}
+            <tbody>
+              <tr>
+                <td>{{ artMemb.Id_membresia }}</td>
+                <td class="fw-semibold">{{ artMemb.id_usuario.first_name }}</td>
+                <td>{{ artMemb.Fecha_inicio }}</td>
+                <td>{{ artMemb.Fecha_fin }}</td>
+                <td><span class="badge text-bg-success">{{ artMemb.Estado }}</span></td> 
+                <td>{{ artMemb.Duracion_meses }} meses</td>
+                <td>
+                  <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalVerMembresia" title="Ver Detalle">
+                    <i class="bi bi-eye-fill"></i>
+                  </button>
+                  <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarMembresia" title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </button>
+                  <button class="btn btn-sm btn-danger" title="Eliminar">
+                    <i class="bi bi-trash-fill"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody> 
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <ul class="pagination pagination-sm mb-0">
+          <li class="page-item"><a class="page-link" href="#">«</a></li>
+          <li class="page-item active"><a class="page-link" href="#">1</a></li>
+          <li class="page-item"><a class="page-link" href="#">2</a></li>
+          <li class="page-item"><a class="page-link" href="#">3</a></li>
+          <li class="page-item"><a class="page-link" href="#">»</a></li>
+        </ul>
+
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
+            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODALES -->
+<!-- Ver Membresía -->
+<div class="modal fade" id="modalVerMembresia" tabindex="-1" aria-labelledby="modalVerMembresiaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-info text-white py-2">
+        <h5 class="modal-title" id="modalVerMembresiaLabel"><i class="bi bi-eye-fill me-2"></i>Detalle de Membresía</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body small">
+        <div class="row mb-3">
+          <div class="col-md-6"><strong>Cliente:</strong> <span class="text-muted">Juan Pérez</span></div>
+          <div class="col-md-6"><strong>Tipo:</strong> <span class="text-muted">Mensual</span></div>
+          <div class="col-md-6"><strong>Fecha Inicio:</strong> <span class="text-muted">01/09/2025</span></div>
+          <div class="col-md-6"><strong>Fecha Fin:</strong> <span class="text-muted">30/09/2025</span></div>
+          <div class="col-md-6"><strong>Estado:</strong> <span class="badge text-bg-success">Activa</span></div>
+          <div class="col-md-6"><strong>Observaciones:</strong> <span class="text-muted">Cliente frecuente.</span></div>
+        </div>
+      </div>
+
+      <div class="modal-footer py-2">
+        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+          <i class="bi bi-x-circle me-1"></i> Cerrar
+        </button>
+        <button type="button" class="btn btn-outline-info btn-sm">
+          <i class="bi bi-printer me-1"></i> Imprimir
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Agregar Membresía -->
+<div class="modal fade" id="modalAgregarMembresia" tabindex="-1" aria-labelledby="modalAgregarMembresiaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-success text-white py-2">
+        <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Nueva Membresía</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-body p-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Cliente</label>
+              <select class="form-select" name="cliente" required>
+                <option selected disabled>Seleccione un cliente...</option>
+                <option>Juan Pérez</option>
+                <option>Laura Gómez</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tipo</label>
+              <select class="form-select" name="tipo" required>
+                <option selected disabled>Seleccione...</option>
+                <option>Mensual</option>
+                <option>Trimestral</option>
+                <option>Anual</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Fecha de Inicio</label>
+              <input type="date" class="form-control" name="fecha_inicio" required>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Fecha de Fin</label>
+              <input type="date" class="form-control" name="fecha_fin" required>
+            </div>
+            <div class="col-12">
+              <label class="form-label">Observaciones</label>
+              <textarea class="form-control" rows="2" name="observaciones"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer py-2">
+          <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+          <button class="btn btn-success btn-sm" type="submit">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Editar Membresía -->
+<div class="modal fade" id="modalEditarMembresia" tabindex="-1" aria-labelledby="modalEditarMembresiaLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 shadow-lg">
+      <div class="modal-header bg-warning py-2">
+        <h5 class="modal-title text-dark"><i class="bi bi-pencil-square me-2"></i>Editar Membresía</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <form method="POST">
+        {% csrf_token %}
+        <div class="modal-body p-3">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label">Cliente</label>
+              <input type="text" class="form-control" value="Juan Pérez" readonly>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Tipo</label>
+              <select class="form-select">
+                <option>Mensual</option>
+                <option>Trimestral</option>
+                <option>Anual</option>
+              </select>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Fecha de Inicio</label>
+              <input type="date" class="form-control" value="2025-09-01">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Fecha de Fin</label>
+              <input type="date" class="form-control" value="2025-09-30">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Estado</label>
+              <select class="form-select">
+                <option>Activa</option>
+                <option>Vencida</option>
+                <option>Por vencer</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer py-2">
+          <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+          <button class="btn btn-warning btn-sm text-dark" type="submit">Actualizar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- ESTILOS RESPONSIVOS -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 0.75rem !important;
+    }
+
+    .card-header .d-flex {
+      flex-direction: column !important;
+      width: 100% !important;
+    }
+
+    .card-header select,
+    .card-header .input-group,
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      gap: 0.75rem !important;
+      text-align: center;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+</style>
+
+{% endblock %}

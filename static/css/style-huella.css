@@ -1,0 +1,120 @@
+/* ========================================
+   Animación de Captura de Huella
+======================================== */
+
+/* Contenedor de huella */
+.huella-container {
+   position: relative;
+   min-height: 200px;
+}
+
+/* Animación de captura de huella */
+.huella-animation-box {
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+   padding: 40px;
+   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+   border: 2px dashed #6c757d;
+   border-radius: 10px;
+   animation: fadeIn 0.3s ease;
+}
+
+.fingerprint-scanner {
+   position: relative;
+   width: 120px;
+   height: 120px;
+   display: flex;
+   align-items: center;
+   justify-content: center;
+}
+
+.fingerprint-icon {
+   font-size: 80px;
+   color: #dc3545;
+   z-index: 1;
+   animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Línea de escaneo */
+.scan-line {
+   position: absolute;
+   top: 0;
+   left: 0;
+   width: 100%;
+   height: 3px;
+   background: linear-gradient(90deg, transparent, #dc3545, transparent);
+   box-shadow: 0 0 10px #dc3545;
+   animation: scan 2s linear infinite;
+}
+
+/* Animaciones */
+@keyframes scan {
+0% {
+   top: 0;
+   opacity: 0;
+}
+50% {
+   opacity: 1;
+}
+100% {
+   top: 120px;
+   opacity: 0;
+}
+}
+
+@keyframes pulse {
+0%,
+100% {
+   transform: scale(1);
+   opacity: 0.8;
+}
+50% {
+   transform: scale(1.05);
+   opacity: 1;
+}
+}
+
+@keyframes fadeIn {
+from {
+   opacity: 0;
+   transform: translateY(-10px);
+}
+to {
+   opacity: 1;
+   transform: translateY(0);
+}
+}
+
+/* Alerta de éxito */
+.huella-success {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   padding: 20px;
+   background: #d1e7dd;
+   border: 2px solid #198754;
+   border-radius: 10px;
+   animation: successPop 0.4s ease;
+}
+
+.huella-success i {
+   font-size: 40px;
+   color: #198754;
+   margin-right: 15px;
+}
+
+@keyframes successPop {
+0% {
+   transform: scale(0.8);
+   opacity: 0;
+}
+50% {
+   transform: scale(1.05);
+}
+100% {
+   transform: scale(1);
+   opacity: 1;
+}
+}

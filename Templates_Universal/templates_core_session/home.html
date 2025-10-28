@@ -1,0 +1,364 @@
+        {% extends 'base.html' %}
+
+          {% block tittle %}
+          Home
+          {% endblock %}
+
+          {% block content %}
+
+        <style>
+          .chart-container {
+              background: white;
+              border-radius: 8px;
+              padding: 20px;
+              box-shadow: 0 0 10px rgba(0,0,0,0.1);
+              margin-bottom: 20px;
+          }
+          .chart-title {
+              font-size: 1.2rem;
+              font-weight: 600;
+              margin-bottom: 15px;
+              color: #343a40;
+              border-bottom: 2px solid #e9ecef;
+              padding-bottom: 10px;
+          }
+        </style>
+        
+        <!--beggin: cards-->
+        <div class="app-content-header">
+          <!--begin::Container-->
+          <div class="container-fluid">
+            <!--begin::Row-->
+            <div class="row">
+              <div class="col-sm-6"><h3 class="mb-0">Dashboard</h3></div>
+              <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                  <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                </ol>
+              </div>
+            </div>
+            <!--end::Row-->
+          </div>
+          <!--end::Container-->
+        </div>
+        <!--end::App Content Header-->
+        <!--begin::App Content-->
+        <div class="app-content">
+          <div class="container-fluid">
+            <div class="row">
+              <!--beggin: card usuarios activos -->
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-primary text-light">
+                  <div class="inner">
+                    <h3>150</h3>
+                    <p>Usuarios Activos</p>
+                  </div>
+                  <svg
+                    class="small-box-icon"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122z"
+                    ></path>
+                  </svg>
+                  <a
+                    href="########"  
+                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
+                  >
+                    Todos los usuarios <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+              </div>
+              <!--end: card usuarios activos -->
+
+              <!-- beggin: card membresias por vencer -->
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-warning text-light">
+                  <div class="inner">
+                    <h3>53</h3>
+                    <p>Membresías por Vencer</p>
+                  </div>
+                  <svg
+                    class="small-box-icon"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75zm13.5 9a1.5 1.5 0 00-1.5-1.5H5.25a1.5 1.5 0 00-1.5 1.5v7.5a1.5 1.5 0 001.5 1.5h13.5a1.5 1.5 0 001.5-1.5v-7.5z"
+                      clip-rule="evenodd"
+                    ></path>
+                  </svg>
+                  <a
+                    href="####"
+                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
+                  >
+                    Revisar vencimientos <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+              </div>
+              <!-- end: card membresias por vencer -->
+
+              <!-- beggin: card ingresos del mes -->
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-success text-light">
+                  <div class="inner">
+                    <h3><sup class="fs-5">$</sup>44</h3>
+                    <p>Ingresos del Mes</p>
+                  </div>
+                  <svg
+                    class="small-box-icon"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M18.375 2.25c-1.035 0-1.875.84-1.875 1.875v15.75c0 1.035.84 1.875 1.875 1.875h.75c1.035 0 1.875-.84 1.875-1.875V4.125c0-1.036-.84-1.875-1.875-1.875h-.75zM9.75 8.625c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v11.25c0 1.035-.84 1.875-1.875 1.875h-.75a1.875 1.875 0 01-1.875-1.875V8.625zM3 13.125c0-1.036.84-1.875 1.875-1.875h.75c1.036 0 1.875.84 1.875 1.875v6.75c0 1.035-.84 1.875-1.875 1.875h-.75A1.875 1.875 0 013 19.875v-6.75z"
+                    ></path>
+                  </svg>
+                  <a
+                    href="#####"
+                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
+                  >
+                    Detalle de pagos <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+              </div>
+              <!--end: card ingresos del mes-->
+
+              <!-- beggin: card stock -->
+              <div class="col-lg-3 col-6">
+                <div class="small-box bg-danger text-light">
+                  <div class="inner">
+                    <h3>65</h3>
+                    <p>Stock Bajo</p>
+                  </div>
+                  <svg
+                    class="small-box-icon"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                    aria-hidden="true"
+                  >
+                    <path
+                      d="M3.375 4.5C2.339 4.5 1.5 5.34 1.5 6.375V13.5h12V6.375c0-1.036-.84-1.875-1.875-1.875h-8.25zM13.5 15h-12v2.625c0 1.035.84 1.875 1.875 1.875h.375a3 3 0 116 0h3a.75.75 0 00.75-.75V15z"
+                    ></path>
+                    <path
+                      d="M8.25 19.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0zM15.75 6.75a.75.75 0 00-.75.75v11.25c0 .087.015.17.042.248a3 3 0 015.958.464c.853-.175 1.522-.935 1.464-1.883a18.659 18.659 0 00-3.732-10.104 1.837 1.837 0 00-1.47-.725H15.75z"
+                    ></path>
+                    <path d="M19.5 19.5a1.5 1.5 0 10-3 0 1.5 1.5 0 003 0z"></path>
+                  </svg>
+                  <a
+                    href="######"
+                    class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover"
+                  >
+                    Ir a inventario <i class="bi bi-link-45deg"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!--end: cards-->
+
+        <div class="row">
+            <!-- Gráfico 1: Ingresos Mensuales -->
+            <div class="col-lg-8 mb-3 px-4">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        Ingresos Mensuales
+                    </div>
+                    <canvas id="ingresosChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico 2: Tipos de Membresía -->
+            <div class="col-lg-4 mb-3 px-4">
+                <div class="chart-container">
+                    <div class="chart-title">
+                        Tipos de Membresía
+                    </div>
+                    <canvas id="membresiasChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+
+        // ========================================
+        // Gráfico 1: Ingresos Mensuales
+        // ========================================
+        const ingresosCtx = document.getElementById('ingresosChart').getContext('2d');
+        const ingresosChart = new Chart(ingresosCtx, {
+            type: 'line',
+            data: {
+                labels: ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 
+                        'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'],
+                datasets: [{
+                    label: 'Ingresos ($)',
+                    data: [12000, 15000, 13500, 18000, 16500, 20000, 22000, 21000, 23500, 25000, 24000, 28000],
+                    borderColor: '#1f6f43',
+                    backgroundColor: 'rgba(31, 111, 67, 0.15)',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 5,
+                    pointHoverRadius: 7,
+                    pointBackgroundColor: '#1f6f43',
+                    pointBorderColor: '#fff',
+                    pointBorderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'top',
+                        labels: {
+                            font: {
+                                size: 14
+                            },
+                            padding: 15
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                return 'Ingresos: $' + context.parsed.y.toLocaleString();
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            },
+                            font: {
+                                size: 12
+                            }
+                        },
+                        grid: {
+                            color: 'rgba(0,0,0,0.05)'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // ========================================
+        // Gráfico 2: Tipos de Membresía
+        // ========================================
+        const membresiasCtx = document.getElementById('membresiasChart').getContext('2d');
+        const membresiasChart = new Chart(membresiasCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Básica', 'Premium', 'VIP', 'Estudiante'],
+                datasets: [{
+                    label: 'Miembros',
+                    data: [120, 85, 45, 60],
+                    backgroundColor: [
+                        '#16697a',
+                        '#1f6f43',
+                        '#b88a00',
+                        '#b11226'
+                    ],
+                    borderWidth: 4,
+                    borderColor: '#fff',
+                    hoverOffset: 20,
+                    hoverBorderWidth: 5,
+                    hoverBorderColor: '#fff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: true,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        display: true,
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 13,
+                                weight: '500'
+                            },
+                            padding: 15,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            generateLabels: function(chart) {
+                                const data = chart.data;
+                                if (data.labels.length && data.datasets.length) {
+                                    return data.labels.map((label, i) => {
+                                        const value = data.datasets[0].data[i];
+                                        const total = data.datasets[0].data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value / total) * 100).toFixed(1);
+                                        return {
+                                            text: `${label}: ${value} (${percentage}%)`,
+                                            fillStyle: data.datasets[0].backgroundColor[i],
+                                            hidden: false,
+                                            index: i
+                                        };
+                                    });
+                                }
+                                return [];
+                            }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: 'rgba(0,0,0,0.8)',
+                        padding: 12,
+                        titleFont: {
+                            size: 14
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                const percentage = ((context.parsed / total) * 100).toFixed(1);
+                                return context.label + ': ' + context.parsed + ' miembros (' + percentage + '%)';
+                            }
+                        }
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    animateScale: true
+                }
+            }
+        });
+    </script>
+
+        {% endblock %}

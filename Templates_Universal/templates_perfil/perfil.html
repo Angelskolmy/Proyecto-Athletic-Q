@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil | Gimnasio</title>
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
+  <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
+  <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
+  <link rel="stylesheet" href="{% static 'css/cliente.css' %}">
+</head>
+
+<body class="bg-light">
+  <!-- Header simple -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
+    <div class="container">
+      <a class="navbar-brand fw-bold text-white" href="#">
+        <i class="bi bi-heart-pulse me-2"></i>Mi Gimnasio
+      </a>
+      <div class="ms-auto d-flex align-items-center">
+        <a href="#" class="nav-link text-white me-3">
+          <i class="bi bi-bell-fill"></i>
+        </a>
+        <a href="#" class="btn btn-outline-light btn-sm">
+          <i class="bi bi-box-arrow-right me-1"></i>Salir
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido principal -->
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card shadow-sm border-0 rounded-4">
+          <div class="card-body">
+            <div class="d-flex align-items-center mb-4">
+              <img src="{% static 'img/avatar.png' %}" alt="Avatar" class="rounded-circle me-3" width="80" height="80">
+              <div>
+                <h4 class="mb-0 fw-bold">Juan Pérez</h4>
+                <p class="text-muted mb-0">Cliente activo</p>
+              </div>
+              <div class="ms-auto">
+                <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalVerificar">
+                  <i class="bi bi-pencil-square me-1"></i>Editar datos
+                </button>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Datos personales -->
+            <h5 class="fw-semibold mb-3"><i class="bi bi-person-lines-fill me-2"></i>Información personal</h5>
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <p><strong>Correo:</strong> juanperez@email.com</p>
+                <p><strong>Teléfono:</strong> +57 300 123 4567</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Dirección:</strong> Calle 45 #23 - 10</p>
+                <p><strong>Fecha de registro:</strong> 15/03/2024</p>
+              </div>
+            </div>
+
+            <hr>
+
+            <!-- Información de membresía -->
+            <h5 class="fw-semibold mb-3"><i class="bi bi-card-checklist me-2"></i>Mi membresía</h5>
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <p><strong>Tipo:</strong> Premium</p>
+                <p><strong>Duración:</strong> 6 meses</p>
+              </div>
+              <div class="col-md-6">
+                <p><strong>Fecha de inicio:</strong> 01/07/2025</p>
+                <p><strong>Fecha de expiración:</strong> 01/01/2026</p>
+              </div>
+            </div>
+
+            <div class="text-center">
+              <span class="badge bg-success p-2 px-3 fs-6">Activa</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================
+       MODAL 1: VERIFICAR CONTRASEÑA
+  ============================ -->
+  <div class="modal fade" id="modalVerificar" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="bi bi-shield-lock-fill me-2"></i>Verificar identidad</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <p class="text-muted mb-3">Por seguridad, ingresa tu contraseña antes de editar tus datos personales.</p>
+          <div class="mb-3">
+            <label for="passwordInput" class="form-label">Contraseña</label>
+            <input type="password" class="form-control" id="passwordInput" placeholder="••••••••">
+          </div>
+          <div class="alert alert-danger d-none" id="errorMsg">Contraseña incorrecta. Intenta de nuevo.</div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" onclick="verificarContrasena()">Verificar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===========================
+       MODAL 2: EDITAR DATOS
+  ============================ -->
+  <div class="modal fade" id="modalEditarDatos" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content border-0 shadow">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar mis datos</h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <form>
+          <div class="modal-body">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">Nombre</label>
+                <input type="text" class="form-control" value="Juan">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Apellido</label>
+                <input type="text" class="form-control" value="Pérez">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Correo</label>
+                <input type="email" class="form-control" value="juanperez@email.com">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Teléfono</label>
+                <input type="text" class="form-control" value="+57 300 123 4567">
+              </div>
+              <div class="col-12">
+                <label class="form-label">Dirección</label>
+                <input type="text" class="form-control" value="Calle 45 #23 - 10">
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Guardar cambios</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="{% static 'bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js' %}"></script>
+  <script>
+    // Simulación simple de verificación de contraseña
+    function verificarContrasena() {
+      const password = document.getElementById('passwordInput').value;
+      const errorMsg = document.getElementById('errorMsg');
+
+      if (password === '1234') { // simulación de contraseña correcta
+        errorMsg.classList.add('d-none');
+        const modalVerificar = bootstrap.Modal.getInstance(document.getElementById('modalVerificar'));
+        modalVerificar.hide();
+        new bootstrap.Modal(document.getElementById('modalEditarDatos')).show();
+      } else {
+        errorMsg.classList.remove('d-none');
+      }
+    }
+  </script>
+</body>
+</html>
