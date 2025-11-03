@@ -18,7 +18,7 @@ def login_view(request):
             messages.error(request, 'Correo o contraseña incorrectos.')
             return redirect('login')
 
-    return render(request, 'templates_core_session/login.html')
+    return render(request, 'templates_core_session/login2.html')
 
 
 # Vista para cerrar sesión
