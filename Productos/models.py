@@ -14,7 +14,6 @@ class producto(models.Model):
         ('Activo','Activo'),
         ('Inactivo','Inactivo'),
     ]
-
     Estado= models.CharField(
 
         choices=Estado_Choice, 
@@ -22,7 +21,7 @@ class producto(models.Model):
         max_length=8, 
         db_column='Estado'
     )  
-    prod_imagen= models.CharField(max_length=100, db_column='prod_imagen')
+    prod_imagen= models.ImageField(upload_to='productos_media/',max_length=100, db_column='prod_imagen')
 
     class Meta: 
         db_table='producto'
