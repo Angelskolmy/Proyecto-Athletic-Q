@@ -30,6 +30,7 @@
     </div>
     <div class="car1 d-flex align-items-center justify-content-center">
       <div class=" card2 p-4" style="width: 100%;">
+
         {% if messages %}
           {% for message in messages %}
             <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
@@ -38,6 +39,7 @@
             </div>
           {% endfor %}
         {% endif %}
+
         <form method="POST" action="{% url 'login'%}">
           {% csrf_token %}
           <div class="col-auto mb-4 flex">
@@ -45,7 +47,7 @@
               <div class="input-group-text">
                 <i class="bi bi-person-fill"></i>
               </div>
-              <input type="text" class="form-control boton" id="autoSizingInputGroup" placeholder="Username">
+              <input type="text" class="form-control boton" id="autoSizingInputGroup" name="usern" placeholder="Usuario">
             </div>
           </div>
           <div class="col-auto mb-4 flex">
@@ -53,13 +55,13 @@
               <div class="input-group-text">
                 <i class="bi bi-lock-fill"></i>
               </div>
-              <input type="password" class="form-control p-2 boton" id="password" placeholder="Contraseña" required>
+              <input type="password" class="form-control p-2 boton" id="password" name="password" placeholder="Contraseña" required>
             </div>
           </div>
           <button type="submit" class="form-control w-100 color1 color boton">Sing in</button>
         </form>
         <div class="text-center mt-3 ">
-          <a href="../recuperar2.html" class="color3">¿Olvidaste tu contraseña?</a>
+          <a href="{% url 'recuperar1' %}" class="color3">¿Olvidaste tu contraseña?</a>
         </div>
       </div>
     </div>

@@ -6,20 +6,22 @@ from django.contrib.auth.decorators import login_required
 # Vista de login
 def login_view(request):
     if request.method == 'POST':
-        correo = request.POST.get('correo')
+        usern = request.POST.get('usern')
         password = request.POST.get('password')
 
-        user = authenticate(request, username=correo, password=password)
+        user = authenticate(request, username=usern, password=password)
 
         if user is not None:
             login(request, user)
             return redirect('home')  # después de login lo mandamos al dashboard
         else:
-            messages.error(request, 'Correo o contraseña incorrectos.')
+            messages.error(request, 'Usuario o contraseña incorrectos.')
             return redirect('login')
 
     return render(request, 'templates_core_session/login2.html')
-
+# Vista para recuperar
+def recuperar1_view(request):
+    return render(request, 'templates_core_session/recuperar2.html')
 
 # Vista para cerrar sesión
 def logout_view(request):

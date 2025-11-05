@@ -68,6 +68,7 @@ Usuarios
                 <th>Cedula</th>
                 <th>Correo</th>
                 <th>Estado</th>
+                <th>rol</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -83,6 +84,13 @@ Usuarios
                 <td>{{ UsEmp.Cedula }}</td>
                 <td>{{ UsEmp.email }}</td>
                 <td>{{ UsEmp.is_active }}</td> 
+                <td>
+                  {% for g in UsEmp.groups.all %}
+                      <span class="badge bg-info">{{ g.name }}</span>
+                  {% empty %}
+                      <span class="badge bg-secondary">Sin grupo</span>
+                  {% endfor %}
+                </td>
                 <td>
                   <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarUsuario" title="Editar">
                     <i class="bi bi-pencil-fill"></i>

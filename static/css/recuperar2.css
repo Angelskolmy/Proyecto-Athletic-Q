@@ -1,5 +1,5 @@
 body {
-    background-image: url(/img/login2//Diseño\ sin\ título\ \(1\).png);
+    background: url('../img/body_login2.png');
     background-repeat: no-repeat;
     background-size: cover;
     height: 100vh;

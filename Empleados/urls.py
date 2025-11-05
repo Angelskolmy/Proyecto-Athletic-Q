@@ -19,5 +19,6 @@ from django.urls import path,include
 from Empleados import views
 
 urlpatterns = [
-    path('Empleados/',views.listUsers, name='Empleados')
+    path('Empleados/',views.listUsers, name='Empleados'),
+    path('Usuario_Gym/',views.UsersGym, name='GYM')
 ]  

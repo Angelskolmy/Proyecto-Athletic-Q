@@ -1,6 +1,13 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 
+class MiModelo(models.Model):
+    ...
+
+    class Meta:
+        permissions = [
+            ("suariogym", "Puede acceder a la vista  Usuariogym")
+        ]
 class User_Empleados(AbstractUser):
     Eps= models.CharField(max_length=50, null=True, db_column='Eps')  
     Sexo_choice=[

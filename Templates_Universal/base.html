@@ -178,6 +178,7 @@
                     </p>
                   </a>
                 </li>
+              {% if perms.Productos.view_producto %}
               
               <li class="nav-header">GESTION DE PRODUCTOS</li>
                 <li class="nav-item" >
@@ -195,6 +196,7 @@
                     </p>
                   </a>
                 </li>
+              {% endif %}
               
               <li class="nav-header">GESTION DE MEMBRESIAS</li>
                 <li class="nav-item">
@@ -203,6 +205,15 @@
                     <p>Membresias</p>
                   </a>
                 </li>
+              {% if perms.Empleados.suariogym %}
+                <li class="nav-header">USUARIO GYM</li>
+                  <li class="nav-item">
+                    <a href="{% url 'GYM' %}" class="nav-link">
+                      <i class="nav-icon bi bi-card-text"></i>
+                      <p>Gym</p>
+                    </a>
+                  </li>
+              {% endif %}
             </ul>
             <!--end::Sidebar Menu-->
           </nav>
