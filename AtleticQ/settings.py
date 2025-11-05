@@ -80,7 +80,10 @@ TEMPLATES = [
 
 STATICFILES_DIRS=[ 
     BASE_DIR / "static",
-]
+] 
+
+MEDIA_ROOT= BASE_DIR/ 'Media' 
+MEDIA_URL= '/Media/'
 
 WSGI_APPLICATION = 'AtleticQ.wsgi.application'
 

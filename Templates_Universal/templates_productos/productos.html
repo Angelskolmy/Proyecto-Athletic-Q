@@ -195,74 +195,7 @@ Productos
   </div>
 </div>
 
-<!-- MODAL EDITAR PRODUCTO -->
-<div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarProductoLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-warning py-2">
-        <h5 class="modal-title text-dark" id="modalEditarProductoLabel">
-          <i class="bi bi-pencil-square me-2"></i>Editar Producto
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
 
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <input type="hidden" id="editProductoId" name="id">
-
-        <div class="modal-body p-3">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="editCodigoProducto" class="form-label">Código</label>
-              <input type="text" class="form-control" id="editCodigoProducto" name="codigo" readonly>
-            </div>
-
-            <div class="col-md-6">
-              <label for="editNombreProducto" class="form-label">Nombre</label>
-              <input type="text" class="form-control" id="editNombreProducto" name="nombre" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="editCategoriaProducto" class="form-label">Categoría</label>
-              <select class="form-select" id="editCategoriaProducto" name="categoria" required>
-                <option value="">Seleccione...</option>
-                <option value="suplementos">Suplementos</option>
-                <option value="accesorios">Accesorios</option>
-                <option value="equipos">Equipos</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label for="editPrecioProducto" class="form-label">Precio</label>
-              <input type="number" step="0.01" class="form-control" id="editPrecioProducto" name="precio" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="editStockProducto" class="form-label">Stock</label>
-              <input type="number" class="form-control" id="editStockProducto" name="stock" required>
-            </div>
-
-            <div class="col-md-6">
-              <label class="form-label">Imagen actual</label>
-              <img id="editProductoImagenPreview" src="" class="img-thumbnail mb-2" style="width:80px; height:80px;">
-              <input type="file" class="form-control" id="editImagenProducto" name="imagen" accept="image/*">
-            </div>
-
-            <div class="col-12">
-              <label for="editDescripcionProducto" class="form-label">Descripción</label>
-              <textarea class="form-control" id="editDescripcionProducto" name="descripcion" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer py-2">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-warning btn-sm text-dark">Actualizar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
 
 <!-- SCRIPT -->
 <script>
