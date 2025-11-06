@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'Detalle_venta',
     'Ventas',
     'Asistencia',
+    'Core_session',
     'Empleados',
     'Productos', 
     'Categorias',

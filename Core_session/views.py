@@ -9,7 +9,7 @@ def login_view(request):
         usern = request.POST.get('usern')
         password = request.POST.get('password')
 
-        user = authenticate(request, username=usern, password=password)
+        user = User_Empleados(request, username=usern, password=password)
 
         if user is not None:
             login(request, user)
