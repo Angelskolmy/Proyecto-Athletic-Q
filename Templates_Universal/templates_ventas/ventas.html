@@ -65,150 +65,107 @@
     </div>
 
     <!-- Tarjeta principal -->
-    <div class="card shadow-sm">
+    <div id="ventas-section">
+      <div class="card shadow-sm">
 
-      <!-- Barra de filtros compacta -->
-      <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-          <div class="input-group input-group-sm" style="width: 180px;">
-            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
-            <input type="text" class="form-control" placeholder="Cliente...">
+        <!-- Header con filtro y buscador -->
+        <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
+          <a href="{% url 'ventas_create' %}" class="btn btn-success">
+            <i class="bi bi-cart-plus me-1"></i> Nueva venta
+          </a>
+
+          <!-- Filtro + Buscador -->
+          <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+            <!-- Filtro -->
+            <select id="filtroUsuario" class="form-select form-select-sm" style="width: 180px;">
+              <option selected>Filtrar por...</option>
+              <option value="admin">Administradores</option>
+              <option value="trainer">Entrenadores</option>
+              <option value="active">Activos</option>
+              <option value="inactive">Inactivos</option>
+            </select>
+
+            <!-- Buscador -->
+            <div class="input-group input-group-sm" style="width: 250px;">
+              <input type="text" id="buscarUsuario" class="form-control" placeholder="Buscar usuario...">
+              <button class="btn btn-outline-secondary" type="button">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
           </div>
+        </div>
 
-          <select class="form-select form-select-sm" style="width: 150px;">
-            <option selected disabled>Estado...</option>
-            <option value="completada">Completada</option>
-            <option value="pendiente">Pendiente</option>
-            <option value="anulada">Anulada</option>
-          </select>
-
-          <div class="input-group input-group-sm" style="width: 170px;">
-            <span class="input-group-text bg-light"><i class="bi bi-calendar"></i></span>
-            <input type="date" class="form-control">
+        <!-- Tabla -->
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover align-middle text-center mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>ID</th>
+                  <th>Empleado</th>
+                  <th>Fecha</th>
+                  <th>Monto</th>
+                  <th>Método de Pago</th>
+                  <th>Acciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                  {% for venta in Ventas %}
+                  <tr>
+                      <td>{{ venta.Id_venta }}</td>
+                      <td>{{ venta.id_usuario.first_name }} {{ venta.id_usuario.last_name }}</td>
+                      <td>{{ venta.Fecha|date:"d/m/Y H:i" }}</td>
+                      <td><span class="badge text-bg-success">${{ venta.Total }}</span></td>
+                      <td>
+                          {% with detalle=venta.detalle_venta_set.first %}
+                              {{ detalle.Tipo_Pago|default:"No especificado" }}
+                          {% endwith %}
+                      </td>
+                      <td>
+                          <a href="{% url 'ventas_edit' venta.Id_venta %}" class="btn btn-sm btn-warning me-1">
+                              <i class="bi bi-pencil-fill"></i>
+                          </a>
+                          <button class="btn btn-sm btn-danger">
+                              <i class="bi bi-trash"></i>
+                          </button>
+                      </td>
+                  </tr>
+                  {% empty %}
+                  <tr><td colspan="6" class="text-muted py-3">No hay registros de venta.</td></tr>
+                  {% endfor %}
+              </tbody>
+            </table>
           </div>
-
-          <button class="btn btn-sm btn-primary btn-search">
-            <i class="bi bi-search me-1"></i> Buscar
-          </button>
-
-          <button class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-repeat me-1"></i> Limpiar
-          </button>
-        </div>
-      </div>
-
-      <!-- Tabla -->
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-striped table-hover align-middle text-center mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Empleado</th>
-                <th>Fecha</th>
-                <th>Total</th>
-                <th>Acciones</th>
-              </tr>
-            </thead> 
-            {% for compVent in Ventas %}
-            <tbody>
-              <tr>
-                <td>{{ compVent.Id_venta }}</td>
-                <td>{{ compVent.id_usuario.first_name }}</td>
-                <td>{{ compVent.Fecha }}</td>
-                <td><span class="badge text-bg-success estado" style="cursor:pointer;">{{ compVent.Total }}</span></td>
-                <td>
-                  <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalDetalle"><i class="bi bi-eye"></i></button>
-                  <button class="btn btn-sm btn-danger"><i class="bi bi-trash"></i></button>
-                </td>
-              </tr>
-            {% endfor %}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Paginación -->
-      <div class="card-footer d-flex justify-content-between align-items-center">
-        <ul class="pagination pagination-sm mb-0">
-          <li class="page-item"><a class="page-link" href="#">«</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">»</a></li>
-        </ul>
-
-        <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando 1–10 de 58 registros</span>
         </div>
 
-        <div class="dropdown">
-          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Exportar
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+        <!-- Paginación -->
+        <div class="card-footer d-flex justify-content-between align-items-center">
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item"><a class="page-link" href="#">«</a></li>
+            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+            <li class="page-item"><a class="page-link" href="#">2</a></li>
+            <li class="page-item"><a class="page-link" href="#">3</a></li>
+            <li class="page-item"><a class="page-link" href="#">»</a></li>
           </ul>
+
+          <div class="flex-grow-1 text-center">
+            <span class="text-muted small">Mostrando 1–10 de 58 registros</span>
+          </div>
+
+          <div class="dropdown">
+            <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Exportar
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
+              <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
-<!--end::Contenido-->
-
-<!-- Modal Detalle Venta -->
-<div class="modal fade" id="modalDetalle" tabindex="-1" aria-labelledby="modalDetalleLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header bg-primary text-white">
-        <h5 class="modal-title" id="modalDetalleLabel">
-          <i class="bi bi-receipt me-2"></i> Detalle de la Venta
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body">
-        <div class="row">
-          <div class="col-md-6"><strong>ID:</strong> V001</div>
-          <div class="col-md-6"><strong>Cliente:</strong> Laura Pérez</div>
-          <div class="col-md-6"><strong>Empleado:</strong> Carlos Gómez</div>
-          <div class="col-md-6"><strong>Fecha:</strong> 2025-10-06 09:30</div>
-          <div class="col-12 mt-2">
-            <strong>Detalle:</strong>
-            <p>Venta de proteína Whey (1 und) y Creatina (1 und). Total: $250.000</p>
-          </div>
-          <div class="col-md-6">
-            <strong>Estado:</strong> <span class="badge text-bg-success">Completada</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="modal-footer py-2">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-1"></i> Cerrar
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Script -->
-<script>
-  document.querySelectorAll('.estado').forEach(badge => {
-    badge.addEventListener('click', () => {
-      const estados = [
-        { texto: 'Completada', clase: 'text-bg-success' },
-        { texto: 'Pendiente', clase: 'text-bg-warning' },
-        { texto: 'Anulada', clase: 'text-bg-danger' }
-      ];
-      const actual = estados.findIndex(e => badge.textContent.trim() === e.texto);
-      const siguiente = (actual + 1) % estados.length;
-      badge.textContent = estados[siguiente].texto;
-      badge.className = `badge estado ${estados[siguiente].clase}`;
-    });
-  });
-</script>
 
 <!-- Estilos Responsivos -->
 <style>
@@ -260,5 +217,85 @@
     }
   }
 </style>
+
+<script>
+  // Obtener cookie CSRF (Django)
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        const cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  const csrftoken = getCookie('csrftoken');
+
+  // Reemplazar la sección ventas por el formulario de crear
+  document.addEventListener('DOMContentLoaded', function () {
+    const btnAgregar = document.getElementById('btnAgregarVenta');
+    if (btnAgregar) {
+      btnAgregar.addEventListener('click', async () => {
+        const resp = await fetch("{% url 'ventas_create' %}");
+        if (!resp.ok) return alert('Error cargando formulario');
+        const html = await resp.text();
+        document.getElementById('ventas-section').innerHTML = html;
+        bindFormSubmit('create');
+      });
+    }
+
+    // Delegación: botones editar ya están en la tabla. Re-attach after page load:
+    document.querySelectorAll('.btn-edit').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        const resp = await fetch("{% url 'ventas_edit' 0 %}".replace('/0/','/'+id+'/'));
+        if (!resp.ok) return alert('Error cargando formulario de edición');
+        const html = await resp.text();
+        document.getElementById('ventas-section').innerHTML = html;
+        bindFormSubmit('edit', id);
+      });
+    });
+  });
+
+  // Bind para submit del formulario insertado dinámicamente
+  function bindFormSubmit(mode, id=null) {
+    const form = document.querySelector('#formAgregarVenta') || document.querySelector('form');
+    if (!form) return;
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const url = mode === 'create' ? "{% url 'ventas_create' %}" : "{% url 'ventas_edit' 0 %}".replace('/0/','/'+id+'/');
+      const fd = new FormData(form);
+      // Si el form no tiene campo Total calculado en inputs, ajusta aquí para agregar total.
+      const resp = await fetch(url, {
+        method: 'POST',
+        headers: {'X-CSRFToken': csrftoken},
+        body: fd
+      });
+      if (resp.ok) {
+        const j = await resp.json();
+        // Mostrar confirmación y redirigir a la lista
+        alert('Operación exitosa');
+        // redirige a la ruta principal de ventas (relativa)
+        window.location.href = "{% url 'Ventas' %}";
+      } else {
+        const json = await resp.json().catch(()=>null);
+        alert('Error al guardar: ' + (json?.error || JSON.stringify(json) || resp.statusText));
+      }
+    });
+
+    // Añadir botón de cancelar que vuelva a la vista de lista (si existe)
+    const btnCancel = document.querySelector('.btn-cancel-ventas');
+    if (btnCancel) {
+      btnCancel.addEventListener('click', () => {
+        window.location.href = "{% url 'Ventas' %}";
+      });
+    }
+  }
+</script>
 
 {% endblock %}

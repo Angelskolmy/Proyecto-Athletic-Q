@@ -1,0 +1,422 @@
+{% extends 'base.html' %}
+{% block title %}Ventas{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8">
+        <h3 class="mb-0"><i class="bi bi-graph-up-arrow me-1"></i> Gestión de Ventas</h3>
+      </div>
+      <div class="col-sm-4">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Ventas</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contenido -->
+<div class="app-content">
+  <div class="container-fluid">
+
+    <!-- 🔹 Cards resumen -->
+    <div class="row mb-4 g-3">
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-primary text-white shadow-sm rounded-3">
+          <div class="inner">
+            <h3>38</h3>
+            <p>Ventas del día</p>
+          </div>
+          <i class="bi bi-calendar2-check small-box-icon"></i>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-success text-white shadow-sm rounded-3">
+          <div class="inner">
+            <h3>$2.480.000</h3>
+            <p>Total del día</p>
+          </div>
+          <i class="bi bi-currency-dollar small-box-icon"></i>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-warning text-white shadow-sm rounded-3">
+          <div class="inner">
+            <h3>8</h3>
+            <p>En proceso</p>
+          </div>
+          <i class="bi bi-hourglass-split small-box-icon"></i>
+        </div>
+      </div>
+
+      <div class="col-lg-3 col-6">
+        <div class="small-box bg-danger text-white shadow-sm rounded-3">
+          <div class="inner">
+            <h3>3</h3>
+            <p>Anuladas</p>
+          </div>
+          <i class="bi bi-x-octagon-fill small-box-icon"></i>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card principal -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-white d-flex align-items-center justify-content-between">
+        <h5 class="mb-0 fw-semibold"><i class="bi bi-cart-plus me-2"></i> Nueva Venta</h5>
+      </div>
+
+      <script>
+      document.getElementById('formAgregarVenta').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          
+          try {
+              const formData = new FormData(this);
+              
+              const response = await fetch("{% url 'ventas_create' %}", {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                  },
+                  body: formData
+              });
+
+              const data = await response.json();
+              
+              if (response.ok) {
+                  alert(data.message || 'Venta creada correctamente');
+                  if (data.redirect) {
+                      window.location.href = data.redirect;
+                  }
+              } else {
+                  throw new Error(data.message || 'Error al crear la venta');
+              }
+          } catch (error) {
+              alert(error.message);
+          }
+      });
+      </script>
+
+      <form id="formAgregarVenta" method="POST" action="#">
+        {% csrf_token %}
+        <div class="card-body">
+          <div class="row g-3">
+
+            <!-- Cliente -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Cliente</label>
+                <select name="cliente_id" class="form-select" required>
+                    <option value="">Seleccione un cliente</option>
+                    {% for cliente in clientes %}
+                        <option value="{{ cliente.id }}">{{ cliente.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Empleado -->
+            <div class="col-md-4">
+                <label class="form-label fw-semibold">Empleado (vendedor)</label>
+                <select name="empleado_id" class="form-select" required>
+                    <option value="">Seleccione un empleado</option>
+                    {% for empleado in empleados %}
+                        <option value="{{ empleado.id }}">{{ empleado.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Fecha -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Fecha</label>
+              <input type="datetime-local" name="fecha" class="form-control" value="{{ now|date:'Y-m-d\\TH:i' }}">
+            </div>
+
+            <!-- Productos -->
+            <div class="col-12 mt-3">
+              <label class="form-label fw-semibold">Productos</label>
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0" id="ventaItemsTable">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Producto</th>
+                      <th>Categoría</th>
+                      <th>Cantidad</th>
+                      <th>Precio unitario</th>
+                      <th>Subtotal</th>
+                      <th class="text-center">Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ventaItemsBody">
+                    <tr class="venta-item-row">
+                      <td>
+                        <select name="producto_id[]" class="form-select producto-select" required>
+                          <option value="" disabled selected>Selecciona producto...</option>
+                          {% for p in productos %}
+                          <option value="{{ p.id }}" data-price="{{ p.precio }}" data-categoria="{{ p.categoria }}">{{ p.nombre }}</option>
+                          {% endfor %}
+                        </select>
+                      </td>
+                      <td>
+                        <select name="categoria[]" class="form-select categoria-select">
+                          <option value="" disabled>Selecciona categoría...</option>
+                          {% for cat in categorias %}
+                            {% if cat.Id_categoria %}
+                              <option value="{{ cat.Id_categoria }}"
+                                {% if detalle.Id_producto.categoria.Id_categoria == cat.Id_categoria %}selected{% endif %}>{{ cat.Nombre }}</option>
+                            {% else %}
+                              <option value="{{ cat }}" {% if detalle.Id_producto.categoria == cat %}selected{% endif %}>{{ cat }}</option>
+                            {% endif %}
+                          {% endfor %}
+                        </select>
+                      </td>
+
+                      <td><input type="number" name="cantidad[]" class="form-control cantidad-input" min="1" value="{{ detalle.Cantidad }}" required></td>
+                      <td><input type="text" name="precio[]" class="form-control precio-input" value="{{ detalle.Id_producto.precio }}"></td>
+                      <td><input type="text" name="subtotal[]" class="form-control subtotal-input" value="{{ detalle.Subtotal }}"></td>
+                      <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-row"><i class="bi bi-trash"></i></button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-3 d-flex gap-2 align-items-center">
+                <button type="button" id="addItemBtn" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-plus-circle me-1"></i> Agregar producto
+                </button>
+                <small class="text-muted">Pulsa para añadir más productos.</small>
+              </div>
+            </div>
+
+            <!-- Método de pago -->
+            <div class="col-md-6 mt-4">
+              <label class="form-label fw-semibold">Método de pago</label>
+              <select name="metodo_pago" class="form-select">
+                <option value="Fisico">Efectivo</option>
+                <option value="Credito">Crédito</option>
+                <option value="Debito">Débito</option>
+                <option value="PSE">PSE</option>
+                <option value="Nequi">Nequi</option>
+              </select>
+            </div>
+
+            <!-- Total -->
+            <div class="col-md-6 mt-4">
+              <label class="form-label fw-semibold">Total</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">COP</span>
+                <input type="text" name="total" id="ventaTotal" class="form-control fw-bold text-success" value="0.00">
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="col-12 mt-3">
+              <label class="form-label fw-semibold">Observaciones</label>
+              <textarea name="observaciones" class="form-control" rows="2" placeholder="Notas internas, forma de entrega, etc."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer bg-light text-end py-3">
+          <button type="reset" class="btn btn-secondary me-2">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+          </button>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-check2-circle me-1"></i> Guardar venta
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const addItemBtn = document.getElementById("addItemBtn");
+  const ventaItemsBody = document.getElementById("ventaItemsBody");
+  const ventaTotal = document.getElementById("ventaTotal");
+
+  function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll(".subtotal-input").forEach(input => {
+      total += parseFloat(input.value || 0);
+    });
+    ventaTotal.value = total.toFixed(2);
+  }
+
+  function actualizarFila(row) {
+    const productoSelect = row.querySelector(".producto-select");
+    const categoriaSelect = row.querySelector(".categoria-select");
+    const precioInput = row.querySelector(".precio-input");
+    const cantidadInput = row.querySelector(".cantidad-input");
+    const subtotalInput = row.querySelector(".subtotal-input");
+
+    function recalcularSubtotal() {
+      const price = parseFloat(precioInput.value || 0);
+      const qty = parseFloat(cantidadInput.value || 0) || 0;
+      subtotalInput.value = (price * qty).toFixed(2);
+      calcularTotal();
+    }
+
+    productoSelect.addEventListener("change", () => {
+      const option = productoSelect.selectedOptions[0];
+      const price = parseFloat(option.dataset.price || 0);
+      const categoria = option.dataset.categoria || "";
+
+      precioInput.value = isNaN(price) ? "" : price.toFixed(2);
+
+      if (categoriaSelect) {
+        if (categoria && categoriaSelect.querySelector('option[value="'+categoria+'"]')) {
+          categoriaSelect.value = categoria;
+        } else {
+          Array.from(categoriaSelect.options).forEach(opt => {
+            if (opt.text.trim() === categoria) opt.selected = true;
+          });
+        }
+      }
+
+      recalcularSubtotal();
+    });
+
+    cantidadInput.addEventListener("input", recalcularSubtotal);
+    precioInput.addEventListener("input", recalcularSubtotal);
+    subtotalInput.addEventListener("input", calcularTotal);
+
+    row.querySelector(".remove-row").addEventListener("click", () => {
+      row.remove();
+      calcularTotal();
+    });
+  }
+
+  document.querySelectorAll(".venta-item-row").forEach(actualizarFila);
+
+  addItemBtn.addEventListener("click", () => {
+    const newRow = ventaItemsBody.querySelector(".venta-item-row").cloneNode(true);
+    newRow.querySelectorAll("input, select").forEach(el => {
+      if (el.tagName === "INPUT") el.value = "";
+      if (el.tagName === "SELECT") el.selectedIndex = 0;
+    });
+    ventaItemsBody.appendChild(newRow);
+    actualizarFila(newRow);
+  });
+
+  calcularTotal();
+});
+</script>
+
+<!-- JS dinámico para agregar productos -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const addItemBtn = document.getElementById("addItemBtn");
+  const ventaItemsBody = document.getElementById("ventaItemsBody");
+  const ventaTotal = document.getElementById("ventaTotal");
+
+  function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll(".subtotal-input").forEach(input => {
+      total += parseFloat(input.value || 0);
+    });
+    ventaTotal.value = total.toFixed(2);
+  }
+
+  function actualizarFila(row) {
+    const productoSelect = row.querySelector(".producto-select");
+    const categoriaInput = row.querySelector(".categoria-input");
+    const precioInput = row.querySelector(".precio-input");
+    const cantidadInput = row.querySelector(".cantidad-input");
+    const subtotalInput = row.querySelector(".subtotal-input");
+
+    productoSelect.addEventListener("change", () => {
+      const option = productoSelect.selectedOptions[0];
+      const price = parseFloat(option.dataset.price || 0);
+      const categoria = option.dataset.categoria || "";
+      categoriaInput.value = categoria;
+      precioInput.value = price.toFixed(2);
+      subtotalInput.value = (price * cantidadInput.value).toFixed(2);
+      calcularTotal();
+    });
+
+    cantidadInput.addEventListener("input", () => {
+      const price = parseFloat(precioInput.value || 0);
+      subtotalInput.value = (price * cantidadInput.value).toFixed(2);
+      calcularTotal();
+    });
+
+    row.querySelector(".remove-row").addEventListener("click", () => {
+      row.remove();
+      calcularTotal();
+    });
+  }
+
+  document.querySelectorAll(".venta-item-row").forEach(actualizarFila);
+
+  addItemBtn.addEventListener("click", () => {
+    const newRow = ventaItemsBody.querySelector(".venta-item-row").cloneNode(true);
+    newRow.querySelectorAll("input, select").forEach(el => {
+      if (el.tagName === "INPUT") el.value = "";
+      if (el.tagName === "SELECT") el.selectedIndex = 0;
+    });
+    ventaItemsBody.appendChild(newRow);
+    actualizarFila(newRow);
+  });
+});
+</script>
+
+<!-- Estilos Responsivos -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    .card-header .d-flex {
+      flex-direction: column !important;
+      width: 100% !important;
+      gap: 0.5rem !important;
+    }
+
+    .card-header .input-group,
+    .card-header select,
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-footer .dropdown .btn {
+      width: auto;
+    }
+  }
+</style>
+
+{% endblock %}

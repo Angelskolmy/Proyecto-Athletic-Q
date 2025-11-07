@@ -1,33 +1,17 @@
-"""
-URL configuration for AtleticQ project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import path, include
 
 urlpatterns = [
-    path('admin/', admin.site.urls),  
+    path('admin/', admin.site.urls),
     path('', include("Core_session.urls")),
-    path('', include("Productos.urls")), 
-    path('', include("Categorias.urls")), 
+    path('', include("Productos.urls")),
+    path('', include("Categorias.urls")),
     path('', include("Asistencia.urls")),
     path('', include("Detalle_venta.urls")),
     path('', include("Empleados.urls")),
-    path('', include("Historial.urls")),  
-    path('', include("Historial_ventas.urls")), 
-    path('', include("Membresias.urls")), 
+    path('', include("Historial.urls")),
+    path('', include("Historial_ventas.urls")),
+    path('', include("Membresias.urls")),
     path('', include("Pago_Membresia.urls")),
-    path('', include("Ventas.urls"))
+    path('', include("Ventas.urls")),  
 ]

@@ -1,0 +1,261 @@
+{% extends 'base.html' %}
+{% block title %}Editar Venta{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8">
+        <h3 class="mb-0"><i class="bi bi-pencil-square me-1"></i> Editar Venta</h3>
+      </div>
+      <div class="col-sm-4">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'Ventas' %}">Ventas</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Editar</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app-content">
+  <div class="container-fluid">
+
+    <!-- 🔹 Card principal -->
+    <div class="card shadow-sm border-0 mb-4">
+      <div class="card-header bg-white d-flex align-items-center justify-content-between">
+        <h5 class="mb-0 fw-semibold"><i class="bi bi-cart-check me-2"></i> Editar información de la venta #{{ venta.id_registro }}</h5>
+      </div>
+
+      <form id="formEditarVenta" method="POST" action="{% url 'editar_venta' venta.id_registro %}">
+        {% csrf_token %}
+        <div class="card-body">
+          <div class="row g-3">
+
+            <!-- Cliente -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Cliente</label>
+              <select name="cliente_id" class="form-select" required>
+                {% for c in clientes %}
+                <option value="{{ c.id }}" {% if c.id == venta.id_cliente.id %}selected{% endif %}>{{ c.first_name }} {{ c.last_name }} — {{ c.documento }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Empleado -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Empleado (vendedor)</label>
+              <select name="empleado_id" class="form-select" required>
+                {% for e in empleados %}
+                <option value="{{ e.id }}" {% if e.id == venta.id_usuario.id %}selected{% endif %}>{{ e.first_name }} {{ e.last_name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Fecha -->
+            <div class="col-md-4">
+              <label class="form-label fw-semibold">Fecha</label>
+              <input type="datetime-local" name="fecha" class="form-control" value="{{ venta.fecha_venta|date:'Y-m-d\\TH:i' }}">
+            </div>
+
+            <!-- Productos -->
+            <div class="col-12 mt-3">
+              <label class="form-label fw-semibold">Productos</label>
+              <div class="table-responsive">
+                <table class="table table-sm align-middle mb-0" id="ventaItemsTable">
+                  <thead class="table-light">
+                    <tr>
+                      <th>Producto</th>
+                      <th>Categoría</th>
+                      <th>Cantidad</th>
+                      <th>Precio unitario</th>
+                      <th>Subtotal</th>
+                      <th>Acción</th>
+                    </tr>
+                  </thead>
+                  <tbody id="ventaItemsBody">
+                    {% for detalle in detalles %}
+                    <tr class="venta-item-row">
+                      <td>
+                        <select name="producto_id[]" class="form-select producto-select" required>
+                          {% for p in productos %}
+                          <option value="{{ p.id }}" data-price="{{ p.precio }}" data-categoria="{{ p.categoria }}"
+                            {% if p.id == detalle.Id_producto.id %}selected{% endif %}>
+                            {{ p.nombre }}
+                          </option>
+                          {% endfor %}
+                        </select>
+                      </td>
+                      <td><input type="text" name="categoria[]" class="form-control categoria-input" value="{{ detalle.Id_producto.categoria }}" readonly></td>
+                      <td><input type="number" name="cantidad[]" class="form-control cantidad-input" min="1" value="{{ detalle.Cantidad }}" required></td>
+                      <td><input type="text" name="precio[]" class="form-control precio-input" value="{{ detalle.Id_producto.precio }}" readonly></td>
+                      <td><input type="text" name="subtotal[]" class="form-control subtotal-input" value="{{ detalle.Subtotal }}" readonly></td>
+                      <td class="text-center">
+                        <button type="button" class="btn btn-sm btn-outline-danger remove-row"><i class="bi bi-trash"></i></button>
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="mt-3 d-flex gap-2 align-items-center">
+                <button type="button" id="addItemBtn" class="btn btn-sm btn-outline-primary">
+                  <i class="bi bi-plus-circle me-1"></i> Agregar producto
+                </button>
+                <small class="text-muted">Pulsa para añadir más productos.</small>
+              </div>
+            </div>
+
+            <!-- Método de pago -->
+            <div class="col-md-6 mt-4">
+              <label class="form-label fw-semibold">Método de pago</label>
+              <select name="metodo_pago" class="form-select">
+                {% for metodo, texto in venta.Metodo_pago_Choice %}
+                <option value="{{ metodo }}" {% if venta.metodo_pago == metodo %}selected{% endif %}>{{ texto }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <!-- Total -->
+            <div class="col-md-6 mt-4">
+              <label class="form-label fw-semibold">Total</label>
+              <div class="input-group">
+                <span class="input-group-text bg-light">COP</span>
+                <input type="text" name="total" id="ventaTotal" class="form-control fw-bold text-success" value="{{ venta.Monto }}" readonly>
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="col-12 mt-3">
+              <label class="form-label fw-semibold">Observaciones</label>
+              <textarea name="observaciones" class="form-control" rows="2">{{ venta.observaciones }}</textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="card-footer bg-light text-end py-3">
+          <a href="{% url 'Ventas' %}" class="btn btn-secondary me-2">
+            <i class="bi bi-x-circle me-1"></i> Cancelar
+          </a>
+          <button type="submit" class="btn btn-warning text-white">
+            <i class="bi bi-save2 me-1"></i> Actualizar venta
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- JS reutilizado -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const addItemBtn = document.getElementById("addItemBtn");
+  const ventaItemsBody = document.getElementById("ventaItemsBody");
+  const ventaTotal = document.getElementById("ventaTotal");
+
+  function calcularTotal() {
+    let total = 0;
+    document.querySelectorAll(".subtotal-input").forEach(input => {
+      total += parseFloat(input.value || 0);
+    });
+    ventaTotal.value = total.toFixed(2);
+  }
+
+  function actualizarFila(row) {
+    const productoSelect = row.querySelector(".producto-select");
+    const categoriaInput = row.querySelector(".categoria-input");
+    const precioInput = row.querySelector(".precio-input");
+    const cantidadInput = row.querySelector(".cantidad-input");
+    const subtotalInput = row.querySelector(".subtotal-input");
+
+    productoSelect.addEventListener("change", () => {
+      const option = productoSelect.selectedOptions[0];
+      const price = parseFloat(option.dataset.price || 0);
+      const categoria = option.dataset.categoria || "";
+      categoriaInput.value = categoria;
+      precioInput.value = price.toFixed(2);
+      subtotalInput.value = (price * cantidadInput.value).toFixed(2);
+      calcularTotal();
+    });
+
+    cantidadInput.addEventListener("input", () => {
+      const price = parseFloat(precioInput.value || 0);
+      subtotalInput.value = (price * cantidadInput.value).toFixed(2);
+      calcularTotal();
+    });
+
+    row.querySelector(".remove-row").addEventListener("click", () => {
+      row.remove();
+      calcularTotal();
+    });
+  }
+
+  document.querySelectorAll(".venta-item-row").forEach(actualizarFila);
+
+  addItemBtn.addEventListener("click", () => {
+    const newRow = ventaItemsBody.querySelector(".venta-item-row").cloneNode(true);
+    newRow.querySelectorAll("input, select").forEach(el => {
+      if (el.tagName === "INPUT") el.value = "";
+      if (el.tagName === "SELECT") el.selectedIndex = 0;
+    });
+    ventaItemsBody.appendChild(newRow);
+    actualizarFila(newRow);
+  });
+});
+</script>
+
+<!-- Estilos Responsivos -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    .card-header .d-flex {
+      flex-direction: column !important;
+      width: 100% !important;
+      gap: 0.5rem !important;
+    }
+
+    .card-header .input-group,
+    .card-header select,
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-footer .dropdown .btn {
+      width: auto;
+    }
+  }
+</style>
+
+{% endblock %}

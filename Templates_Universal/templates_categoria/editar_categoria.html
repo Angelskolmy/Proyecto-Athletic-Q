@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% block title %}Editar Categoría{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0"><i class="bi bi-pencil-square me-1"></i> Editar Categoría</h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Categorias' %}">Categorías</a></li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Editar Categoría #{{ categoria.Id_categoria }}</h5>
+            </div>
+
+            <form id="formEditarCategoria" method="POST">
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="nombreCategoria" class="form-label">Nombre</label>
+                        <input type="text" class="form-control" id="nombreCategoria" name="nombre" value="{{ categoria.Nombre }}" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="estadoCategoria" class="form-label">Estado</label>
+                        <select class="form-select" id="estadoCategoria" name="estado">
+                            <option value="Activo" {% if categoria.Estado == 'Activo' %}selected{% endif %}>Activo</option>
+                            <option value="Inactivo" {% if categoria.Estado == 'Inactivo' %}selected{% endif %}>Inactivo</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="card-footer text-end">
+                    <a href="{% url 'Categorias' %}" class="btn btn-secondary me-2">Cancelar</a>
+                    <button type="submit" class="btn btn-warning">Actualizar Categoría</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('formEditarCategoria').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    try {
+        const formData = new FormData(this);
+        
+        const response = await fetch("{% url 'categorias_edit' categoria.Id_categoria %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+        
+        if (response.ok) {
+            alert(data.message);
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            }
+        } else {
+            throw new Error(data.message || 'Error al actualizar la categoría');
+        }
+    } catch (error) {
+        alert(error.message);
+    }
+});
+</script>
+
+<!-- SCRIPT -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const buscarCategoria = document.getElementById('buscarCategoria');
+    const filas = document.querySelectorAll('table tbody tr');
+
+    buscarCategoria.addEventListener('input', function () {
+      const texto = buscarCategoria.value.toLowerCase();
+      filas.forEach(fila => {
+        const nombre = fila.cells[1].textContent.toLowerCase();
+        fila.style.display = nombre.includes(texto) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<!-- ESTILOS RESPONSIVOS -->
+<style>
+  @media (max-width: 768px) {
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 0.75rem !important;
+    }
+
+    .card-header .input-group {
+      width: 100% !important;
+      margin-left: 0 !important;
+    }
+
+    .card-header button {
+      width: 100% !important;
+    }
+
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th, table td {
+      white-space: nowrap;
+    }
+
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+    }
+  }
+</style>
+
+{% endblock %}

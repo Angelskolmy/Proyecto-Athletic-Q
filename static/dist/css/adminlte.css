@@ -84,7 +84,7 @@
   --bs-body-bg: #fff;
   --bs-body-bg-rgb: 255, 255, 255;
   --bs-emphasis-color: #000;
-  --bs-emphasis-color-rgb: 0, 0, 0;
+  --bs-emphasis-color-rgb: 240, 241, 242;
   --bs-secondary-color: rgba(33, 37, 41, 0.75);
   --bs-secondary-color-rgb: 33, 37, 41;
   --bs-secondary-bg: #e9ecef;
@@ -3884,7 +3884,7 @@ textarea.form-control-lg {
 .navbar {
   --bs-navbar-padding-x: 0;
   --bs-navbar-padding-y: 0.5rem;
-  --bs-navbar-color: rgba(var(--bs-emphasis-color-rgb), 0.65);
+  --bs-navbar-color: rgba(var(--bs-emphasis-color-rgb));
   --bs-navbar-hover-color: rgba(var(--bs-emphasis-color-rgb), 0.8);
   --bs-navbar-disabled-color: rgba(var(--bs-emphasis-color-rgb), 0.3);
   --bs-navbar-active-color: rgba(var(--bs-emphasis-color-rgb), 1);
@@ -13615,7 +13615,7 @@ body:not(.app-loaded) .app-footer {
 
 [data-bs-theme=dark].app-sidebar,
 [data-bs-theme=dark] .app-sidebar {
-  --lte-sidebar-hover-bg: rgba(255, 255, 255, 0.1);
+  --lte-sidebar-hover-bg: rgba(55, 55, 55, 0.121);
   --lte-sidebar-color: #c2c7d0;
   --lte-sidebar-hover-color: #fff;
   --lte-sidebar-active-color: #fff;

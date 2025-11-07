@@ -6,30 +6,30 @@
 :root {
   /* 🎯 Color principal */
   --color-primary: #b11226;       /* Rojo oscuro personalizado */
-  --color-primary-dark: #8f0e1f;
+  --color-primary-dark: #bbbbbb;
 
   /* 🌈 Colores secundarios más oscuros y sobrios */
-  --color-success: #1f6f43;       /* Verde más oscuro */
-  --color-success-dark: #155932;
+  --color-success: #247d4c;       /* Verde más oscuro */
+  --color-success-dark: #1a6d3e;
 
-  --color-warning: #d7a603;       /* Amarillo más oscuro */
-  --color-warning-dark: #c99803;
+  --color-warning: #f5bc02;       /* Amarillo más oscuro */
+  --color-warning-dark: #d9a405;
 
-  --color-info: #107d93;          /* Azul petróleo oscuro */
-  --color-info-dark: #157386;
+  --color-info: #138fa7;          /* Azul petróleo oscuro */
+  --color-info-dark: #1a8398;
 
-  --color-danger: #b11226;        /* Usa el rojo principal */
-  --color-danger-dark: #960d1f;
+  --color-danger: #c7152d;        /* Usa el rojo principal */
+  --color-danger-dark: #a60e23;
 
   --color-secondary: #495057;
   --color-light: #f8f9fa;
   --color-dark: #212529;
 
-  --color-navbar-bg: #f1f3f5; /* Gris claro elegante */ 
-  --color-sidebar-bg: #a40919; /* Sidebar rojo oscuro */ 
-  --color-sidebar-hover: #dc3545; /* Hover más claro */ 
+  --color-navbar-bg: #c7152d; /* Gris claro elegante */ 
+  --color-sidebar-bg: #f1f3f5; /* Sidebar rojo oscuro */ 
+  --color-sidebar-hover: #e11d31; /* Hover más claro */ 
   
-  --color-text: #212529; 
+  --color-text: #434950; 
   --color-text-light: #ffffff;
 }
 
@@ -105,18 +105,22 @@ body {
     SIDEBAR
    ================================ */
 
+.sidebar-brand {
+  background-color:#c7152d ;
+}
+
 .app-sidebar {
   background-color: var(--color-sidebar-bg) !important;
-  color: var(--color-text-light) !important;
+  color: var(--color-text) !important;
 }
 
 .app-sidebar .nav-link {
-  color: var(--color-text-light) !important;
+  color: var(--color-text) !important;
   transition: background-color 0.3s, color 0.3s;
 }
 
 .app-sidebar .nav-icon {
-  color: var(--color-text-light);
+  color: var(--color-text);
   font-size: 1.1rem;
   margin-right: 0.5rem;
 }
@@ -124,7 +128,7 @@ body {
 .app-sidebar .nav-link:hover,
 .app-sidebar .nav-link.active {
   background-color: var(--color-sidebar-hover);
-  color: var(--color-text-light) !important;
+  color: var(--color-text) !important;
 }
 
 .app-sidebar .nav-treeview .nav-link {
@@ -146,7 +150,7 @@ body {
 .app-sidebar .nav-header {
   font-size: 0.9rem !important;
   font-weight: 700;
-  color: #dddada !important; /* negro */
+  color: #303030 !important; /* negro */
   margin-top: 0.75rem;
   margin-bottom: 0.25rem;
   text-transform: uppercase;

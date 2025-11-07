@@ -31,16 +31,30 @@ Categorías
 
       <!-- Cabecera -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <!-- Botón Agregar -->
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarCategoria">
-          <i class="bi bi-plus-circle me-1"></i> Agregar Categoría
-        </button>
+          <!-- Botón Agregar a la izquierda -->
+          <div>
+              <a href="{% url 'categorias_create' %}" class="btn btn-success">
+                  <i class="bi bi-plus-circle me-1"></i> Agregar Categoría
+              </a>
+          </div>
 
-        <!-- Buscador -->
-        <div class="input-group input-group-sm" style="max-width: 270px; margin-left: auto;">
-          <input type="text" id="buscarCategoria" class="form-control" placeholder="Buscar categoría...">
-          <button class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
-        </div>
+          <!-- Form de búsqueda y selector a la derecha -->
+          <form method="GET" class="d-flex gap-2 ms-auto">
+              <div class="input-group input-group-sm">
+                  <input type="text" name="search" class="form-control" placeholder="Buscar categoría..." 
+                        value="{{ search_query }}" style="width: 200px;">
+                  <button type="submit" class="btn btn-outline-secondary">
+                      <i class="bi bi-search"></i>
+                  </button>
+              </div>
+              
+              <select name="items_per_page" class="form-select form-select-sm" style="width: auto;" 
+                      onchange="this.form.submit()">
+                  <option value="10" {% if items_per_page == '10' %}selected{% endif %}>10 por página</option>
+                  <option value="25" {% if items_per_page == '25' %}selected{% endif %}>25 por página</option>
+                  <option value="50" {% if items_per_page == '50' %}selected{% endif %}>50 por página</option>
+              </select>
+          </form>
       </div>
 
       <!-- Tabla -->
@@ -62,12 +76,9 @@ Categorías
                 <td class="fw-semibold">{{ Carte.Nombre }}</td>
                 <td><span class="badge text-bg-success">{{ Carte.Estado }}</span></td>
                 <td>
-                  <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarCategoria" title="Editar">
-                    <i class="bi bi-pencil-fill"></i>
-                  </button>
-                  <button class="btn btn-sm btn-danger" title="Eliminar">
-                    <i class="bi bi-trash-fill"></i>
-                  </button>
+                    <a href="{% url 'categorias_edit' Carte.Id_categoria %}" class="btn btn-sm btn-warning me-1">
+                        <i class="bi bi-pencil-fill"></i>
+                    </a>
                 </td>
               </tr>
             </tbody> 
@@ -78,111 +89,45 @@ Categorías
 
       <!-- Footer -->
       <div class="card-footer d-flex justify-content-between align-items-center">
-        <ul class="pagination pagination-sm mb-0">
-          <li class="page-item"><a class="page-link" href="#">«</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">»</a></li>
-        </ul>
+          {% if Categorias.paginator.num_pages > 1 %}
+          <ul class="pagination pagination-sm mb-0">
+              {% if Categorias.has_previous %}
+                  <li class="page-item">
+                      <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">«</a>
+                  </li>
+              {% endif %}
 
-        <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
-        </div>
+              {% for num in Categorias.paginator.page_range %}
+                  {% if Categorias.number == num %}
+                      <li class="page-item active">
+                          <span class="page-link">{{ num }}</span>
+                      </li>
+                  {% elif num > Categorias.number|add:'-3' and num < Categorias.number|add:'3' %}
+                      <li class="page-item">
+                          <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">
+                              {{ num }}
+                          </a>
+                      </li>
+                  {% endif %}
+              {% endfor %}
+
+              {% if Categorias.has_next %}
+                  <li class="page-item">
+                      <a class="page-link" href="?page={{ Categorias.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">»</a>
+                  </li>
+              {% endif %}
+          </ul>
+          {% endif %}
+
+          <div class="flex-grow-1 text-center">
+              <span class="text-muted small">
+                  Mostrando {{ start_index }}–{{ end_index }} de {{ total_items }} registros
+              </span>
+          </div>
       </div>
     </div>
   </div>
 </div>
-
-<!-- MODAL AGREGAR CATEGORÍA -->
-<div class="modal fade" id="modalAgregarCategoria" tabindex="-1" aria-labelledby="modalAgregarCategoriaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-success text-white py-2">
-        <h5 class="modal-title" id="modalAgregarCategoriaLabel">
-          <i class="bi bi-tag-plus me-2"></i>Agregar Categoría
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <form method="POST">
-        {% csrf_token %}
-        <div class="modal-body p-3">
-          <div class="mb-3">
-            <label for="nombreCategoria" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="nombreCategoria" name="nombre" required>
-          </div>
-          <div class="mb-3">
-            <label for="descripcionCategoria" class="form-label">Descripción</label>
-            <textarea class="form-control" id="descripcionCategoria" name="descripcion" rows="2"></textarea>
-          </div>
-        </div>
-
-        <div class="modal-footer py-2">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success btn-sm">Guardar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- MODAL EDITAR CATEGORÍA -->
-<div class="modal fade" id="modalEditarCategoria" tabindex="-1" aria-labelledby="modalEditarCategoriaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-warning py-2">
-        <h5 class="modal-title text-dark" id="modalEditarCategoriaLabel">
-          <i class="bi bi-pencil-square me-2"></i>Editar Categoría
-        </h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <form method="POST">
-        {% csrf_token %}
-        <input type="hidden" id="editCategoriaId" name="id">
-        <div class="modal-body p-3">
-          <div class="mb-3">
-            <label for="editNombreCategoria" class="form-label">Nombre</label>
-            <input type="text" class="form-control" id="editNombreCategoria" name="nombre" required>
-          </div>
-          <div class="mb-3">
-            <label for="editDescripcionCategoria" class="form-label">Descripción</label>
-            <textarea class="form-control" id="editDescripcionCategoria" name="descripcion" rows="2"></textarea>
-          </div>
-          <div class="mb-3">
-            <label for="editEstadoCategoria" class="form-label">Estado</label>
-            <select class="form-select" id="editEstadoCategoria" name="estado">
-              <option value="activo">Activo</option>
-              <option value="inactivo">Inactivo</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="modal-footer py-2">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-          <button type="submit" class="btn btn-warning btn-sm text-dark">Actualizar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- SCRIPT -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const buscarCategoria = document.getElementById('buscarCategoria');
-    const filas = document.querySelectorAll('table tbody tr');
-
-    buscarCategoria.addEventListener('input', function () {
-      const texto = buscarCategoria.value.toLowerCase();
-      filas.forEach(fila => {
-        const nombre = fila.cells[1].textContent.toLowerCase();
-        fila.style.display = nombre.includes(texto) ? '' : 'none';
-      });
-    });
-  });
-</script>
 
 <!-- ESTILOS RESPONSIVOS -->
 <style>
