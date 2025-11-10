@@ -115,10 +115,12 @@ Membresías
                      class="btn btn-sm btn-info me-1" title="Ver Detalles">
                     <i class="bi bi-eye-fill"></i>
                   </a>
+                  {%if perms.Membresias.change_membresia %}
                   <a href="{% url 'membresias_edit' artMemb.Id_membresia %}" 
                      class="btn btn-sm btn-warning me-1" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
+                  {% endif %}
                 </td>
               </tr>
             {% empty %}

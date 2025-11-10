@@ -10,8 +10,9 @@ from .models import Membresia
 from .forms import MembresiaForm
 from Empleados.models import User_Empleados
 from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required
 
-
+@login_required(login_url='login')
 
 @transaction.atomic
 def ListarMembresias(request):  
@@ -105,6 +106,7 @@ def CrearMembresia(request):
     return render(request, 'templates_membresias/crear_membresias.html', context)
 
 @transaction.atomic
+@permission_required('Membresias.change_membresia', login_url='Membresias')
 def EditarMembresia(request, id):
     membresia = get_object_or_404(Membresia, Id_membresia=id)
     
