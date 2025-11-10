@@ -36,6 +36,7 @@ INSTALLED_APPS = [
     'Pago_Membresia',     
     'Membresias',
     'Detalle_venta',
+    'Core_session',
     'Ventas',
     'Asistencia',
     'Empleados',
