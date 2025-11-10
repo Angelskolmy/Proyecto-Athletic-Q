@@ -1,0 +1,282 @@
+{% extends 'base.html' %}
+{% block title %}Editar Usuario{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0"><i class="bi bi-person-gear me-1"></i> Editar Usuario</h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Empleados' %}">Usuarios</a></li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Editar Información del Usuario</h5>
+            </div>
+
+            <form id="formEditarUsuario" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Imagen Actual -->
+                        {% if empleado.empleados_img %}
+                        <div class="col-12 mb-3">
+                            <div class="text-center">
+                                <img src="{{ empleado.empleados_img.url }}" alt="Foto actual" 
+                                     class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
+                                <p class="text-muted mt-2">Imagen actual</p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Información Personal -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Información Personal</h6>
+                            
+                            <div class="mb-3">
+                                {{ form.first_name.label_tag }}
+                                {{ form.first_name }}
+                                {% if form.first_name.errors %}
+                                    <div class="text-danger">{{ form.first_name.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.last_name.label_tag }}
+                                {{ form.last_name }}
+                                {% if form.last_name.errors %}
+                                    <div class="text-danger">{{ form.last_name.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.Cedula.label_tag }}
+                                {{ form.Cedula }}
+                                {% if form.Cedula.errors %}
+                                    <div class="text-danger">{{ form.Cedula.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.Sexo.label_tag }}
+                                {{ form.Sexo }}
+                                {% if form.Sexo.errors %}
+                                    <div class="text-danger">{{ form.Sexo.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Información de Cuenta -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">Información de Cuenta</h6>
+                            
+                            <div class="mb-3">
+                                {{ form.username.label_tag }}
+                                {{ form.username }}
+                                {% if form.username.errors %}
+                                    <div class="text-danger">{{ form.username.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.password.label_tag }}
+                                {{ form.password }}
+                                <small class="form-text text-muted">Deja en blanco para mantener la contraseña actual</small>
+                                {% if form.password.errors %}
+                                    <div class="text-danger">{{ form.password.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                                {% if form.email.errors %}
+                                    <div class="text-danger">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.Eps.label_tag }}
+                                {{ form.Eps }}
+                                {% if form.Eps.errors %}
+                                    <div class="text-danger">{{ form.Eps.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Imagen, Estado y Huella -->
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                {{ form.empleados_img.label_tag }}
+                                {{ form.empleados_img }}
+                                {% if form.empleados_img.errors %}
+                                    <div class="text-danger">{{ form.empleados_img.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                {{ form.is_active.label_tag }}
+                                {{ form.is_active }}
+                                {% if form.is_active.errors %}
+                                    <div class="text-danger">{{ form.is_active.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Campo de Huella -->
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                {{ form.Huella_id.label_tag }}
+                                {{ form.Huella_id }}
+                                {% if empleado.Huella_id %}
+                                    <small class="form-text text-success">✅ Huella registrada</small>
+                                {% else %}
+                                    <small class="form-text text-warning">⏳ Huella pendiente</small>
+                                {% endif %}
+                                {% if form.Huella_id.errors %}
+                                    <div class="text-danger">{{ form.Huella_id.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Roles y Permisos -->
+                    <div class="row">
+                        <div class="col-12">
+                            <hr>
+                            <h6 class="text-primary mb-3">Roles y Permisos</h6>
+                        </div>
+                        
+                        <!-- Grupo/Rol -->
+                        <div class="col-md-12 mb-3">
+                            <div class="mb-3">
+                                {{ form.groups.label_tag }}
+                                {{ form.groups }}
+                                <small class="form-text text-muted">Rol actual del usuario</small>
+                                {% if form.groups.errors %}
+                                    <div class="text-danger">{{ form.groups.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-end">
+                    <a href="{% url 'Empleados' %}" class="btn btn-secondary me-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Cambios
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+document.getElementById('formEditarUsuario').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    try {
+        const formData = new FormData(this);
+        
+        const response = await fetch("{% url 'empleados_edit' empleado.id %}", {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: formData
+        });
+
+        const data = await response.json();
+        
+        if (response.ok && data.success) {
+            alert(data.message);
+            if (data.redirect) {
+                window.location.href = data.redirect;
+            }
+        } else {
+            throw new Error(data.message || 'Error al actualizar el usuario');
+        }
+    } catch (error) {
+        alert(error.message);
+    }
+});
+</script>
+
+<style>
+  /* --- RESPONSIVE SOLO PARA MÓVILES --- */
+  @media (max-width: 768px) {
+
+    /* Header apilado */
+    .card-header {
+      flex-direction: column !important;
+      align-items: stretch !important;
+    }
+
+    .card-header .btn {
+      width: 100% !important;
+    }
+
+    .card-header .d-flex.ms-auto {
+      width: 100% !important;
+      flex-direction: column !important;
+      align-items: stretch !important;
+      gap: 0.5rem !important;
+    }
+
+    .card-header select,
+    .card-header .input-group {
+      width: 100% !important;
+    }
+
+    /* Tabla scrollable */
+    .table-responsive {
+      overflow-x: auto !important;
+    }
+
+    table th,
+    table td {
+      white-space: nowrap;
+    }
+
+    /* Footer adaptable */
+    .card-footer {
+      flex-direction: column !important;
+      align-items: center !important;
+      text-align: center;
+      gap: 0.75rem;
+    }
+
+    .card-footer ul.pagination {
+      justify-content: center;
+    }
+
+    .card-footer .dropdown {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .card-footer .dropdown .btn {
+      width: auto;
+    }
+  }
+</style>
+{% endblock %}
+

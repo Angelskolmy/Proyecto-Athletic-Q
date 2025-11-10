@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Membresía{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0"><i class="bi bi-plus-circle me-1"></i> Nueva Membresía</h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Membresias' %}">Membresías</a></li>
+                    <li class="breadcrumb-item active">Crear</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">Información de la Membresía</h5>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Cliente -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.id_usuario.label_tag }}
+                                {{ form.id_usuario }}
+                                {% if form.id_usuario.errors %}
+                                    <div class="text-danger">{{ form.id_usuario.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Duración -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.Duracion_meses.label_tag }}
+                                {{ form.Duracion_meses }}
+                                {% if form.Duracion_meses.errors %}
+                                    <div class="text-danger">{{ form.Duracion_meses.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Precio -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.Precio.label_tag }}
+                                {{ form.Precio }}
+                                {% if form.Precio.errors %}
+                                    <div class="text-danger">{{ form.Precio.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Estado -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                {{ form.Estado.label_tag }}
+                                {{ form.Estado }}
+                                {% if form.Estado.errors %}
+                                    <div class="text-danger">{{ form.Estado.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información adicional -->
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <strong>Información:</strong> La fecha de inicio se establecerá automáticamente como hoy, 
+                                y la fecha de fin se calculará según la duración seleccionada.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-end">
+                    <a href="{% url 'Membresias' %}" class="btn btn-secondary me-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Crear Membresía
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+@media (max-width: 768px) {
+    .card-footer {
+        text-align: center !important;
+    }
+    
+    .card-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-footer .btn:last-child {
+        margin-bottom: 0;
+    }
+}
+</style>
+{% endblock %}

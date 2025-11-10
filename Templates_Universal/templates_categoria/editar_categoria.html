@@ -6,11 +6,10 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-8">
-                <h3 class="mb-0"><i class="bi bi-pencil-square me-1"></i> Editar Categoría</h3>
+                <h3 class="mb-0">Editar Categoría</h3>
             </div>
             <div class="col-sm-4">
                 <ol class="breadcrumb float-sm-end">
-                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'Categorias' %}">Categorías</a></li>
                     <li class="breadcrumb-item active">Editar</li>
                 </ol>
@@ -23,28 +22,36 @@
     <div class="container-fluid">
         <div class="card shadow-sm">
             <div class="card-header">
-                <h5 class="mb-0">Editar Categoría #{{ categoria.Id_categoria }}</h5>
+                <h5 class="mb-0">Formulario de Edición</h5>
             </div>
 
             <form id="formEditarCategoria" method="POST">
                 {% csrf_token %}
                 <div class="card-body">
                     <div class="mb-3">
-                        <label for="nombreCategoria" class="form-label">Nombre</label>
-                        <input type="text" class="form-control" id="nombreCategoria" name="nombre" value="{{ categoria.Nombre }}" required>
+                        {{ form.Nombre.label_tag }}
+                        {{ form.Nombre }}
+                        {% if form.Nombre.errors %}
+                            <div class="text-danger">{{ form.Nombre.errors }}</div>
+                        {% endif %}
                     </div>
+
                     <div class="mb-3">
-                        <label for="estadoCategoria" class="form-label">Estado</label>
-                        <select class="form-select" id="estadoCategoria" name="estado">
-                            <option value="Activo" {% if categoria.Estado == 'Activo' %}selected{% endif %}>Activo</option>
-                            <option value="Inactivo" {% if categoria.Estado == 'Inactivo' %}selected{% endif %}>Inactivo</option>
-                        </select>
+                        {{ form.Estado.label_tag }}
+                        {{ form.Estado }}
+                        {% if form.Estado.errors %}
+                            <div class="text-danger">{{ form.Estado.errors }}</div>
+                        {% endif %}
                     </div>
                 </div>
 
-                <div class="card-footer text-end">
-                    <a href="{% url 'Categorias' %}" class="btn btn-secondary me-2">Cancelar</a>
-                    <button type="submit" class="btn btn-warning">Actualizar Categoría</button>
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Cambios
+                    </button>
+                    <a href="{% url 'Categorias' %}" class="btn btn-secondary">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
                 </div>
             </form>
         </div>
@@ -68,7 +75,7 @@ document.getElementById('formEditarCategoria').addEventListener('submit', async 
 
         const data = await response.json();
         
-        if (response.ok) {
+        if (response.ok && data.success) {
             alert(data.message);
             if (data.redirect) {
                 window.location.href = data.redirect;
@@ -80,22 +87,6 @@ document.getElementById('formEditarCategoria').addEventListener('submit', async 
         alert(error.message);
     }
 });
-</script>
-
-<!-- SCRIPT -->
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
-    const buscarCategoria = document.getElementById('buscarCategoria');
-    const filas = document.querySelectorAll('table tbody tr');
-
-    buscarCategoria.addEventListener('input', function () {
-      const texto = buscarCategoria.value.toLowerCase();
-      filas.forEach(fila => {
-        const nombre = fila.cells[1].textContent.toLowerCase();
-        fila.style.display = nombre.includes(texto) ? '' : 'none';
-      });
-    });
-  });
 </script>
 
 <!-- ESTILOS RESPONSIVOS -->

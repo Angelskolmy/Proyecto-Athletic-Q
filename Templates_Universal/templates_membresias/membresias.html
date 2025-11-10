@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 Membresías
@@ -29,29 +30,47 @@ Membresías
   <div class="container-fluid">
     <div class="card shadow-sm border-0">
 
-      <!-- Header -->
+      <!-- Header con filtros y buscador -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <!-- Botón Agregar -->
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarMembresia">
+        <!-- Botón Agregar - ACTUALIZADO -->
+        <a href="{% url 'membresias_create' %}" class="btn btn-success">
           <i class="bi bi-plus-circle me-1"></i> Nueva Membresía
-        </button>
+        </a>
 
-        <!-- Filtro + Buscador -->
-        <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
-          <select id="filtroCategoria" class="form-select form-select-sm" style="width: 180px;">
-            <option selected>Filtrar por...</option>
-            <option value="activa">Activa</option>
-            <option value="vencida">Vencida</option>
-            <option value="porvencer">Por vencer</option>
+        <!-- Filtros y Buscador -->
+        <form method="GET" class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+          <!-- Filtro por Estado -->
+          <select name="filter" class="form-select form-select-sm" style="width: 180px;" onchange="this.form.submit()">
+            <option value="">Todos los estados</option>
+            <option value="activa" {% if filter_type == 'activa' %}selected{% endif %}>Activas</option>
+            <option value="vencida" {% if filter_type == 'vencida' %}selected{% endif %}>Vencidas</option>
+            <option value="porvencer" {% if filter_type == 'porvencer' %}selected{% endif %}>Por vencer</option>
           </select>
 
+          <!-- Buscador -->
           <div class="input-group input-group-sm" style="width: 250px;">
-            <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar cliente...">
-            <button class="btn btn-outline-secondary" type="button">
+            <input type="text" name="search" class="form-control" 
+                   placeholder="Buscar cliente..." 
+                   value="{{ search_query }}">
+            <button class="btn btn-outline-secondary" type="submit">
               <i class="bi bi-search"></i>
             </button>
           </div>
-        </div>
+
+          <!-- Botón limpiar filtros -->
+          {% if search_query or filter_type %}
+          <a href="{% url 'Membresias' %}" class="btn btn-outline-danger btn-sm" title="Limpiar filtros">
+            <i class="bi bi-x-circle"></i>
+          </a>
+          {% endif %}
+
+          <!-- Selector de elementos por página -->
+          <select name="items_per_page" class="form-select form-select-sm" style="width: 120px;" onchange="this.form.submit()">
+            <option value="10" {% if items_per_page == '10' %}selected{% endif %}>10 por página</option>
+            <option value="25" {% if items_per_page == '25' %}selected{% endif %}>25 por página</option>
+            <option value="50" {% if items_per_page == '50' %}selected{% endif %}>50 por página</option>
+          </select>
+        </form>
       </div>
 
       <!-- Tabla -->
@@ -61,55 +80,121 @@ Membresías
             <thead class="table-light">
               <tr>
                 <th>ID</th>
+                <th>Cedula</th>
                 <th>Cliente</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
                 <th>Estado</th> 
-                <th>Duracion</th>
+                <th>Duración</th>
+                <th>Precio</th>
                 <th>Acciones</th>
               </tr>
             </thead> 
-            {% for artMemb in AllMebs %}
             <tbody>
+            {% for artMemb in AllMebs %}
               <tr>
                 <td>{{ artMemb.Id_membresia }}</td>
-                <td class="fw-semibold">{{ artMemb.id_usuario.first_name }}</td>
-                <td>{{ artMemb.Fecha_inicio }}</td>
-                <td>{{ artMemb.Fecha_fin }}</td>
-                <td><span class="badge text-bg-success">{{ artMemb.Estado }}</span></td> 
-                <td>{{ artMemb.Duracion_meses }} meses</td>
+                <td>{{ artMemb.id_usuario.Cedula }}</td>
+                <td>{{ artMemb.id_usuario.first_name }} {{ artMemb.id_usuario.last_name }}</td>
+                <td>{{ artMemb.Fecha_inicio|date:"d/m/Y" }}</td>
+                <td>{{ artMemb.Fecha_fin|date:"d/m/Y" }}</td>
                 <td>
-                  <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalVerMembresia" title="Ver Detalle">
+                  {% now "Y-m-d" as today %}
+                  {% if artMemb.Estado == 'Activo' and artMemb.Fecha_fin|date:"Y-m-d" >= today %}
+                    <span class="badge bg-success">{{ artMemb.Estado }}</span>
+                  {% elif artMemb.Fecha_fin|date:"Y-m-d" < today %}
+                    <span class="badge bg-danger">Vencida</span>
+                  {% else %}
+                    <span class="badge bg-secondary">{{ artMemb.Estado }}</span>
+                  {% endif %}
+                </td> 
+                <td>{{ artMemb.Duracion_meses }} meses</td>
+                <td>${{ artMemb.Precio|floatformat:2 }}</td>
+                <td>
+                  <a href="{% url 'membresias_detail' artMemb.Id_membresia %}" 
+                     class="btn btn-sm btn-info me-1" title="Ver Detalles">
                     <i class="bi bi-eye-fill"></i>
-                  </button>
-                  <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarMembresia" title="Editar">
+                  </a>
+                  <a href="{% url 'membresias_edit' artMemb.Id_membresia %}" 
+                     class="btn btn-sm btn-warning me-1" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
-                  </button>
-                  <button class="btn btn-sm btn-danger" title="Eliminar">
-                    <i class="bi bi-trash-fill"></i>
-                  </button>
+                  </a>
                 </td>
               </tr>
-            </tbody> 
+            {% empty %}
+              <tr>
+                <td colspan="8" class="text-center text-muted py-4">
+                  <i class="bi bi-inbox display-1"></i>
+                  <p class="mt-2">
+                    {% if search_query or filter_type %}
+                      No se encontraron membresías que coincidan con los criterios de búsqueda.
+                    {% else %}
+                      No se encontraron membresías registradas.
+                    {% endif %}
+                  </p>
+                  {% if search_query or filter_type %}
+                  <a href="{% url 'Membresias' %}" class="btn btn-sm btn-outline-primary">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Limpiar filtros
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
             {% endfor %}
+            </tbody> 
           </table>
         </div>
       </div>
 
-      <!-- Footer -->
+      <!-- Footer con paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
+        {% if AllMebs.paginator.num_pages > 1 %}
+        <!-- Paginación -->
         <ul class="pagination pagination-sm mb-0">
-          <li class="page-item"><a class="page-link" href="#">«</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">»</a></li>
-        </ul>
+          {% if AllMebs.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">«</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ AllMebs.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">‹</a>
+            </li>
+          {% endif %}
 
+          {% for num in AllMebs.paginator.page_range %}
+            {% if AllMebs.number == num %}
+              <li class="page-item active">
+                <span class="page-link">{{ num }}</span>
+              </li>
+            {% elif num > AllMebs.number|add:'-3' and num < AllMebs.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">
+                  {{ num }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if AllMebs.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ AllMebs.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">›</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ AllMebs.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">»</a>
+            </li>
+          {% endif %}
+        </ul>
+        {% endif %}
+
+        <!-- Texto centrado -->
         <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+          <span class="text-muted small">
+            Mostrando {{ AllMebs.start_index }}–{{ AllMebs.end_index }} de {{ total_items }} registros
+            {% if search_query or filter_type %}
+              (filtrados)
+            {% endif %}
+          </span>
         </div>
 
+        <!-- Dropdown Export -->
         <div class="dropdown">
           <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
             Exportar
@@ -120,146 +205,6 @@ Membresías
           </ul>
         </div>
       </div>
-    </div>
-  </div>
-</div>
-
-<!-- MODALES -->
-<!-- Ver Membresía -->
-<div class="modal fade" id="modalVerMembresia" tabindex="-1" aria-labelledby="modalVerMembresiaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-info text-white py-2">
-        <h5 class="modal-title" id="modalVerMembresiaLabel"><i class="bi bi-eye-fill me-2"></i>Detalle de Membresía</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <div class="modal-body small">
-        <div class="row mb-3">
-          <div class="col-md-6"><strong>Cliente:</strong> <span class="text-muted">Juan Pérez</span></div>
-          <div class="col-md-6"><strong>Tipo:</strong> <span class="text-muted">Mensual</span></div>
-          <div class="col-md-6"><strong>Fecha Inicio:</strong> <span class="text-muted">01/09/2025</span></div>
-          <div class="col-md-6"><strong>Fecha Fin:</strong> <span class="text-muted">30/09/2025</span></div>
-          <div class="col-md-6"><strong>Estado:</strong> <span class="badge text-bg-success">Activa</span></div>
-          <div class="col-md-6"><strong>Observaciones:</strong> <span class="text-muted">Cliente frecuente.</span></div>
-        </div>
-      </div>
-
-      <div class="modal-footer py-2">
-        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
-          <i class="bi bi-x-circle me-1"></i> Cerrar
-        </button>
-        <button type="button" class="btn btn-outline-info btn-sm">
-          <i class="bi bi-printer me-1"></i> Imprimir
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Agregar Membresía -->
-<div class="modal fade" id="modalAgregarMembresia" tabindex="-1" aria-labelledby="modalAgregarMembresiaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-success text-white py-2">
-        <h5 class="modal-title"><i class="bi bi-plus-circle me-2"></i>Nueva Membresía</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <form method="POST">
-        {% csrf_token %}
-        <div class="modal-body p-3">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Cliente</label>
-              <select class="form-select" name="cliente" required>
-                <option selected disabled>Seleccione un cliente...</option>
-                <option>Juan Pérez</option>
-                <option>Laura Gómez</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Tipo</label>
-              <select class="form-select" name="tipo" required>
-                <option selected disabled>Seleccione...</option>
-                <option>Mensual</option>
-                <option>Trimestral</option>
-                <option>Anual</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Fecha de Inicio</label>
-              <input type="date" class="form-control" name="fecha_inicio" required>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Fecha de Fin</label>
-              <input type="date" class="form-control" name="fecha_fin" required>
-            </div>
-            <div class="col-12">
-              <label class="form-label">Observaciones</label>
-              <textarea class="form-control" rows="2" name="observaciones"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer py-2">
-          <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-          <button class="btn btn-success btn-sm" type="submit">Guardar</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- Editar Membresía -->
-<div class="modal fade" id="modalEditarMembresia" tabindex="-1" aria-labelledby="modalEditarMembresiaLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-warning py-2">
-        <h5 class="modal-title text-dark"><i class="bi bi-pencil-square me-2"></i>Editar Membresía</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <form method="POST">
-        {% csrf_token %}
-        <div class="modal-body p-3">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label class="form-label">Cliente</label>
-              <input type="text" class="form-control" value="Juan Pérez" readonly>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Tipo</label>
-              <select class="form-select">
-                <option>Mensual</option>
-                <option>Trimestral</option>
-                <option>Anual</option>
-              </select>
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Fecha de Inicio</label>
-              <input type="date" class="form-control" value="2025-09-01">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Fecha de Fin</label>
-              <input type="date" class="form-control" value="2025-09-30">
-            </div>
-            <div class="col-md-6">
-              <label class="form-label">Estado</label>
-              <select class="form-select">
-                <option>Activa</option>
-                <option>Vencida</option>
-                <option>Por vencer</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer py-2">
-          <button class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
-          <button class="btn btn-warning btn-sm text-dark" type="submit">Actualizar</button>
-        </div>
-      </form>
     </div>
   </div>
 </div>
@@ -280,7 +225,7 @@ Membresías
 
     .card-header select,
     .card-header .input-group,
-    .card-header button {
+    .card-header a.btn {
       width: 100% !important;
     }
 

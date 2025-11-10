@@ -48,7 +48,12 @@ class User_Empleados(AbstractUser):
 
     Cedula = models.IntegerField(unique=True, null=True, blank=True, db_column='Cedula')
 
-    empleados_img = models.CharField(max_length=100, null=True, blank=True, db_column='empleados_img')
+    empleados_img = models.ImageField(
+        upload_to='usuarios/',
+        null=True, 
+        blank=True,
+        db_column='empleados_img'
+    )
 
     Huella_id = models.IntegerField(null=True, blank=True, db_column='Huella_id')
 

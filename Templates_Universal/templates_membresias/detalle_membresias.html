@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Detalle de Membresía{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0"><i class="bi bi-eye me-1"></i> Detalle de Membresía</h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Membresias' %}">Membresías</a></li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        
+        <!-- Card Principal de Información -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="bi bi-card-text me-2"></i>Membresía #{{ membresia.Id_membresia }}
+                </h5>
+                <span class="badge bg-{{ estado_clase }} fs-6">{{ estado_visual }}</span>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <!-- Información del Cliente -->
+                    <div class="col-lg-6">
+                        <h6 class="text-primary mb-3">
+                            <i class="bi bi-person-circle me-2"></i>Información del Cliente
+                        </h6>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Nombre:</strong></div>
+                            <div class="col-sm-8">{{ membresia.id_usuario.first_name }} {{ membresia.id_usuario.last_name }}</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Cédula:</strong></div>
+                            <div class="col-sm-8">{{ membresia.id_usuario.Cedula|default:'No registrada' }}</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Email:</strong></div>
+                            <div class="col-sm-8">{{ membresia.id_usuario.email|default:'No registrado' }}</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Estado Cliente:</strong></div>
+                            <div class="col-sm-8">
+                                <span class="badge {% if membresia.id_usuario.is_active %}bg-success{% else %}bg-danger{% endif %}">
+                                    {% if membresia.id_usuario.is_active %}Activo{% else %}Inactivo{% endif %}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Información de la Membresía -->
+                    <div class="col-lg-6">
+                        <h6 class="text-primary mb-3">
+                            <i class="bi bi-calendar-check me-2"></i>Detalles de la Membresía
+                        </h6>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>ID Membresía:</strong></div>
+                            <div class="col-sm-8">{{ membresia.Id_membresia }}</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Precio:</strong></div>
+                            <div class="col-sm-8">
+                                <span class="text-success fw-bold">${{ membresia.Precio|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Duración:</strong></div>
+                            <div class="col-sm-8">{{ membresia.Duracion_meses }} meses</div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Estado:</strong></div>
+                            <div class="col-sm-8">
+                                <span class="badge bg-{{ estado_clase }}">{{ estado_visual }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card de Fechas y Progreso -->
+        <div class="row">
+            <!-- Fechas -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-calendar-range me-2"></i>Información de Fechas
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <i class="bi bi-calendar-plus display-6 text-success"></i>
+                                    <h6 class="mt-2">Fecha de Inicio</h6>
+                                    <p class="text-muted">{{ membresia.Fecha_inicio|date:"d/m/Y" }}</p>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="text-center">
+                                    <i class="bi bi-calendar-x display-6 {% if dias_restantes > 0 %}text-warning{% else %}text-danger{% endif %}"></i>
+                                    <h6 class="mt-2">Fecha de Fin</h6>
+                                    <p class="text-muted">{{ membresia.Fecha_fin|date:"d/m/Y" }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <hr>
+                        
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <h5 class="text-primary">{{ dias_transcurridos|default:"0" }}</h5>
+                                <small class="text-muted">Días transcurridos</small>
+                            </div>
+                            <div class="col-6">
+                                <h5 class="{% if dias_restantes > 7 %}text-success{% elif dias_restantes > 0 %}text-warning{% else %}text-danger{% endif %}">
+                                    {{ dias_restantes|default:"0" }}
+                                </h5>
+                                <small class="text-muted">Días restantes</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progreso CON CHART.JS -->
+            <div class="col-lg-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-graph-up me-2"></i>Progreso de la Membresía
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- GRÁFICO DE CHART.JS -->
+                        <div class="text-center mb-3">
+                            <div style="position: relative; width: 200px; height: 200px; margin: 0 auto;">
+                                <canvas id="progressChart" width="200" height="200"></canvas>
+                                <!-- Texto central del porcentaje -->
+                                <div id="chartCenterText" style="
+                                    position: absolute;
+                                    top: 50%;
+                                    left: 50%;
+                                    transform: translate(-50%, -50%);
+                                    font-size: 1.5rem;
+                                    font-weight: bold;
+                                    color: #007bff;
+                                    pointer-events: none;
+                                ">
+                                    {{ progreso_porcentaje|default:0 }}%
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row text-center">
+                            <div class="col-12">
+                                {% if dias_restantes > 7 %}
+                                    <div class="alert alert-success">
+                                        <i class="bi bi-check-circle me-2"></i>
+                                        <strong>Membresía Vigente</strong><br>
+                                        <small>La membresía está activa y en buen estado</small>
+                                    </div>
+                                {% elif dias_restantes > 0 %}
+                                    <div class="alert alert-warning">
+                                        <i class="bi bi-exclamation-triangle me-2"></i>
+                                        <strong>Próxima a Vencer</strong><br>
+                                        <small>Considere renovar la membresía pronto</small>
+                                    </div>
+                                {% else %}
+                                    <div class="alert alert-danger">
+                                        <i class="bi bi-x-circle me-2"></i>
+                                        <strong>Membresía Vencida</strong><br>
+                                        <small>La membresía ha expirado</small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="card shadow-sm">
+            <div class="card-footer text-center">
+                <a href="{% url 'Membresias' %}" class="btn btn-secondary me-2">
+                    <i class="bi bi-arrow-left"></i> Volver a la Lista
+                </a>
+                <a href="{% url 'membresias_edit' membresia.Id_membresia %}" class="btn btn-warning me-2">
+                    <i class="bi bi-pencil-fill"></i> Editar Membresía
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script para el gráfico circular -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Datos del progreso desde Django
+    const progreso = {{ progreso_porcentaje|default:0 }};
+    const restante = 100 - progreso;
+    
+    // Determinar color basado en el progreso
+    let color;
+    if (progreso < 30) {
+        color = '#28a745'; // Verde (success)
+    } else if (progreso < 80) {
+        color = '#ffc107'; // Amarillo (warning)  
+    } else {
+        color = '#dc3545'; // Rojo (danger)
+    }
+    
+    // Configuración del gráfico
+    const ctx = document.getElementById('progressChart').getContext('2d');
+    
+    const chart = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [progreso, restante],
+                backgroundColor: [
+                    color,           // Color del progreso
+                    '#e9ecef'       // Color del fondo (gris claro)
+                ],
+                borderWidth: 0,
+                cutout: '70%',  // Hace el círculo más grueso (equivalente al ::before del CSS)
+            }]
+        },
+        options: {
+            responsive: false,
+            maintainAspectRatio: true,
+            plugins: {
+                legend: {
+                    display: false  // Ocultar la leyenda
+                },
+                tooltip: {
+                    enabled: false  // Deshabilitar tooltips
+                }
+            },
+            animation: {
+                animateRotate: true,
+                duration: 1000,  // Animación de 1 segundo
+                easing: 'easeInOutQuart'
+            }
+        }
+    });
+    
+    // Actualizar el texto central dinámicamente
+    document.getElementById('chartCenterText').style.color = color;
+});
+</script>
+
+<style>
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .card-footer {
+        text-align: center !important;
+    }
+    
+    .card-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .card-footer .btn:last-child {
+        margin-bottom: 0;
+    }
+    
+    #progressChart {
+        width: 150px !important;
+        height: 150px !important;
+    }
+}
+
+/* Estilos para impresión */
+@media print {
+    .btn, .breadcrumb, .card-footer {
+        display: none !important;
+    }
+    
+    .card {
+        border: none !important;
+        box-shadow: none !important;
+    }
+}
+</style>
+
+{% endblock %}
