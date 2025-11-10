@@ -20,5 +20,5 @@ from Empleados import views
 
 urlpatterns = [
     path('Empleados/',views.listUsers, name='Empleados'),
-    path('Usuario_Gym/',views.UsersGym, name='GYM')
+    path('Usuario_Gym/',views.UsersGym, name='Perfil'),
 ]  

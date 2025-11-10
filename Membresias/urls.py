@@ -19,5 +19,6 @@ from django.urls import path,include
 from Membresias import views
 
 urlpatterns = [
-    path('Membresias', views.ListMebresias, name='Membresias')
+    path('Membresias', views.ListMebresias, name='Membresias'),
+    path('Membresias/editar/<int:id>/', views.EditarMembresia, name='EditMen'),
 ]  

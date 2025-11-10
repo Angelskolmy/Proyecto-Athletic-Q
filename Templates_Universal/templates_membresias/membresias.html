@@ -82,9 +82,10 @@ Membresías
                   <button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#modalVerMembresia" title="Ver Detalle">
                     <i class="bi bi-eye-fill"></i>
                   </button>
-                  <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarMembresia" title="Editar">
+                  <a href="{% url 'EditMen' artMemb.Id_membresia %}" 
+                     class="btn btn-sm btn-warning me-1" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
-                  </button>
+                  </a>
                   <button class="btn btn-sm btn-danger" title="Eliminar">
                     <i class="bi bi-trash-fill"></i>
                   </button>

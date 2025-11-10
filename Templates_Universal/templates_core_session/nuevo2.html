@@ -31,7 +31,7 @@
     </div>
     <div class="car1 d-flex align-items-center justify-content-center">
       <div class=" card2 p-4" style="width: 100%;">
-        <form method="POST" action="/LOGIN2/login2.html">
+        <form method="POST" action="{% url 'login'%}">
           {% csrf_token %}
           <div class="col-auto mb-4 flex">
             <label class="mb-2">Nueva contraseña</label>

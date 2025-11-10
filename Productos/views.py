@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
-@permission_required('Productos.view_producto', login_url='home')
+@permission_required('Productos.view_producto', login_url='GYM')
 def listarProductos (request): 
 
     AllProd= producto.objects.all()  

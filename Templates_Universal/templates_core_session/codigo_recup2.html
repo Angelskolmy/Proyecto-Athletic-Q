@@ -19,7 +19,7 @@
     <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
 
     <!-- CSS personalizado -->
-    <link rel="stylesheet" href="{% static 'codigo2.css' %}">
+<link rel="stylesheet" href="{% static 'css/codigo2.css' %}">
 
 
 
@@ -35,7 +35,7 @@
                 <p>Ingrese el código que le enviamos a su correo para autenticar su usuario</p>
             </div>
             <div class=" card2 p-4" style="width: 100%;">
-                <form method="POST" action="/LOGIN2/nuevo2.html">
+                <form method="POST" action="{% url 'nueva'%}">
                     {% csrf_token %}
                     <div class="col-auto mb-3 flex">
                         <div class="input-group">
@@ -57,7 +57,7 @@
                         </div>
                     </div>
                     <div class="d-flex align-items-center justify-content-center">
-                        <button type="submit" class="form-control boton2 boton me-1 "> <a href="/LOGIN2/recuperar2.html">Cancelar</a></button>
+                        <a href="{% url 'recuperar'%}" class="form-control boton2 boton me-1 ">Cancelar</a>
                         <button type="submit" class="form-control boton1 boton ms-1" >Buscar</button>
                     </div>
                 </form>
