@@ -5,7 +5,17 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import Group
 from .models import User_Empleados
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required
 from .forms import EmpleadoForm
+
+@login_required(login_url='login')
+@permission_required('Empleados.view_user_empleados', login_url='home')
+
+#@permission_required('Empleados.view_suariogym', login_url='home') este permiso puede hacer todo el view si ese usuario tiene ese permiso
+@permission_required('Empleados.usariogym', login_url='login') # este permiso solo sirve para mirar el perfil 
+def UsersGym(request): 
+    return render(request,'templates_perfil/perfil.html')
 
 @transaction.atomic
 def ListarEmpleados(request):

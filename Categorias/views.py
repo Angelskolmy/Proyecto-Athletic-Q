@@ -5,9 +5,17 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from .models import categoria
 from .forms import CrearCategoriaForm, EditarCategoriaForm
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='login')
 
 @transaction.atomic
 def ListarCategorias(request):
+    if not request.user.has_perm('Categorias.view_categoria'):
+        messages.warning(request, "No tienes permiso para acceder a esta sección.")
+        return redirect('Perfil')  # URL de perfil
+    
     # Obtener parámetros de búsqueda y paginación
     search_query = request.GET.get('search', '')
     page_number = request.GET.get('page', 1)

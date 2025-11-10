@@ -1,0 +1,134 @@
+body {
+    background: url('../img/body_login2.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 100vh;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end; /* A la derecha en pantallas grandes */
+    padding-right: 3%;
+    
+}
+
+h1{
+    font-size: 2rem;
+}
+a {
+    text-decoration: none;
+    padding: 0;
+    margin: 0;
+    color: rgb(255, 255, 255);
+}
+p{
+    color: #fff;
+    font-size: 1rem;
+}
+/* Contenedor del formulario */
+.login-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Tarjeta del formulario */
+.card2 {
+    border-radius: 10px;
+    background: transparent;
+    padding: 2.5rem;
+}
+
+/* Estructura interna */
+.car1 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 90%;
+    
+}
+
+.logo-img{
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+
+
+.input{
+    width: 100px;
+    border-radius: 5px;      /* Esquinas suaves */
+    padding: 6px 10px;       /* Espaciado interno */
+    font-size: 14px;
+   
+}
+
+.boton {
+    border: 1px solid white;
+    color: white;
+    width: 200px;
+    border-radius: 5px;      /* Esquinas suaves */
+    padding: px;       /* Espaciado interno */
+}
+.boton1 {
+    background-color: #860101;
+}
+.boton2{
+    background-color:#383838;
+}
+.color3{
+    color: #ffffff;
+}
+.color1:hover {
+    background-color: #c50000;
+}
+
+.icon-twitter {
+    color: #000000; /* Azul */
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 4px;
+    transition: 0.3s;
+}
+
+.icon-twitter:hover {
+    color: #fff;             /* Invertido */
+    background-color: #000000;
+}
+
+/* ===== RESPONSIVE ===== */
+
+/* Tablet y celular */
+@media (max-width: 992px) {
+    body {
+        
+        justify-content: center; /* Centrado en tablet */
+        
+        padding: 2rem;
+    }
+
+    .card2 {
+        background-color: rgba(78, 7, 0); /* rojo oscuro translúcido */
+        max-width: 300px;
+        padding: 2rem;
+    }
+}
+
+/* Celulares pequeños */
+@media (max-width: 576px) {
+    body {
+        background-position: center;
+    }
+    
+    .card2 {
+        background-color: rgba(78, 7, 0); /* rojo oscuro translúcido */
+        width: 100%;
+        padding: 1.5rem;
+    }
+
+    .logo {
+        width: 60px;
+    }
+}

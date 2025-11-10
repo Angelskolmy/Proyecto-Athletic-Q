@@ -3,6 +3,7 @@ from django.http import JsonResponse, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 from django.utils import timezone
 from django.apps import apps
 
@@ -12,6 +13,9 @@ from Detalle_venta.models import Detalle_Venta
 from Productos.models import producto
 from Empleados.models import User_Empleados
 from Categorias.models import categoria
+
+@login_required(login_url='login')
+@permission_required('Ventas.view_venta', login_url='home')
 
 @transaction.atomic
 def ListarVentas(request):
@@ -150,3 +154,11 @@ def EditarVentas(request, id):
         'categorias': categorias,
         'now': timezone.now(),
     })
+@login_required(login_url='login')
+@permission_required('Ventas.view_venta', login_url='home')
+def ListarVentas(request): 
+
+    AllVents= Venta.objects.all() 
+    ContentV= {'Ventas': AllVents} 
+    return render (request, "templates_ventas/ventas.html", ContentV)
+

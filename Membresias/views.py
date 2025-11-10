@@ -106,6 +106,7 @@ def CrearMembresia(request):
     return render(request, 'templates_membresias/crear_membresias.html', context)
 
 @transaction.atomic
+
 @permission_required('Membresias.change_membresia', login_url='Membresias')
 def EditarMembresia(request, id):
     membresia = get_object_or_404(Membresia, Id_membresia=id)
