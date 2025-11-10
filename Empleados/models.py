@@ -6,7 +6,7 @@ class MiModelo(models.Model):
 
     class Meta:
         permissions = [
-            ("usariogym", "Puede acceder a la vista  Usuariogym")
+            ("usuariogym", "Puede acceder a la vista  Usuariogym")
         ]
 class User_Empleados(AbstractUser): 
 
