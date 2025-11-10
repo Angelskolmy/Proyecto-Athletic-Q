@@ -1,0 +1,103 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Ingreso Productos
+{% endblock %}
+
+{% block content %}
+
+    <div class="container my-4 d-flex justify-content-center">
+        <div class="card shadow-sm w-100" style="max-width:920px; border-radius:0.5rem; overflow:hidden;">
+            <!-- Header verde -->
+            <div class="d-flex align-items-center justify-content-between px-4 py-2"
+                style="background:#1e7e34; color:#fff;">
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-light text-success rounded-circle p-2"
+                        style="width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;">
+                        <i class="bi bi-plus-lg" style="font-size:1rem;"></i>
+                    </span>
+                    <div>
+                        <h5 class="mb-0" style="color:#fff;">Nuevo Producto</h5>
+                        <small class="text-white-50">Registrar un producto al inventario</small>
+                    </div>
+                </div>
+                <div>
+                    <a href="{% url 'Producto' %}" class="btn btn-sm btn-outline-light text-white" title="Cerrar">
+                        <i class="bi bi-x-lg"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Body -->
+            <div class="card-body p-4">
+                <form method="post" enctype="multipart/form-data" class="row g-3">
+                    {% csrf_token %}
+
+                    <!-- Left column -->
+                    <div class="col-lg-7">
+                        <div class="mb-3">
+                            {{ Clave.Nombre.label_tag }}
+                            {{ Clave.Nombre }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ Clave.Catego_Id.label_tag }}
+                            {{ Clave.Catego_Id }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ Clave.Descripcion.label_tag }}
+                            {{ Clave.Descripcion }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ Clave.prod_imagen.label_tag }}
+                            {{ Clave.prod_imagen }}
+                        </div>
+                    </div>
+
+                    <!-- Right column -->
+                    <div class="col-lg-5">
+                        <div class="mb-3">
+                            {{ Clave.Stock.label_tag }}
+                            {{ Clave.Stock }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ Clave.Precio_de_compra.label_tag }}
+                            {{ Clave.Precio_de_compra }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ Clave.Precio_de_venta.label_tag }}
+                            {{ Clave.Precio_de_venta }}
+                        </div>
+
+                        <div class="mb-3">
+                            {{ Clave.Estado.label_tag }}
+                            {{ Clave.Estado }}
+                            <small class="form-text text-muted">Estado inicial del producto</small>
+                        </div>
+                    </div>
+
+                    <!-- Footer botones -->
+                    <div class="col-12 d-flex justify-content-end gap-2 mt-2">
+                        <a href="{% url 'Producto' %}" class="btn btn-secondary">Cancelar</a>
+                        <button type="submit" class="btn btn-danger">Guardar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .card-body .form-label {
+            font-weight: 600;
+        }
+
+        .card {
+            border: none;
+        }
+    </style>
+
+{% endblock %}

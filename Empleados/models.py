@@ -20,7 +20,7 @@ class User_Empleados(AbstractUser):
 
     id= models.AutoField(primary_key=True, db_column='id', null=False) 
     password= models.CharField(max_length=128, null=False, db_column='password')
-    last_login= models.DateTimeField(db_column='last_login') 
+    last_login= models.DateTimeField(db_column='last_login', null=True) 
     is_superuser=models.BooleanField(null=False, db_column='is_superuser') 
     username= models.CharField(max_length=150, null=False, unique=True, db_column='username')
     first_name= models.CharField(max_length=150, null=False, db_column='first_name') 
@@ -75,7 +75,6 @@ class User_Empleados(AbstractUser):
     )
 
     Huella_id = models.IntegerField(null=True, blank=True, db_column='Huella_id') 
-    Huella_id= models.IntegerField(db_column='Huella_id')
 
     class Meta:
         db_table = 'Empleados_user_empleados'

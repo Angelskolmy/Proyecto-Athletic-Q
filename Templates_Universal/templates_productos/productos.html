@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-
+{% load static %}
 {% block title %}
 Productos
 {% endblock %}
@@ -32,8 +32,8 @@ Productos
       <!-- Cabecera -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <!-- Botón Agregar -->
-        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalAgregarProducto">
-          <i class="bi bi-plus-circle me-1"></i> Agregar Producto
+        <button class="btn btn-success"  data-bs-target="#modalAgregarProducto">
+          <a href="{% url 'IngresoProd' %}" class="text-light"><i class="bi bi-plus-circle me-1">Agregar Producto</i></a>
         </button>
 
         <!-- Filtro + Buscador -->
@@ -68,30 +68,52 @@ Productos
                 <th>Venta</th> 
                 <th>Descripción</th>
                 <th>Estado</th>
-                <th>Acciones</th>
+                <th>Editar</th>
+                <th>Eliminar</th> 
+                <th>Detalle</th>
               </tr>
             </thead> 
-            {% for Infor_Prod in Productos %}
+            {% for Infor_Prod in Productos %} 
+            <a href="">
+              
+            </a>
             <tbody> 
               <tr>
                 <td>{{ Infor_Prod.Id_producto }}</td>
-                <td>
-                  <img src="/static/img/producto1.jpg" alt="Producto" class="rounded-circle border" width="38" height="38">
+                <td> 
+                  {%  if Infor_Prod.prod_imagen %}
+                    <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded-circle border" width="38" height="38"> 
+                  {% else %} 
+                    <img src="{% static 'img/persona.jpg' %}" alt="Producto" class="rounded-circle border" width="38" height="38">  
+                  {% endif %}
                 </td>
                 <td class="fw-semibold">{{ Infor_Prod.Nombre }}</td>
-                <td><span class="badge text-bg-info">{{ Infor_Prod.Catego_Id.Id_categoria }}</span></td>
+                <td><span class="badge text-bg-info">{{ Infor_Prod.Catego_Id.Nombre }}</span></td>
                 <td><span class="badge text-bg-success">{{ Infor_Prod.Stock }}</span></td>
                 <td>{{ Infor_Prod.Precio_de_compra }}</td> 
                 <td>{{ Infor_Prod.Precio_de_venta }}</td>
                 <td>{{ Infor_Prod.Descripcion }}</td>
                 <td><span class="badge text-bg-primary">{{ Infor_Prod.Estado }}</span></td>
-                <td>
-                  <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" title="Editar">
+                <td> 
+                  <a href="">
+                    <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
-                  </button>
-                  <button class="btn btn-sm btn-danger" title="Eliminar">
-                    <i class="bi bi-trash-fill"></i>
-                  </button>
+                    </button>
+                  </a>
+                </td> 
+                <td>
+                  <a href="{% url 'DelProd' Infor_Prod.Id_producto %}">
+                    <button class="btn btn-sm btn-danger" title="Eliminar">
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  </a>
+                </td> 
+                <td>
+                  <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}">
+                    <button class="btn btn-sm btn-warning" title="Detalle">
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+                  </a>
                 </td>
               </tr>
             </tbody> 
@@ -127,75 +149,6 @@ Productos
     </div>
   </div>
 </div>
-
-<!-- MODAL AGREGAR PRODUCTO -->
-<div class="modal fade" id="modalAgregarProducto" tabindex="-1" aria-labelledby="modalAgregarProductoLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered">
-    <div class="modal-content border-0 shadow-lg">
-      <div class="modal-header bg-success text-white py-2">
-        <h5 class="modal-title" id="modalAgregarProductoLabel">
-          <i class="bi bi-box-seam me-2"></i>Agregar Producto
-        </h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-      </div>
-
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="modal-body p-3">
-          <div class="row g-3">
-            <div class="col-md-6">
-              <label for="codigoProducto" class="form-label">Código</label>
-              <input type="text" class="form-control" id="codigoProducto" name="codigo" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="nombreProducto" class="form-label">Nombre</label>
-              <input type="text" class="form-control" id="nombreProducto" name="nombre" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="categoriaProducto" class="form-label">Categoría</label>
-              <select class="form-select" id="categoriaProducto" name="categoria" required>
-                <option value="">Seleccione...</option>
-                <option value="suplementos">Suplementos</option>
-                <option value="accesorios">Accesorios</option>
-                <option value="equipos">Equipos</option>
-              </select>
-            </div>
-
-            <div class="col-md-6">
-              <label for="precioProducto" class="form-label">Precio</label>
-              <input type="number" step="0.01" class="form-control" id="precioProducto" name="precio" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="stockProducto" class="form-label">Stock</label>
-              <input type="number" class="form-control" id="stockProducto" name="stock" required>
-            </div>
-
-            <div class="col-md-6">
-              <label for="imagenProducto" class="form-label">Imagen</label>
-              <input type="file" class="form-control" id="imagenProducto" name="imagen" accept="image/*">
-              <img id="previewImagen" src="" class="mt-2 rounded shadow-sm" style="width:80px; height:80px; display:none;">
-            </div>
-
-            <div class="col-12">
-              <label for="descripcionProducto" class="form-label">Descripción</label>
-              <textarea class="form-control" id="descripcionProducto" name="descripcion" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-
-        <div class="modal-footer py-2">
-          <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success btn-sm">Guardar Producto</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-
 
 <!-- SCRIPT -->
 <script>
