@@ -1,19 +1,3 @@
-"""
-URL configuration for AtleticQ project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path,include 
 from Productos import views
@@ -21,6 +5,6 @@ from Productos import views
 urlpatterns = [
     path('Producto/', views.listarProductos, name='Producto'), 
     path('IngresoProd/', views.IngresaProductos, name='IngresoProd'), 
-    path('DelProd/<int:Id_producto>/', views.EliminarProducto, name='DelProd'), 
-    path('SpecProd/<int:Id_producto>/', views.DetalleProducto, name='SpecProd')
-]  
+    path('SpecProd/<int:Id_producto>/', views.DetalleProducto, name='SpecProd'),
+    path('ActualizarStock/<int:Id_producto>/', views.ActualizarStock, name='ActualizarStock'),
+]

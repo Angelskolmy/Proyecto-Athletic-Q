@@ -12,11 +12,6 @@ from .forms import EmpleadoForm
 @login_required(login_url='login')
 @permission_required('Empleados.view_user_empleados', login_url='home')
 
-#@permission_required('Empleados.view_suariogym', login_url='home') este permiso puede hacer todo el view si ese usuario tiene ese permiso
-@permission_required('Empleados.usariogym', login_url='login') # este permiso solo sirve para mirar el perfil 
-def UsersGym(request): 
-    return render(request,'templates_perfil/perfil.html')
-
 @transaction.atomic
 def ListarEmpleados(request):
     # Obtener parámetros de búsqueda, filtro y paginación
@@ -30,13 +25,11 @@ def ListarEmpleados(request):
     
     # Aplicar búsqueda por nombre, apellido o cédula
     if search_query:
-        print(f"DEBUG - Búsqueda: '{search_query}'")  # Debug temporal
         
         # Crear filtros de búsqueda
         search_filters = Q(first_name__icontains=search_query) | \
                         Q(last_name__icontains=search_query) | \
-                        Q(email__icontains=search_query) | \
-                        Q(username__icontains=search_query)
+                        Q(email__icontains=search_query)
         
         # Para búsqueda por cédula, verificar si es numérico
         if search_query.isdigit():
@@ -50,8 +43,6 @@ def ListarEmpleados(request):
             empleados = empleados.filter(is_active=True)
         elif filter_type == 'inactive':
             empleados = empleados.filter(is_active=False)
-        elif filter_type == 'admin':
-            empleados = empleados.filter(is_superuser=True)
         elif filter_type.startswith('group_'):
             # Filtrar por grupo específico
             group_id = filter_type.replace('group_', '')
@@ -201,3 +192,8 @@ def RegistrarHuella(request, user_id):
             }, status=400)
     
     return JsonResponse({'message': 'Método no permitido'}, status=405)
+
+#@permission_required('Empleados.view_suariogym', login_url='home') este permiso puede hacer todo el view si ese usuario tiene ese permiso
+@permission_required('Empleados.usariogym', login_url='login') # este permiso solo sirve para mirar el perfil 
+def UsersGym(request): 
+    return render(request,'templates_perfil/perfil.html')

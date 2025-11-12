@@ -201,68 +201,41 @@
                   <li class="nav-item">
                     <a href="{% url 'Membresias' %}" class="nav-link">
                       <i class="nav-icon bi bi-card-text"></i>
-                      <p>Membresias</p>
+                      <p>Membresías</p>
                     </a>
                   </li>
-              {% endif %}
-
-              {% if perms.Empleados.usariogym %}  <!-- perms.Empleados.suariogym o perms.Empleados.usariogym -->
-                <li class="nav-header">USUARIO GYM</li>
+                  
                   <li class="nav-item">
-                    <a href="{% url 'Perfil' %}" class="nav-link">
-                      <i class="nav-icon bi bi-card-text"></i>
-                      <p>Perfil</p>
+                    <a href="{% url 'TiposMembresia' %}" class="nav-link">
+                      <i class="nav-icon bi bi-person-vcard"></i>
+                      <p>Tipos de Membresía</p>
                     </a>
                   </li>
               {% endif %}
-
             </ul>
-            <!--end::Sidebar Menu-->
           </nav>
         </div><div class="os-scrollbar os-scrollbar-horizontal os-theme-light os-scrollbar-auto-hide os-scrollbar-handle-interactive os-scrollbar-track-interactive os-scrollbar-cornerless os-scrollbar-unusable os-scrollbar-auto-hide-hidden" style="--os-viewport-percent: 1; --os-scroll-direction: 0;"><div class="os-scrollbar-track"><div class="os-scrollbar-handle"></div></div></div><div class="os-scrollbar os-scrollbar-vertical os-theme-light os-scrollbar-auto-hide os-scrollbar-handle-interactive os-scrollbar-track-interactive os-scrollbar-visible os-scrollbar-cornerless os-scrollbar-auto-hide-hidden" style="--os-viewport-percent: 0.353; --os-scroll-direction: 0;"><div class="os-scrollbar-track"><div class="os-scrollbar-handle"></div></div></div></div>
-        <!--end::Sidebar Wrapper-->
       </aside>
-      <!--end::Sidebar-->
-      <!--begin::App Main-->
       <main class="app-main">
         {% block content %} {% endblock %}
       </main>
-      <!--end::App Main-->
-      <!--begin::Footer-->
       <footer class="app-footer">
-        <!--begin::To the end-->
         <div class="float-end d-none d-sm-inline">Hola </div>
-        <!--end::To the end-->
-        <!--begin::Copyright-->
-        <font> Derechos de autor </strong> Todos los derechos reservados. </font><!--end::Copyright-->
+        <font> Derechos de autor </strong> Todos los derechos reservados. </font>
       </footer>
       <!--end::Footer-->
     <div class="sidebar-overlay"></div></div>
     <!--end::App Wrapper-->
 
 <!--begin::Script-->
-    <!--begin::Jquery-->
     <script src="{% static 'jquery-3.6.0/jquery.min.js' %}"></script>
-    <!--end::Jquery-->
-    <!--begin::Required Plugin(popperjs for Bootstrap 5)-->
     <script src="{% static 'popperjs-2.11.8/dist/umd/popper.min.js' %}"></script>
-    <!--end::Required Plugin(popperjs for Bootstrap 5)-->
-    <!--begin::Required Plugin(Bootstrap 5)-->
     <script src="{% static 'bootstrap-5.3.3/dist/js/bootstrap.min.js' %}"></script>
-    <!--end::Required Plugin(Bootstrap 5)-->
-    <!--begin::Third Party Plugin(OverlayScrollbars)-->
     <script src="{% static 'overlayscrollbars-2.10.1/browser/overlayscrollbars.browser.es6.min.js' %}"></script>
-    <!--end::Third Party Plugin(OverlayScrollbars)-->
-    <!--begin::Required Plugin(AdminLTE)-->
     <script src="{% static 'dist/js/adminlte.js' %}"></script>
-
     <script src="{% static 'js/script-huella.js' %}"></script>
+    <script src="{% static 'js/productos-stock.js' %}"></script>
 
-    <!---script src="{% static 'js/theme-toggle.js' %}"></script-->
-
-    
-    <!--end::Required Plugin(AdminLTE)-->
-    <!--begin::OverlayScrollbars Configure-->
     <script>
       const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';
       const Default = {
@@ -283,9 +256,5 @@
         }
       });
     </script>
-    <!--end::OverlayScrollbars Configure-->
-    <!--end::Script-->
-  
-  
-
-</body><!--end::Body--></html>
+  </body>
+</html>

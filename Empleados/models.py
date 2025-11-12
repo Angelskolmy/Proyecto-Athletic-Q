@@ -17,7 +17,6 @@ class MiModelo(models.Model):
         ]
 class User_Empleados(AbstractUser): 
 
-
     id= models.AutoField(primary_key=True, db_column='id', null=False) 
     password= models.CharField(max_length=128, null=False, db_column='password')
     last_login= models.DateTimeField(db_column='last_login', null=True) 

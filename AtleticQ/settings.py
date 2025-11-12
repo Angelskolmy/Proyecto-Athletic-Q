@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     'Historial',
     'Pago_Membresia',     
     'Membresias',
+    'Tipo_membresia',
     'Detalle_venta',
     'Core_session',
     'Ventas',

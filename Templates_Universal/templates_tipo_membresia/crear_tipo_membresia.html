@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Crear Tipo de Membresía{% endblock %}
+
+{% block content %}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8">
+        <h3 class="mb-0">
+          <i class="bi bi-plus-circle me-2"></i> Crear Nuevo Tipo de Membresía
+        </h3>
+      </div>
+      <div class="col-sm-4">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'TiposMembresia' %}">Tipos de Membresía</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Crear</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end::App Content Header-->
+
+<div class="app-content">
+  <div class="container-fluid">
+    <div class="card shadow-sm">
+      
+      <!-- Header del formulario -->
+      <div class="card-header">
+        <h5 class="mb-0">Información del Tipo de Membresía</h5>
+      </div>
+
+      <!-- Body del formulario -->
+      <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="card-body">
+          <div class="row">
+            
+            <!-- Columna izquierda: Información Básica -->
+            <div class="col-md-6">
+              <h6 class="text-primary mb-3">
+                <i class="bi bi-info-circle me-1"></i>Información Básica
+              </h6>
+              
+              <div class="mb-3">
+                <label for="{{ form.Nombre.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.Nombre.label }}
+                  <span class="text-danger">*</span>
+                </label>
+                {{ form.Nombre }}
+                {% if form.Nombre.errors %}
+                  <div class="text-danger small mt-1">{{ form.Nombre.errors }}</div>
+                {% endif %}
+              </div>
+
+              <div class="mb-3">
+                <label for="{{ form.Duracion_meses.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.Duracion_meses.label }}
+                  <span class="text-danger">*</span>
+                </label>
+                {{ form.Duracion_meses }}
+                {% if form.Duracion_meses.errors %}
+                  <div class="text-danger small mt-1">{{ form.Duracion_meses.errors }}</div>
+                {% endif %}
+                <small class="text-muted d-block mt-1">
+                  Selecciona la duración de la membresía
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label for="{{ form.Estado.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.Estado.label }}
+                  <span class="text-danger">*</span>
+                </label>
+                {{ form.Estado }}
+                {% if form.Estado.errors %}
+                  <div class="text-danger small mt-1">{{ form.Estado.errors }}</div>
+                {% endif %} 
+              </div>
+            </div>
+
+            <!-- Columna derecha: Precio e Imagen -->
+            <div class="col-md-6">
+              <h6 class="text-primary mb-3">
+                <i class="bi bi-cash-coin me-1"></i>Precio e Imagen
+              </h6>
+              
+              <div class="mb-3">
+                <label for="{{ form.Precio.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.Precio.label }}
+                  <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text">$</span>
+                  {{ form.Precio }}
+                </div>
+                {% if form.Precio.errors %}
+                  <div class="text-danger small mt-1">{{ form.Precio.errors }}</div>
+                {% endif %}
+                <small class="text-muted d-block mt-1">
+                  Precio total de la membresía por el período completo
+                </small>
+              </div>
+
+              <div class="mb-3">
+                <label for="{{ form.tipo_membresia_img.id_for_label }}" class="form-label fw-semibold">
+                  {{ form.tipo_membresia_img.label }}
+                </label>
+                {{ form.tipo_membresia_img }}
+                {% if form.tipo_membresia_img.errors %}
+                  <div class="text-danger small mt-1">{{ form.tipo_membresia_img.errors }}</div>
+                {% endif %}
+                <small class="text-muted d-block mt-1">
+                  <i class="bi bi-info-circle me-1"></i>Formatos: JPG, PNG, JPEG, WEBP
+                </small>
+              </div>
+
+              <!-- Vista previa de precio mensual -->
+              <div class="alert alert-info mb-0">
+                <h6 class="alert-heading">
+                  <i class="bi bi-calculator me-1"></i>Cálculo Automático
+                </h6>
+                <p class="mb-0">
+                  El precio por mes se calculará automáticamente al dividir el precio total entre la duración seleccionada.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Footer con botones de acción -->
+        <div class="card-footer text-end">
+          <a href="{% url 'TiposMembresia' %}" class="btn btn-secondary me-2">
+            <i class="bi bi-x-circle me-1"></i>Cancelar
+          </a>
+          <button type="submit" class="btn btn-success">
+            <i class="bi bi-check-circle me-1"></i>Guardar Tipo de Membresía
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<style>
+  .form-label.fw-semibold {
+    color: #495057;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-header {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #e9ecef;
+  }
+
+  h6.text-primary {
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #0d6efd;
+  }
+
+  .input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+  }
+
+  .alert-info {
+    background-color: #cff4fc;
+    border-color: #b6effb;
+    color: #055160;
+  }
+
+  @media (max-width: 768px) {
+    .card-body {
+      padding: 1rem !important;
+    }
+
+    h6.text-primary {
+      font-size: 0.95rem;
+    }
+
+    .card-footer {
+      text-align: center !important;
+    }
+
+    .card-footer .btn {
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-footer .btn:last-child {
+      margin-bottom: 0;
+    }
+
+    .card-footer .me-2 {
+      margin-right: 0 !important;
+    }
+  }
+</style>
+
+{% endblock %}

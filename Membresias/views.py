@@ -69,22 +69,20 @@ def ListarMembresias(request):
 @transaction.atomic
 def CrearMembresia(request):
     if request.method == 'POST':
-        form = MembresiaForm(request.POST)
+        form = MembresiaForm(request.POST, request.FILES)
         if form.is_valid():
             try:
                 membresia = form.save(commit=False)
                 
-                # Establecer fecha de inicio como hoy (datetime)
+                tipo_membresia = membresia.For_Id_tipo_membresia
+                
+                duracion_meses = tipo_membresia.Duracion_meses
+                
                 membresia.Fecha_inicio = timezone.now()
                 
-                # Calcular fecha fin basada en duración (solo fecha)
-                if membresia.Duracion_meses:
-                    fecha_inicio_date = timezone.now().date()
-                    membresia.Fecha_fin = fecha_inicio_date + timedelta(days=30 * membresia.Duracion_meses)
-                
-                # Establecer campo de imagen como vacío por defecto
-                membresia.membresia_img = ''
-                
+                fecha_inicio_date = timezone.now().date()
+                membresia.Fecha_fin = fecha_inicio_date + timedelta(days=30 * duracion_meses)
+
                 membresia.save()
                 
                 messages.success(request, 'Membresía creada exitosamente')
@@ -92,21 +90,15 @@ def CrearMembresia(request):
                 
             except Exception as e:
                 messages.error(request, f'Error al crear la membresía: {str(e)}')
-                print(f"Error detallado: {e}")  # Para debug
+                print(f"Error detallado: {e}")
         else:
             messages.error(request, 'Por favor corrige los errores en el formulario')
-            print(f"Errores del formulario: {form.errors}")  # Para debug
     else:
         form = MembresiaForm()
 
-    context = {
-        'form': form,
-    }
-    
-    return render(request, 'templates_membresias/crear_membresias.html', context)
+    return render(request, 'templates_membresias/crear_membresias.html', {'form': form})
 
 @transaction.atomic
-
 @permission_required('Membresias.change_membresia', login_url='Membresias')
 def EditarMembresia(request, id):
     membresia = get_object_or_404(Membresia, Id_membresia=id)

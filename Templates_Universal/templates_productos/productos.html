@@ -11,13 +11,13 @@ Productos
     <div class="row align-items-center">
       <div class="col-sm-8">
         <h3 class="mb-0">
-          <i class="bi bi-box-seam me-1"></i> Gestión de Productos
+          <i class="bi bi-box-seam me-2"></i> Gestión de Productos
         </h3>
       </div>
       <div class="col-sm-4 text-end">
         <ol class="breadcrumb float-sm-end mb-0">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-          <li class="breadcrumb-item active">Productos</li>
+          <li class="breadcrumb-item active" aria-current="page">Productos</li>
         </ol>
       </div>
     </div>
@@ -27,18 +27,17 @@ Productos
 
 <div class="app-content">
   <div class="container-fluid">
-
-    <div class="card shadow-sm">
-      <!-- Cabecera -->
+    <div class="card shadow-sm border-0">
+      
+      <!-- Header con filtros y buscador -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <!-- Botón Agregar -->
-        <button class="btn btn-success"  data-bs-target="#modalAgregarProducto">
-          <a href="{% url 'IngresoProd' %}" class="text-light"><i class="bi bi-plus-circle me-1">Agregar Producto</i></a>
-        </button>
+        <a href="{% url 'IngresoProd' %}" class="btn btn-success">
+          <i class="bi bi-plus-circle me-1"></i> Agregar Producto
+        </a>
 
-        <!-- Filtro + Buscador -->
         <div class="d-flex align-items-center gap-2 ms-auto flex-wrap"> 
-          <select id="filtroCategoria" class="form-select form-select-sm" style="width: 180px;">
+          <select id="filtroCategoria" class="form-select form-select-sm" style="width: 200px;">
+            <option value="">Todas las categorías</option>
             {% for Categos_filter in Categorias %}
             <option value="{{ Categos_filter.Id_categoria }}">{{ Categos_filter.Nombre }}</option>
             {% endfor %}
@@ -56,7 +55,7 @@ Productos
       <!-- Tabla -->
       <div class="card-body p-0">
         <div class="table-responsive">
-          <table class="table table-hover align-middle text-center mb-0">
+          <table class="table table-striped table-hover align-middle text-center mb-0">
             <thead class="table-light">
               <tr>
                 <th>ID</th>
@@ -66,63 +65,87 @@ Productos
                 <th>Stock</th>
                 <th>Compra</th> 
                 <th>Venta</th> 
-                <th>Descripción</th>
                 <th>Estado</th>
-                <th>Editar</th>
-                <th>Eliminar</th> 
-                <th>Detalle</th>
+                <th>Acciones</th>
               </tr>
             </thead> 
-            {% for Infor_Prod in Productos %} 
-            <a href="">
-              
-            </a>
             <tbody> 
-              <tr>
+            {% for Infor_Prod in Productos %} 
+              <tr id="producto-{{ Infor_Prod.Id_producto }}">
                 <td>{{ Infor_Prod.Id_producto }}</td>
                 <td> 
-                  {%  if Infor_Prod.prod_imagen %}
-                    <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded-circle border" width="38" height="38"> 
+                  {% if Infor_Prod.prod_imagen %}
+                    <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                   {% else %} 
-                    <img src="{% static 'img/persona.jpg' %}" alt="Producto" class="rounded-circle border" width="38" height="38">  
+                    <img src="{% static 'img/default-product.png' %}" alt="Sin imagen" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                   {% endif %}
                 </td>
                 <td class="fw-semibold">{{ Infor_Prod.Nombre }}</td>
                 <td><span class="badge text-bg-info">{{ Infor_Prod.Catego_Id.Nombre }}</span></td>
-                <td><span class="badge text-bg-success">{{ Infor_Prod.Stock }}</span></td>
-                <td>{{ Infor_Prod.Precio_de_compra }}</td> 
-                <td>{{ Infor_Prod.Precio_de_venta }}</td>
-                <td>{{ Infor_Prod.Descripcion }}</td>
-                <td><span class="badge text-bg-primary">{{ Infor_Prod.Estado }}</span></td>
+                <td>
+                  <!-- Stock editable -->
+                  <div class="stock-container" id="stock-container-{{ Infor_Prod.Id_producto }}">
+                    <span class="stock-display badge {% if Infor_Prod.Stock > 10 %}text-bg-success{% elif Infor_Prod.Stock > 0 %}text-bg-warning{% else %}text-bg-danger{% endif %}" 
+                          id="stock-display-{{ Infor_Prod.Id_producto }}"
+                          onclick="editarStock({{ Infor_Prod.Id_producto }})"
+                          style="cursor: pointer;"
+                          title="Clic para editar">
+                      {{ Infor_Prod.Stock }}
+                      <i class="bi bi-pencil-fill ms-1" style="font-size: 0.7rem;"></i>
+                    </span>
+                    
+                    <div class="stock-edit d-none" id="stock-edit-{{ Infor_Prod.Id_producto }}">
+                      <div class="input-group input-group-sm" style="width: 120px;">
+                        <input type="number" 
+                               class="form-control form-control-sm text-center" 
+                               id="stock-input-{{ Infor_Prod.Id_producto }}"
+                               value="{{ Infor_Prod.Stock }}"
+                               min="0"
+                               style="width: 60px;">
+                        <button class="btn btn-success btn-sm" 
+                                onclick="guardarStock({{ Infor_Prod.Id_producto }})"
+                                title="Guardar">
+                          <i class="bi bi-check-lg"></i>
+                        </button>
+                        <button class="btn btn-secondary btn-sm" 
+                                onclick="cancelarStock({{ Infor_Prod.Id_producto }})"
+                                title="Cancelar">
+                          <i class="bi bi-x-lg"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+                <td>${{ Infor_Prod.Precio_de_compra }}</td> 
+                <td>${{ Infor_Prod.Precio_de_venta }}</td>
+                <td>
+                  <span class="badge {% if Infor_Prod.Estado == 'Activo' %}text-bg-success{% else %}text-bg-danger{% endif %}">
+                    {{ Infor_Prod.Estado }}
+                  </span>
+                </td>
                 <td> 
-                  <a href="">
-                    <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" title="Editar">
+                  <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}" class="btn btn-sm btn-primary me-1" title="Ver Detalle">
+                    <i class="bi bi-eye-fill"></i>
+                  </a>
+                  <a href="#" class="btn btn-sm btn-warning" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
-                    </button>
                   </a>
                 </td> 
-                <td>
-                  <a href="{% url 'DelProd' Infor_Prod.Id_producto %}">
-                    <button class="btn btn-sm btn-danger" title="Eliminar">
-                      <i class="bi bi-trash-fill"></i>
-                    </button>
-                  </a>
-                </td> 
-                <td>
-                  <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}">
-                    <button class="btn btn-sm btn-warning" title="Detalle">
-                      <i class="bi bi-eye-fill"></i>
-                    </button>
-                  </a>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="9" class="text-center text-muted py-4">
+                  <i class="bi bi-inbox display-1"></i>
+                  <p class="mt-2">No se encontraron productos registrados.</p>
                 </td>
               </tr>
-            </tbody> 
             {% endfor %}
+            </tbody> 
           </table>
         </div>
       </div>
 
-      <!-- Paginación -->
+      <!-- Footer con paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
         <ul class="pagination pagination-sm mb-0">
           <li class="page-item"><a class="page-link" href="#">«</a></li>
@@ -133,7 +156,7 @@ Productos
         </ul>
 
         <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+          <span class="text-muted small">Mostrando productos</span>
         </div>
 
         <div class="dropdown">
@@ -150,23 +173,75 @@ Productos
   </div>
 </div>
 
-<!-- SCRIPT -->
-<script>
-  // Vista previa de imagen en modal agregar
-  document.getElementById('imagenProducto').addEventListener('change', function (e) {
-    const img = document.getElementById('previewImagen');
-    const file = e.target.files[0];
-    if (file) {
-      img.src = URL.createObjectURL(file);
-      img.style.display = 'block';
-    } else {
-      img.style.display = 'none';
-    }
-  });
-</script>
+<!-- Toast de notificación -->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 11">
+  <div id="stockToast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body" id="stockToastBody">
+        Stock actualizado exitosamente
+      </div>
+      <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
 
-<!-- ESTILOS RESPONSIVOS -->
+<!-- ESTILOS -->
 <style>
+  .stock-container {
+    display: inline-block;
+    position: relative;
+  }
+
+  .stock-display {
+    transition: all 0.2s ease;
+    padding: 0.35rem 0.65rem;
+  }
+
+  .stock-display:hover {
+    transform: scale(1.05);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+
+  .stock-edit .input-group {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 0.25rem;
+  }
+
+  .stock-edit input:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  }
+
+  .toast {
+    min-width: 250px;
+  }
+
+  .toast.bg-success {
+    background-color: #198754 !important;
+    color: white;
+  }
+
+  .toast.bg-danger {
+    background-color: #dc3545 !important;
+    color: white;
+  }
+
+  .toast.bg-success .btn-close,
+  .toast.bg-danger .btn-close {
+    filter: brightness(0) invert(1);
+  }
+
+  @keyframes pulseGreen {
+    0% { background-color: #d1e7dd; }
+    50% { background-color: #198754; }
+    100% { background-color: #d1e7dd; }
+  }
+
+  .stock-updated {
+    animation: pulseGreen 0.6s ease-in-out;
+  }
+
+  /* Responsive */
   @media (max-width: 768px) {
     .card-header {
       flex-direction: column !important;
@@ -182,7 +257,7 @@ Productos
 
     .card-header select,
     .card-header .input-group,
-    .card-header button {
+    .card-header a.btn {
       width: 100% !important;
     }
 
@@ -212,5 +287,7 @@ Productos
     }
   }
 </style>
+
+<script src="{% static 'js/productos-stock.js' %}"></script>
 
 {% endblock %}
