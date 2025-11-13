@@ -28,62 +28,128 @@
                 <h5 class="mb-0">Información de la Membresía</h5>
             </div>
 
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card-body">
                     <div class="row">
+                        
                         <!-- Cliente -->
                         <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-person-circle me-1"></i>Información del Cliente
+                            </h6>
+                            
                             <div class="mb-3">
                                 {{ form.id_usuario.label_tag }}
+                                <span class="text-danger">*</span>
                                 {{ form.id_usuario }}
                                 {% if form.id_usuario.errors %}
-                                    <div class="text-danger">{{ form.id_usuario.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.id_usuario.errors }}</div>
                                 {% endif %}
+                                <small class="form-text text-muted">
+                                    Seleccione el cliente que adquirirá la membresía
+                                </small>
                             </div>
                         </div>
 
-                        <!-- Duración -->
+                        <!-- Tipo de Membresía -->
                         <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-card-checklist me-1"></i>Tipo de Membresía
+                            </h6>
+                            
                             <div class="mb-3">
-                                {{ form.Duracion_meses.label_tag }}
-                                {{ form.Duracion_meses }}
-                                {% if form.Duracion_meses.errors %}
-                                    <div class="text-danger">{{ form.Duracion_meses.errors }}</div>
+                                {{ form.For_Id_tipo_membresia.label_tag }}
+                                <span class="text-danger">*</span>
+                                {{ form.For_Id_tipo_membresia }}
+                                {% if form.For_Id_tipo_membresia.errors %}
+                                    <div class="text-danger small mt-1">{{ form.For_Id_tipo_membresia.errors }}</div>
                                 {% endif %}
+                                <small class="form-text text-muted">
+                                    El precio y duración se aplicarán automáticamente
+                                </small>
                             </div>
                         </div>
 
-                        <!-- Precio -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                {{ form.Precio.label_tag }}
-                                {{ form.Precio }}
-                                {% if form.Precio.errors %}
-                                    <div class="text-danger">{{ form.Precio.errors }}</div>
-                                {% endif %}
+                        <!-- Información dinámica del tipo seleccionado -->
+                        <div class="col-12">
+                            <div class="alert alert-info d-none" id="info-tipo-membresia">
+                                <h6 class="alert-heading">
+                                    <i class="bi bi-info-circle me-2"></i>Información del Tipo de Membresía
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Duración:</strong>
+                                        <p id="duracion-display" class="mb-0">-</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Precio Total:</strong>
+                                        <p id="precio-display" class="mb-0 text-success fw-bold">-</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Precio Mensual:</strong>
+                                        <p id="precio-mensual-display" class="mb-0">-</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!-- Estado -->
                         <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-toggle-on me-1"></i>Configuración
+                            </h6>
+                            
                             <div class="mb-3">
                                 {{ form.Estado.label_tag }}
+                                <span class="text-danger">*</span>
                                 {{ form.Estado }}
                                 {% if form.Estado.errors %}
-                                    <div class="text-danger">{{ form.Estado.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.Estado.errors }}</div>
                                 {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Imagen (Opcional) -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-image me-1"></i>Imagen (Opcional)
+                            </h6>
+                            
+                            <div class="mb-3">
+                                {{ form.membresia_img.label_tag }}
+                                {{ form.membresia_img }}
+                                {% if form.membresia_img.errors %}
+                                    <div class="text-danger small mt-1">{{ form.membresia_img.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>Formatos: JPG, PNG, JPEG
+                                </small>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Información adicional -->
+                    <!-- Resumen automático -->
                     <div class="row">
                         <div class="col-12">
-                            <div class="alert alert-info">
-                                <i class="bi bi-info-circle me-2"></i>
-                                <strong>Información:</strong> La fecha de inicio se establecerá automáticamente como hoy, 
-                                y la fecha de fin se calculará según la duración seleccionada.
+                            <div class="alert alert-light border">
+                                <h6 class="mb-2">
+                                    <i class="bi bi-calendar-check me-2"></i>Fechas Automáticas
+                                </h6>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <strong>Fecha de Inicio:</strong>
+                                        <p class="mb-0">Hoy ({{ today|date:"d/m/Y" }})</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Fecha de Fin:</strong>
+                                        <p id="fecha-fin-display" class="mb-0">Se calculará automáticamente</p>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <strong>Días Totales:</strong>
+                                        <p id="dias-totales-display" class="mb-0">-</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -103,6 +169,21 @@
 </div>
 
 <style>
+h6.text-primary {
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #b11226;
+}
+
+.alert-info {
+    background-color: #cff4fc;
+    border-color: #b6effb;
+}
+
+.alert-light {
+    background-color: #f8f9fa;
+}
+
 @media (max-width: 768px) {
     .card-footer {
         text-align: center !important;

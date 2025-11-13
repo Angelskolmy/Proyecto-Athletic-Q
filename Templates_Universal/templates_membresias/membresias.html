@@ -1,12 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}
-Membresías
-{% endblock %}
+{% block title %}Membresías{% endblock %}
 
 {% block content %}
-<!--begin::App Content Header-->
 <div class="app-content-header">
   <div class="container-fluid">
     <div class="row align-items-center">
@@ -18,28 +15,24 @@ Membresías
       <div class="col-sm-4 text-end">
         <ol class="breadcrumb float-sm-end mb-0">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Membresías</li>
+          <li class="breadcrumb-item active">Membresías</li>
         </ol>
       </div>
     </div>
   </div>
 </div>
-<!--end::App Content Header-->
 
 <div class="app-content">
   <div class="container-fluid">
     <div class="card shadow-sm border-0">
 
-      <!-- Header con filtros y buscador -->
+      <!-- Header -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <!-- Botón Agregar - ACTUALIZADO -->
         <a href="{% url 'membresias_create' %}" class="btn btn-success">
           <i class="bi bi-plus-circle me-1"></i> Nueva Membresía
         </a>
 
-        <!-- Filtros y Buscador -->
         <form method="GET" class="d-flex align-items-center gap-2 ms-auto flex-wrap">
-          <!-- Filtro por Estado -->
           <select name="filter" class="form-select form-select-sm" style="width: 180px;" onchange="this.form.submit()">
             <option value="">Todos los estados</option>
             <option value="activa" {% if filter_type == 'activa' %}selected{% endif %}>Activas</option>
@@ -47,7 +40,6 @@ Membresías
             <option value="porvencer" {% if filter_type == 'porvencer' %}selected{% endif %}>Por vencer</option>
           </select>
 
-          <!-- Buscador -->
           <div class="input-group input-group-sm" style="width: 250px;">
             <input type="text" name="search" class="form-control" 
                    placeholder="Buscar cliente..." 
@@ -57,14 +49,12 @@ Membresías
             </button>
           </div>
 
-          <!-- Botón limpiar filtros -->
           {% if search_query or filter_type %}
-          <a href="{% url 'Membresias' %}" class="btn btn-outline-danger btn-sm" title="Limpiar filtros">
+          <a href="{% url 'Membresias' %}" class="btn btn-outline-danger btn-sm">
             <i class="bi bi-x-circle"></i>
           </a>
           {% endif %}
 
-          <!-- Selector de elementos por página -->
           <select name="items_per_page" class="form-select form-select-sm" style="width: 120px;" onchange="this.form.submit()">
             <option value="10" {% if items_per_page == '10' %}selected{% endif %}>10 por página</option>
             <option value="25" {% if items_per_page == '25' %}selected{% endif %}>25 por página</option>
@@ -80,44 +70,58 @@ Membresías
             <thead class="table-light">
               <tr>
                 <th>ID</th>
-                <th>Cedula</th>
+                <th>Cédula</th>
                 <th>Cliente</th>
+                <th>Tipo</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
-                <th>Estado</th> 
-                <th>Duración</th>
+                <th>Estado</th>
                 <th>Precio</th>
                 <th>Acciones</th>
               </tr>
-            </thead> 
+            </thead>
             <tbody>
             {% for artMemb in AllMebs %}
               <tr>
                 <td>{{ artMemb.Id_membresia }}</td>
                 <td>{{ artMemb.id_usuario.Cedula }}</td>
                 <td>{{ artMemb.id_usuario.first_name }} {{ artMemb.id_usuario.last_name }}</td>
+                
+                <!-- ✅ MOSTRAR TIPO DE MEMBRESÍA -->
+                <td>
+                  <span class="badge bg-info">
+                    {{ artMemb.For_Id_tipo_membresia.Nombre }}
+                  </span>
+                  <br>
+                  <small class="text-muted">{{ artMemb.For_Id_tipo_membresia.get_Duracion_meses_display }}</small>
+                </td>
+                
                 <td>{{ artMemb.Fecha_inicio|date:"d/m/Y" }}</td>
                 <td>{{ artMemb.Fecha_fin|date:"d/m/Y" }}</td>
                 <td>
                   {% now "Y-m-d" as today %}
                   {% if artMemb.Estado == 'Activo' and artMemb.Fecha_fin|date:"Y-m-d" >= today %}
-                    <span class="badge bg-success">{{ artMemb.Estado }}</span>
+                    <span class="badge bg-success">Activa</span>
                   {% elif artMemb.Fecha_fin|date:"Y-m-d" < today %}
                     <span class="badge bg-danger">Vencida</span>
                   {% else %}
                     <span class="badge bg-secondary">{{ artMemb.Estado }}</span>
                   {% endif %}
-                </td> 
-                <td>{{ artMemb.Duracion_meses }} meses</td>
-                <td>${{ artMemb.Precio|floatformat:2 }}</td>
+                </td>
+                
+                <!-- ✅ MOSTRAR PRECIO DEL TIPO -->
+                <td class="fw-bold text-success">
+                  ${{ artMemb.For_Id_tipo_membresia.Precio|floatformat:0 }}
+                </td>
+                
                 <td>
                   <a href="{% url 'membresias_detail' artMemb.Id_membresia %}" 
                       class="btn btn-sm btn-info me-1" title="Ver Detalles">
                     <i class="bi bi-eye-fill"></i>
                   </a>
-                  {%if perms.Membresias.change_membresia %}
+                  {% if perms.Membresias.change_membresia %}
                   <a href="{% url 'membresias_edit' artMemb.Id_membresia %}" 
-                      class="btn btn-sm btn-warning me-1" title="Editar">
+                      class="btn btn-sm btn-warning" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
                   {% endif %}
@@ -125,13 +129,13 @@ Membresías
               </tr>
             {% empty %}
               <tr>
-                <td colspan="8" class="text-center text-muted py-4">
+                <td colspan="9" class="text-center text-muted py-4">
                   <i class="bi bi-inbox display-1"></i>
                   <p class="mt-2">
                     {% if search_query or filter_type %}
-                      No se encontraron membresías que coincidan con los criterios de búsqueda.
+                      No se encontraron membresías que coincidan con los criterios.
                     {% else %}
-                      No se encontraron membresías registradas.
+                      No hay membresías registradas.
                     {% endif %}
                   </p>
                   {% if search_query or filter_type %}
@@ -142,7 +146,7 @@ Membresías
                 </td>
               </tr>
             {% endfor %}
-            </tbody> 
+            </tbody>
           </table>
         </div>
       </div>
@@ -150,7 +154,6 @@ Membresías
       <!-- Footer con paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
         {% if AllMebs.paginator.num_pages > 1 %}
-        <!-- Paginación -->
         <ul class="pagination pagination-sm mb-0">
           {% if AllMebs.has_previous %}
             <li class="page-item">
@@ -186,7 +189,6 @@ Membresías
         </ul>
         {% endif %}
 
-        <!-- Texto centrado -->
         <div class="flex-grow-1 text-center">
           <span class="text-muted small">
             Mostrando {{ AllMebs.start_index }}–{{ AllMebs.end_index }} de {{ total_items }} registros
@@ -196,7 +198,6 @@ Membresías
           </span>
         </div>
 
-        <!-- Dropdown Export -->
         <div class="dropdown">
           <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
             Exportar
@@ -211,23 +212,20 @@ Membresías
   </div>
 </div>
 
-<!-- ESTILOS RESPONSIVOS -->
 <style>
   @media (max-width: 768px) {
     .card-header {
       flex-direction: column !important;
       align-items: stretch !important;
-      gap: 0.75rem !important;
     }
 
-    .card-header .d-flex {
-      flex-direction: column !important;
+    .card-header form {
       width: 100% !important;
+      flex-direction: column !important;
     }
 
     .card-header select,
-    .card-header .input-group,
-    .card-header a.btn {
+    .card-header .input-group {
       width: 100% !important;
     }
 
@@ -241,19 +239,7 @@ Membresías
 
     .card-footer {
       flex-direction: column !important;
-      align-items: center !important;
       gap: 0.75rem !important;
-      text-align: center;
-    }
-
-    .card-footer ul.pagination {
-      justify-content: center;
-    }
-
-    .card-footer .dropdown {
-      display: flex;
-      justify-content: center;
-      width: 100%;
     }
   }
 </style>

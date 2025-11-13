@@ -24,79 +24,110 @@
 <div class="app-content">
     <div class="container-fluid">
         <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">Editar Información de la Membresía</h5>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Editar Membresía #{{ membresia.Id_membresia }}</h5>
+                <span class="badge {% if membresia.Estado == 'Activo' %}bg-success{% else %}bg-danger{% endif %}">
+                    {{ membresia.Estado }}
+                </span>
             </div>
 
-            <form method="POST">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="card-body">
-                    <!-- Información actual -->
-                    <div class="row mb-3">
+                    
+                    <!-- Información Actual -->
+                    <div class="row mb-4">
                         <div class="col-12">
                             <div class="alert alert-light border">
-                                <h6 class="mb-2"><i class="bi bi-info-circle me-2"></i>Información Actual</h6>
+                                <h6 class="mb-3"><i class="bi bi-info-circle me-2"></i>Información Fija (No Editable)</h6>
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <strong>ID:</strong><br>
+                                        <span class="badge bg-primary">{{ membresia.Id_membresia }}</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Cliente:</strong><br>
+                                        <span class="text-muted">{{ membresia.id_usuario.first_name }} {{ membresia.id_usuario.last_name }}</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Tipo:</strong><br>
+                                        <span class="badge bg-info">{{ membresia.For_Id_tipo_membresia.Nombre }}</span>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <strong>Duración:</strong><br>
+                                        <span class="text-muted">{{ membresia.For_Id_tipo_membresia.get_Duracion_meses_display }}</span>
+                                    </div>
+                                </div>
+                                <hr class="my-3">
                                 <div class="row">
                                     <div class="col-md-4">
-                                        <strong>ID:</strong> {{ membresia.Id_membresia }}
+                                        <strong>Fecha Inicio:</strong><br>
+                                        {{ membresia.Fecha_inicio|date:"d/m/Y" }}
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Fecha Inicio:</strong> {{ membresia.Fecha_inicio|date:"d/m/Y" }}
+                                        <strong>Fecha Fin:</strong><br>
+                                        {{ membresia.Fecha_fin|date:"d/m/Y" }}
                                     </div>
                                     <div class="col-md-4">
-                                        <strong>Fecha Fin:</strong> {{ membresia.Fecha_fin|date:"d/m/Y" }}
+                                        <strong>Precio:</strong><br>
+                                        <span class="fw-bold text-success">${{ membresia.For_Id_tipo_membresia.Precio|floatformat:0 }}</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
+                    <!-- CAMPOS EDITABLES -->
                     <div class="row">
-                        <!-- Cliente -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                {{ form.id_usuario.label_tag }}
-                                {{ form.id_usuario }}
-                                {% if form.id_usuario.errors %}
-                                    <div class="text-danger">{{ form.id_usuario.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <!-- Duración -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                {{ form.Duracion_meses.label_tag }}
-                                {{ form.Duracion_meses }}
-                                <small class="form-text text-muted">Cambiar la duración recalculará la fecha de fin</small>
-                                {% if form.Duracion_meses.errors %}
-                                    <div class="text-danger">{{ form.Duracion_meses.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <!-- Precio -->
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                {{ form.Precio.label_tag }}
-                                {{ form.Precio }}
-                                {% if form.Precio.errors %}
-                                    <div class="text-danger">{{ form.Precio.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-
+                        <h5 class="text-primary mb-3">
+                            <i class="bi bi-toggle-on me-1"></i>Configuración Editable
+                        </h5>
                         <!-- Estado -->
                         <div class="col-md-6">
+
+                            
                             <div class="mb-3">
                                 {{ form.Estado.label_tag }}
+                                <span class="text-danger">*</span>
                                 {{ form.Estado }}
                                 {% if form.Estado.errors %}
-                                    <div class="text-danger">{{ form.Estado.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.Estado.errors }}</div>
                                 {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Puedes activar o desactivar la membresía
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- Imagen (Opcional) -->
+                        <div class="col-md-6">
+                            
+                            <!-- Imagen actual -->
+                            {% if membresia.membresia_img %}
+                            <div class="mb-3 text-center">
+                                <img src="{{ membresia.membresia_img.url }}" alt="Imagen actual" 
+                                     class="rounded shadow-sm" style="max-height: 100px; object-fit: cover;">
+                                <p class="text-muted mt-2 mb-0 small">Imagen actual</p>
+                            </div>
+                            {% endif %}
+                            
+                            <div class="mb-3">
+                                {{ form.membresia_img.label_tag }}
+                                {{ form.membresia_img }}
+                                {% if form.membresia_img.errors %}
+                                    <div class="text-danger small mt-1">{{ form.membresia_img.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    Deja en blanco para mantener la imagen actual
+                                </small>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Campos ocultos para mantener los valores -->
+                    {{ form.id_usuario.as_hidden }}
+                    {{ form.For_Id_tipo_membresia.as_hidden }}
                 </div>
 
                 <div class="card-footer text-end">
@@ -113,6 +144,20 @@
 </div>
 
 <style>
+h5.text-primary {
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #b11226;
+}
+
+/* Estilo para campos deshabilitados */
+select[disabled], 
+input[disabled] {
+    background-color: #e9ecef !important;
+    cursor: not-allowed !important;
+    opacity: 0.7;
+}
+
 @media (max-width: 768px) {
     .card-footer {
         text-align: center !important;
@@ -128,4 +173,5 @@
     }
 }
 </style>
+
 {% endblock %}

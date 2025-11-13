@@ -66,33 +66,35 @@
                         </div>
                     </div>
 
-                    <!-- Información de la Membresía -->
+                    <!-- Información del Tipo de Membresía -->
                     <div class="col-lg-6">
                         <h6 class="text-primary mb-3">
-                            <i class="bi bi-calendar-check me-2"></i>Detalles de la Membresía
+                            <i class="bi bi-card-checklist me-2"></i>Tipo de Membresía
                         </h6>
                         
                         <div class="row mb-3">
-                            <div class="col-sm-4"><strong>ID Membresía:</strong></div>
-                            <div class="col-sm-8">{{ membresia.Id_membresia }}</div>
-                        </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-sm-4"><strong>Precio:</strong></div>
+                            <div class="col-sm-4"><strong>Tipo:</strong></div>
                             <div class="col-sm-8">
-                                <span class="text-success fw-bold">${{ membresia.Precio|floatformat:2 }}</span>
+                                <span class="badge bg-info fs-6">{{ membresia.For_Id_tipo_membresia.Nombre }}</span>
                             </div>
                         </div>
                         
                         <div class="row mb-3">
                             <div class="col-sm-4"><strong>Duración:</strong></div>
-                            <div class="col-sm-8">{{ membresia.Duracion_meses }} meses</div>
+                            <div class="col-sm-8">{{ membresia.For_Id_tipo_membresia.get_Duracion_meses_display }}</div>
                         </div>
                         
                         <div class="row mb-3">
-                            <div class="col-sm-4"><strong>Estado:</strong></div>
+                            <div class="col-sm-4"><strong>Precio Total:</strong></div>
                             <div class="col-sm-8">
-                                <span class="badge bg-{{ estado_clase }}">{{ estado_visual }}</span>
+                                <span class="fw-bold text-success">${{ membresia.For_Id_tipo_membresia.Precio|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-sm-4"><strong>Precio/Mes:</strong></div>
+                            <div class="col-sm-8">
+                                <span class="text-primary">${{ precio_mensual|floatformat:0 }}</span>
                             </div>
                         </div>
                     </div>
@@ -187,7 +189,7 @@
                                     <div class="alert alert-warning">
                                         <i class="bi bi-exclamation-triangle me-2"></i>
                                         <strong>Próxima a Vencer</strong><br>
-                                        <small>Considere renovar la membresía pronto</small>
+                                        <small>Ya casi vence la membresia</small>
                                     </div>
                                 {% else %}
                                     <div class="alert alert-danger">
@@ -220,92 +222,157 @@
 <!-- Script para el gráfico circular -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Datos del progreso desde Django
-    const progreso = {{ progreso_porcentaje|default:0 }};
-    const restante = 100 - progreso;
-    
-    // Determinar color basado en el progreso
-    let color;
-    if (progreso < 30) {
-        color = '#28a745'; // Verde (success)
-    } else if (progreso < 80) {
-        color = '#ffc107'; // Amarillo (warning)  
-    } else {
-        color = '#dc3545'; // Rojo (danger)
+    // 1. VERIFICAR QUE EL CANVAS EXISTA
+    const canvas = document.getElementById('progressChart');
+    if (!canvas) {
+        console.error('Canvas no encontrado');
+        return;
     }
     
-    // Configuración del gráfico
-    const ctx = document.getElementById('progressChart').getContext('2d');
+    const ctx = canvas.getContext('2d');
+    if (!ctx) {
+        console.error('No se pudo obtener el contexto 2D');
+        return;
+    }
     
-    const chart = new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [progreso, restante],
-                backgroundColor: [
-                    color,           // Color del progreso
-                    '#e9ecef'       // Color del fondo (gris claro)
-                ],
-                borderWidth: 0,
-                cutout: '70%',  // Hace el círculo más grueso (equivalente al ::before del CSS)
-            }]
-        },
-        options: {
-            responsive: false,
-            maintainAspectRatio: true,
-            plugins: {
-                legend: {
-                    display: false  // Ocultar la leyenda
-                },
-                tooltip: {
-                    enabled: false  // Deshabilitar tooltips
-                }
+    // 2. OBTENER DATOS DESDE DJANGO (con validación)
+    let progreso = parseFloat('{{ progreso_porcentaje|default:0 }}') || 0;
+    
+    // Asegurar que esté entre 0 y 100
+    progreso = Math.max(0, Math.min(100, progreso));
+    
+    const restante = 100 - progreso;
+    
+    // 3. DETERMINAR COLOR BASADO EN EL PROGRESO
+    let color;
+    let colorTexto;
+    
+    if (progreso < 30) {
+        color = '#28a745';        // Verde (poca membresía consumida)
+        colorTexto = '#28a745';
+    } else if (progreso < 70) {
+        color = '#ffc107';        // Amarillo (mitad de membresía)
+        colorTexto = '#ffc107';
+    } else if (progreso < 90) {
+        color = '#fd7e14';        // Naranja (casi vencida)
+        colorTexto = '#fd7e14';
+    } else {
+        color = '#dc3545';        // Rojo (muy próxima a vencer)
+        colorTexto = '#dc3545';
+    }
+    
+    // 4. CREAR EL GRÁFICO
+    try {
+        const chart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [progreso, restante],
+                    backgroundColor: [
+                        color,         
+                        '#e9ecef'       
+                    ],
+                    borderWidth: 0,
+                    borderRadius: 4,    
+                    cutout: '70%',      
+                }]
             },
-            animation: {
-                animateRotate: true,
-                duration: 1000,  // Animación de 1 segundo
-                easing: 'easeInOutQuart'
+            options: {
+                responsive: false,
+                maintainAspectRatio: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        enabled: false
+                    }
+                },
+                animation: {
+                    animateRotate: true,
+                    duration: 1500,       // ← Animación más suave (1.5 segundos)
+                    easing: 'easeInOutQuart'
+                }
             }
+        });
+        
+        // 5. ACTUALIZAR EL TEXTO CENTRAL
+        const textElement = document.getElementById('chartCenterText');
+        if (textElement) {
+            textElement.style.color = colorTexto;
+            textElement.textContent = `${progreso.toFixed(1)}%`;
         }
-    });
-    
-    // Actualizar el texto central dinámicamente
-    document.getElementById('chartCenterText').style.color = color;
+        
+        console.log(' Gráfico cargado correctamente');
+        console.log(`Progreso: ${progreso}%, Color: ${color}`);
+        
+    } catch (error) {
+        console.error(' Error al crear el gráfico:', error);
+        
+        // Mostrar mensaje de error en el centro
+        const textElement = document.getElementById('chartCenterText');
+        if (textElement) {
+            textElement.textContent = 'Error al cargar';
+            textElement.style.color = '#dc3545';
+            textElement.style.fontSize = '0.9rem';
+        }
+    }
 });
 </script>
 
 <style>
+/* Estilos para el gráfico */
+#progressChart {
+    max-width: 200px;
+    max-height: 200px;
+}
+
+#chartCenterText {
+    font-size: 2rem;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Contenedor del gráfico */
+.chart-container {
+    position: relative;
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+}
+
 /* Responsive para móviles */
 @media (max-width: 768px) {
-    .card-footer {
-        text-align: center !important;
-    }
-    
-    .card-footer .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    
-    .card-footer .btn:last-child {
-        margin-bottom: 0;
-    }
-    
     #progressChart {
+        max-width: 150px !important;
+        max-height: 150px !important;
+    }
+    
+    .chart-container {
         width: 150px !important;
         height: 150px !important;
     }
+    
+    #chartCenterText {
+        font-size: 1.5rem !important;
+    }
 }
 
-/* Estilos para impresión */
-@media print {
-    .btn, .breadcrumb, .card-footer {
-        display: none !important;
+/* Animación de aparición */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.8);
     }
-    
-    .card {
-        border: none !important;
-        box-shadow: none !important;
+    to {
+        opacity: 1;
+        transform: scale(1);
     }
+}
+
+.chart-container {
+    animation: fadeIn 0.5s ease-out;
 }
 </style>
 
