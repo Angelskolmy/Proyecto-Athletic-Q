@@ -6,5 +6,5 @@ urlpatterns = [
     path('Ventas/create/', views.CrearVentas, name='ventas_create'),
     path('Ventas/procesar/', views.ProcesarVenta, name='procesar_venta'),
     path('Ventas/detalle/<int:id>/', views.DetalleVenta, name='detalle_venta'),
-    path('Ventas/edit/<int:id>/', views.EditarVenta, name='ventas_edit'),  # ✅ AGREGAR ESTA LÍNEA
+    path('Ventas/edit/<int:id>/', views.EditarVenta, name='ventas_edit')
 ]

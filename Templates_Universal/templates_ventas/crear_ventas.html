@@ -29,7 +29,7 @@
       
       <div class="row">
         
-        <!-- COLUMNA IZQUIERDA: Productos -->
+        <!-- Productos -->
         <div class="col-lg-8">
           <div class="card shadow-sm mb-4">
             <div class="card-header">
@@ -37,10 +37,10 @@
             </div>
             
             <div class="card-body">
-              <!-- Buscador -->
+              <!-- Buscador y filtro -->
               <div class="row mb-3">
                 <div class="col-md-6">
-                  <input type="text" id="buscar" class="form-control" placeholder="🔍 Buscar producto...">
+                  <input type="text" id="buscar" class="form-control" placeholder="Buscar producto...">
                 </div>
                 <div class="col-md-6">
                   <select id="filtro" class="form-select">
@@ -53,9 +53,11 @@
               </div>
 
               <!-- Grid de productos -->
-              <div class="row g-3" id="productos">
+              <div class="row g-2" id="productos">
                 {% for prod in productos %}
-                <div class="col-md-4 producto-card" data-categoria="{{ prod.Catego_Id.Id_categoria }}" data-nombre="{{ prod.Nombre|lower }}">
+                <div class="col-lg-3 col-md-4 col-sm-6 producto-card" 
+                    data-categoria="{{ prod.Catego_Id.Id_categoria }}" 
+                    data-nombre="{{ prod.Nombre|lower }}">
                   <div class="card h-100 {% if prod.Stock <= 0 %}border-danger{% endif %}">
                     {% if prod.Stock <= 0 %}
                     <div class="position-absolute top-0 end-0 m-2">
@@ -63,21 +65,33 @@
                     </div>
                     {% endif %}
                     
+                    <!-- Imagen -->
                     <img src="{% if prod.prod_imagen %}{{ prod.prod_imagen.url }}{% else %}{% static 'img/default-product.png' %}{% endif %}" 
-                         class="card-img-top {% if prod.Stock <= 0 %}opacity-50{% endif %}" 
-                         style="height: 120px; object-fit: cover;">
+                        class="card-img-top {% if prod.Stock <= 0 %}opacity-50{% endif %}" 
+                        style="height: 120px; object-fit: cover;">
                     
-                    <div class="card-body p-2">
-                      <h6 class="card-title mb-1" style="font-size: 0.85rem;">{{ prod.Nombre }}</h6>
-                      <p class="mb-1"><strong class="text-success">${{ prod.Precio_de_venta|floatformat:0 }}</strong></p>
-                      <p class="mb-2" style="font-size: 0.75rem;">
-                        Stock: <span class="badge {% if prod.Stock > 10 %}bg-success{% elif prod.Stock > 0 %}bg-warning{% else %}bg-danger{% endif %}">
+                    <div class="card-body p-2 d-flex flex-column">
+                      <!-- Nombre del producto -->
+                      <h6 class="card-title mb-1" style="font-size: 0.8rem; min-height: 16px; line-height: 1.1;">
+                        {{ prod.Nombre }}
+                      </h6>
+                      
+                      <!-- Precio -->
+                      <p class="mb-1">
+                        <strong class="text-success" style="font-size: 0.9rem;">${{ prod.Precio_de_venta|floatformat:0 }}</strong>
+                      </p>
+                      
+                      <!-- Stock -->
+                      <p class="mb-2" style="font-size: 0.7rem;">
+                        Stock: <span class="badge {% if prod.Stock > 10 %}bg-success{% elif prod.Stock > 0 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
                           {{ prod.Stock }}
                         </span>
                       </p>
                       
-                      <button type="button" class="btn btn-sm btn-primary w-100" 
-                              onclick="agregar({{ prod.Id_producto }}, '{{ prod.Nombre }}', {{ prod.Precio_de_venta }}, {{ prod.Stock }})"
+                      <!-- Agregar (ejecuta funcion de javascript) -->
+                      <button type="button" 
+                              class="btn btn-sm btn-primary w-100 mt-auto" 
+                              onclick="agregar({{ prod.Id_producto }}, '{{ prod.Nombre|escapejs }}', {{ prod.Precio_de_venta }}, {{ prod.Stock }})"
                               {% if prod.Stock <= 0 %}disabled{% endif %}>
                         <i class="bi bi-plus-circle me-1"></i> Agregar
                       </button>
@@ -90,7 +104,7 @@
           </div>
         </div>
 
-        <!-- COLUMNA DERECHA: Carrito -->
+        <!-- Carrito -->
         <div class="col-lg-4">
           <div class="card shadow-sm sticky-top" style="top: 20px;">
             <div class="card-header bg-success text-white">
@@ -100,7 +114,7 @@
             <div class="card-body">
               <!-- Vendedor -->
               <div class="mb-3">
-                <label class="form-label fw-semibold">Vendedor <span class="text-danger">*</span></label>
+                <label class="form-label fw-semibold">Vendedor <span class="text-danger"></span></label>
                 <select name="empleado_id" class="form-select" required>
                   <option value="">Seleccione...</option>
                   {% for emp in empleados %}
@@ -183,44 +197,65 @@ let carrito = [];
 
 // Agregar producto
 function agregar(id, nombre, precio, stock) {
+
+  // Verifica si el producto ya esta en el carrito
   const existe = carrito.find(item => item.id === id);
   
+  // Validacion para saber si hay stock suficiente
   if (existe) {
+
+  // Si ya existe el producto en el carrito, aumenta la cantidad:
     if (existe.cantidad >= stock) {
       alert(`Stock insuficiente para ${nombre}`);
       return;
     }
+
+    // si hay stock, aumenta la cantidad (1 en 1)
     existe.cantidad++;
   } else {
+    // Si no existe lo agrega al carrito
     carrito.push({ id, nombre, precio, cantidad: 1, stock });
   }
-  
+  // Actualiza la vista del carrito
   actualizar();
 }
 
 // Actualizar vista
 function actualizar() {
+
+  // Obtiene los elementos del html
   const container = document.getElementById('carrito');
-  const vacio = document.getElementById('vacio');
   const totalElement = document.getElementById('total');
   
+  // Limpia el contenedor
+  container.innerHTML = '';
+  
+  // Si el carrito esta vacio hace esto:
   if (carrito.length === 0) {
-    vacio.classList.remove('d-none');
-    container.innerHTML = `<div class="text-center text-muted py-4" id="vacio">
-      <i class="bi bi-cart-x display-4"></i>
-      <p class="mt-2">Carrito vacío</p>
-    </div>`;
+    // Mostrar mensaje de carrito vacío
+    container.innerHTML = `
+      <div class="text-center text-muted py-4" id="vacio">
+        <i class="bi bi-cart-x display-4"></i>
+        <p class="mt-2">Carrito vacío</p>
+      </div>
+    `;
     totalElement.textContent = '$0';
     return;
   }
   
+  // Contruye el html de los productos
   let html = '';
   let total = 0;
   
+  // Recorrer cada producto de el carrito
   carrito.forEach(item => {
+    // Calcula el subtotal
     const subtotal = item.precio * item.cantidad;
+
+    // Sumar subotal al total general
     total += subtotal;
     
+    // Contruye html de los productos
     html += `
       <div class="border rounded p-2 mb-2 bg-light">
         <div class="d-flex justify-content-between align-items-center mb-2">
@@ -237,48 +272,65 @@ function actualizar() {
           </div>
           <strong>$${subtotal.toLocaleString()}</strong>
         </div>
+
+        <!-- Campos ocultos que se envian cuando se hace submit (se ponen como un array por si hay varios productos) -->
         <input type="hidden" name="producto_id[]" value="${item.id}">
         <input type="hidden" name="cantidad[]" value="${item.cantidad}">
       </div>
     `;
   });
   
+  // Inserta el html anterior (cada vez que agrega un nuevo producto se crea otra vez la estructura con el nuevo producto)
   container.innerHTML = html;
+
+  // Actualiza el total
   totalElement.textContent = `$${total.toLocaleString()}`;
 }
 
 // Cambiar cantidad
 function cambiar(id, cambio) {
+
+  // Buscar el producto en el carrito
   const item = carrito.find(i => i.id === id);
-  if (!item) return;
+  if (!item) return; // Si no existe se sale
   
+  // Calcula la nueva cantidad
   const nueva = item.cantidad + cambio;
   
+  // Verifica si la cantidad es 0 o menor
   if (nueva <= 0) {
-    eliminar(id);
+    eliminar(id); // Eliminar producto del carrito si es menor a 0
     return;
   }
   
+  // Verifica si hay stock suficiente
   if (nueva > item.stock) {
-    alert(`Stock máximo: ${item.stock}`);
-    return;
+    alert(`Stock máximo: ${item.stock}`); // No permite exceder el stock
+    return; 
   }
   
+  // Actualiza la cantidad
   item.cantidad = nueva;
+
+  // Actualiza la vista
   actualizar();
 }
 
 // Eliminar
 function eliminar(id) {
+
+  //Filtra el carrito eliminando el producto con ese ID
   carrito = carrito.filter(item => item.id !== id);
-  actualizar();
+  actualizar(); // Actualiza la vista
 }
 
 // Limpiar
 function limpiar() {
+
+  // Pide confirmacion antes de vaciar todo
   if (carrito.length > 0 && confirm('¿Vaciar el carrito?')) {
-    carrito = [];
-    actualizar();
+    carrito = []; // Deja vacio el array del carrito
+    actualizar(); // Actualiza la vista
   }
 }
 
