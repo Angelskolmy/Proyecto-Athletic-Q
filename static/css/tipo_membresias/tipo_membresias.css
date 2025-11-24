@@ -1,0 +1,228 @@
+/* ================================
+    PALETA DE COLORES TIPO MEMBRESÍAS
+   ================================ */
+
+:root {
+  /* Rojos */
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --rojo-3: #5D0000;
+  
+  /* Negros y Grises */
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #6c757d;
+  
+  /* Estados */
+  --estado-activo: #047857;      
+  --estado-inactivo: #b91c1c;    
+  
+  /* Duración */
+  --duracion-1mes: #1e3a8a;      
+  --duracion-3meses: #5b21b6;    
+  --duracion-6meses: #b45309;    
+  --duracion-12meses: #047857;     
+}
+
+/* ================================
+    BADGES DE DURACIÓN
+   ================================ */
+
+/* 1 Mes */
+.badge-duracion-1 {
+  background: linear-gradient(135deg, #8B5A2B 0%, #A66A3A 100%) !important; /* bronce oscuro */
+  color: #fff !important;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+  transition: all 0.25s ease;
+}
+
+/* 3 Meses */
+.badge-duracion-3 {
+  background: linear-gradient(135deg, #6B7280 0%, #4B5563 100%) !important; /* plata oscuro */
+  color: #fff !important;
+  border: 1px solid rgba(0,0,0,0.12);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.18);
+  transition: all 0.25s ease;
+}
+
+/* 6 Meses - Naranja Oscuro */
+.badge-duracion-6 {
+  background: linear-gradient(135deg, var(--duracion-6meses) 0%, #d97706 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+/* 12 Meses - Verde Oscuro */
+.badge-duracion-12 {
+  background: linear-gradient(135deg, var(--duracion-3meses) 0%, #1252b2 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+/* Default (Primary) - Azul Oscuro */
+.badge.text-bg-primary {
+  background: linear-gradient(135deg, var(--duracion-1mes) 0%, #1e40af 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ================================
+    BADGES DE ESTADO
+   ================================ */
+
+/* Estado Activo - Verde Oscuro */
+.badge.text-bg-success {
+  background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.badge.text-bg-success:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Estado Inactivo - Rojo Oscuro */
+.badge.text-bg-danger {
+  background: linear-gradient(135deg, var(--estado-inactivo) 0%, #991b1b 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.badge.text-bg-danger:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* ================================
+    BOTONES DE ACCIONES
+   ================================ */
+
+.btn-crear {
+  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-crear:hover {
+  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
+}
+
+/* Editar - Amarillo Oscuro */
+.btn-warning {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(180, 83, 9, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(180, 83, 9, 0.4);
+}
+
+/* ================================
+    ANIMACIONES DE HOVER
+   ================================ */
+
+tbody tr {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: rgba(139, 0, 0, 0.05) !important;
+  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
+}
+
+/* Hover en todos los badges */
+.badge-duracion-1:hover,
+.badge-duracion-3:hover,
+.badge-duracion-6:hover,
+.badge-duracion-12:hover,
+.badge-duracion-24:hover,
+.badge.text-bg-primary:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* ================================
+    FOCUS INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Header apilado */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .card-header .d-flex {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+  }
+
+  .card-header .input-group,
+  .card-header a.btn {
+    width: 100% !important;
+  }
+
+  /* Tabla scrollable */
+  .table-responsive {
+    overflow-x: auto !important;
+  }
+
+  table th, table td {
+    white-space: nowrap;
+  }
+
+  /* Footer adaptable */
+  .card-footer {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .card-footer ul.pagination {
+    justify-content: center;
+  }
+
+  .card-footer .dropdown {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+}

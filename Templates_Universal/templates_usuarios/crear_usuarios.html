@@ -1,4 +1,11 @@
 {% extends 'base.html' %}
+
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/usuarios/crear_usuarios.css' %}">
+{% endblock %}
+
 {% block title %}Crear Usuario{% endblock %}
 
 {% block content %}
@@ -159,10 +166,10 @@
                     </div>
 
                 <div class="card-footer text-end">
-                    <a href="{% url 'Empleados' %}" class="btn btn-secondary me-2">
+                    <a href="{% url 'Empleados' %}" class="btn btn-cancelar me-2">
                         <i class="bi bi-x-circle"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-guardar">
                         <i class="bi bi-check-circle"></i> Guardar Usuario
                     </button>
                 </div>
@@ -200,157 +207,6 @@
     </div>
 </div>
 
-<script>
-document.getElementById('formCrearUsuario').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    try {
-        const formData = new FormData(this);
-        
-        const response = await fetch("{% url 'empleados_create' %}", {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: formData
-        });
-
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            if (data.show_fingerprint_modal) {
-                // Mostrar modal de registro de huella
-                mostrarModalHuella(data.user_id);
-            } else {
-                alert(data.message);
-                if (data.redirect) {
-                    window.location.href = data.redirect;
-                }
-            }
-        } else {
-            throw new Error(data.message || 'Error al crear el usuario');
-        }
-    } catch (error) {
-        alert(error.message);
-    }
-});
-
-let intentoActual = 1;
-let userId = null;
-
-function mostrarModalHuella(user_id) {
-    userId = user_id;
-    intentoActual = 1;
-    actualizarProgreso();
-    const modal = new bootstrap.Modal(document.getElementById('modalRegistroHuella'));
-    modal.show();
-}
-
-function actualizarProgreso() {
-    document.getElementById('intentoActual').textContent = intentoActual;
-    document.getElementById('progresoHuella').style.width = (intentoActual * 33.33) + '%';
-    
-    if (intentoActual === 3) {
-        document.getElementById('huellaInstruccion').textContent = 'Último intento - Coloca tu dedo firmemente';
-    }
-}
-
-document.getElementById('btnLeerHuella').addEventListener('click', async function() {
-    try {
-        // Simular lectura de huella (aquí integrarías con tu dispositivo real)
-        const huellaData = 'huella_simulada_' + Date.now();
-        
-        const response = await fetch(`/Empleados/registrar-huella/${userId}/`, {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: new URLSearchParams({
-                'huella_data': huellaData,
-                'attempt_number': intentoActual
-            })
-        });
-
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            if (data.completed) {
-                alert(data.message);
-                bootstrap.Modal.getInstance(document.getElementById('modalRegistroHuella')).hide();
-                window.location.href = '/Empleados/';
-            } else {
-                alert(data.message);
-                intentoActual++;
-                actualizarProgreso();
-            }
-        } else {
-            alert('Error: ' + data.message);
-        }
-    } catch (error) {
-        alert('Error al registrar huella: ' + error.message);
-    }
-});
-</script>
-
-<style>
-  /* --- RESPONSIVE SOLO PARA MÓVILES --- */
-  @media (max-width: 768px) {
-
-    /* Header apilado */
-    .card-header {
-      flex-direction: column !important;
-      align-items: stretch !important;
-    }
-
-    .card-header .btn {
-      width: 100% !important;
-    }
-
-    .card-header .d-flex.ms-auto {
-      width: 100% !important;
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 0.5rem !important;
-    }
-
-    .card-header select,
-    .card-header .input-group {
-      width: 100% !important;
-    }
-
-    /* Tabla scrollable */
-    .table-responsive {
-      overflow-x: auto !important;
-    }
-
-    table th,
-    table td {
-      white-space: nowrap;
-    }
-
-    /* Footer adaptable */
-    .card-footer {
-      flex-direction: column !important;
-      align-items: center !important;
-      text-align: center;
-      gap: 0.75rem;
-    }
-
-    .card-footer ul.pagination {
-      justify-content: center;
-    }
-
-    .card-footer .dropdown {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .card-footer .dropdown .btn {
-      width: auto;
-    }
-  }
-</style>
+<script src="{% static 'js/usuarios/crear_usuarios.js' %}"></script>
 {% endblock %}
 

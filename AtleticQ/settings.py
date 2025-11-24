@@ -30,7 +30,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [   
+INSTALLED_APPS = [
+    'core',
     'Historial_ventas', 
     'Historial',
     'Pago_Membresia',     
@@ -49,7 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-] 
+    'django.contrib.humanize',
+]
 
 AUTH_USER_MODEL= "Empleados.User_Empleados"
 
@@ -78,13 +80,13 @@ TEMPLATES = [
             ],
         },
     },
-] 
+]
 
-STATICFILES_DIRS=[ 
+STATICFILES_DIRS=[
     BASE_DIR / "static",
-] 
+]
 
-MEDIA_ROOT= BASE_DIR/ 'Media' 
+MEDIA_ROOT= BASE_DIR/ 'Media'
 MEDIA_URL= '/Media/'
 
 WSGI_APPLICATION = 'AtleticQ.wsgi.application'
@@ -165,3 +167,25 @@ LOGOUT_REDIRECT_URL = '/login/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
+# Localización
+LANGUAGE_CODE = 'es-CO'  # Español de Colombia
+TIME_ZONE = 'America/Bogota'
+USE_I18N = True
+USE_L10N = True  # Activar formato localizado
+USE_THOUSAND_SEPARATOR = True  # Separador de miles
+
+# Formato de números
+THOUSAND_SEPARATOR = '.'  # Punto para miles (ej: 1.000)
+DECIMAL_SEPARATOR = ','   # Coma para decimales (ej: 1.000,50)
+NUMBER_GROUPING = 3       # Agrupar cada 3 dígitos
+
+# configuracion para enviar email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'smorales.joan@gmail.com'
+EMAIL_HOST_PASSWORD = 'hymz onmg kkgi vmzt'
+
+# validacion de contraseñas
+AUTH_PASSWORD_VALIDATORS = []

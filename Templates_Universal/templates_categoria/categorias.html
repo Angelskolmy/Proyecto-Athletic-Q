@@ -1,4 +1,9 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/categorias/categorias.css' %}">
+{% endblock %}
 
 {% block title %}
 Categorías
@@ -33,7 +38,7 @@ Categorías
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
           <!-- Botón Agregar a la izquierda -->
           <div>
-              <a href="{% url 'categorias_create' %}" class="btn btn-success">
+              <a href="{% url 'categorias_create' %}" class="btn btn-crear">
                   <i class="bi bi-plus-circle me-1"></i> Agregar Categoría
               </a>
           </div>
@@ -69,8 +74,8 @@ Categorías
                 <th>Acciones</th>
               </tr>
             </thead> 
-            {% for Carte in Categorias %}
             <tbody>
+            {% for Carte in Categorias %}
               <tr>
                 <td>{{ Carte.Id_categoria }}</td>
                 <td class="fw-semibold">{{ Carte.Nombre }}</td>
@@ -85,8 +90,15 @@ Categorías
                     </a>
                 </td>
               </tr>
-            </tbody> 
+            {% empty %}
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  <i class="bi bi-inbox display-1"></i>
+                  <p class="mt-2">No hay categorías registradas.</p>
+                </td>
+              </tr>
             {% endfor %}
+            </tbody>
           </table>
         </div>
       </div>
@@ -132,50 +144,5 @@ Categorías
     </div>
   </div>
 </div>
-
-<!-- ESTILOS RESPONSIVOS -->
-<style>
-  @media (max-width: 768px) {
-    .card-header {
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 0.75rem !important;
-    }
-
-    .card-header .input-group {
-      width: 100% !important;
-      margin-left: 0 !important;
-    }
-
-    .card-header button {
-      width: 100% !important;
-    }
-
-    .table-responsive {
-      overflow-x: auto !important;
-    }
-
-    table th, table td {
-      white-space: nowrap;
-    }
-
-    .card-footer {
-      flex-direction: column !important;
-      align-items: center !important;
-      text-align: center;
-      gap: 0.75rem;
-    }
-
-    .card-footer ul.pagination {
-      justify-content: center;
-    }
-
-    .card-footer .dropdown {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-    }
-  }
-</style>
 
 {% endblock %}

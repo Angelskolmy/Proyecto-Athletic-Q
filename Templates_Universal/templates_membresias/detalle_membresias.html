@@ -3,6 +3,10 @@
 
 {% block title %}Detalle de Membresía{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/membresias/detalle_membresias.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="app-content-header">
     <div class="container-fluid">
@@ -25,12 +29,12 @@
     <div class="container-fluid">
         
         <!-- Card Principal de Información -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-header d-flex justify-content-between align-items-center">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex align-items-center gap-3">
+                <span class="badge bg-{{ estado_clase }} fs-6">{{ estado_visual }}</span>
                 <h5 class="mb-0">
                     <i class="bi bi-card-text me-2"></i>Membresía #{{ membresia.Id_membresia }}
                 </h5>
-                <span class="badge bg-{{ estado_clase }} fs-6">{{ estado_visual }}</span>
             </div>
 
             <div class="card-body">
@@ -160,7 +164,8 @@
                         <!-- GRÁFICO DE CHART.JS -->
                         <div class="text-center mb-3">
                             <div style="position: relative; width: 200px; height: 200px; margin: 0 auto;">
-                                <canvas id="progressChart" width="200" height="200"></canvas>
+                                <canvas id="progressChart" width="200" height="200" 
+                                        data-progreso="{{ progreso_porcentaje }}"></canvas>
                                 <!-- Texto central del porcentaje -->
                                 <div id="chartCenterText" style="
                                     position: absolute;
@@ -169,7 +174,6 @@
                                     transform: translate(-50%, -50%);
                                     font-size: 1.5rem;
                                     font-weight: bold;
-                                    color: #007bff;
                                     pointer-events: none;
                                 ">
                                     {{ progreso_porcentaje|default:0 }}%
@@ -219,161 +223,6 @@
     </div>
 </div>
 
-<!-- Script para el gráfico circular -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // 1. VERIFICAR QUE EL CANVAS EXISTA
-    const canvas = document.getElementById('progressChart');
-    if (!canvas) {
-        console.error('Canvas no encontrado');
-        return;
-    }
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) {
-        console.error('No se pudo obtener el contexto 2D');
-        return;
-    }
-    
-    // 2. OBTENER DATOS DESDE DJANGO (con validación)
-    let progreso = parseFloat('{{ progreso_porcentaje|default:0 }}') || 0;
-    
-    // Asegurar que esté entre 0 y 100
-    progreso = Math.max(0, Math.min(100, progreso));
-    
-    const restante = 100 - progreso;
-    
-    // 3. DETERMINAR COLOR BASADO EN EL PROGRESO
-    let color;
-    let colorTexto;
-    
-    if (progreso < 30) {
-        color = '#28a745';        // Verde (poca membresía consumida)
-        colorTexto = '#28a745';
-    } else if (progreso < 70) {
-        color = '#ffc107';        // Amarillo (mitad de membresía)
-        colorTexto = '#ffc107';
-    } else if (progreso < 90) {
-        color = '#fd7e14';        // Naranja (casi vencida)
-        colorTexto = '#fd7e14';
-    } else {
-        color = '#dc3545';        // Rojo (muy próxima a vencer)
-        colorTexto = '#dc3545';
-    }
-    
-    // 4. CREAR EL GRÁFICO
-    try {
-        const chart = new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                datasets: [{
-                    data: [progreso, restante],
-                    backgroundColor: [
-                        color,         
-                        '#e9ecef'       
-                    ],
-                    borderWidth: 0,
-                    borderRadius: 4,    
-                    cutout: '70%',      
-                }]
-            },
-            options: {
-                responsive: false,
-                maintainAspectRatio: true,
-                plugins: {
-                    legend: {
-                        display: false
-                    },
-                    tooltip: {
-                        enabled: false
-                    }
-                },
-                animation: {
-                    animateRotate: true,
-                    duration: 1500,       // ← Animación más suave (1.5 segundos)
-                    easing: 'easeInOutQuart'
-                }
-            }
-        });
-        
-        // 5. ACTUALIZAR EL TEXTO CENTRAL
-        const textElement = document.getElementById('chartCenterText');
-        if (textElement) {
-            textElement.style.color = colorTexto;
-            textElement.textContent = `${progreso.toFixed(1)}%`;
-        }
-        
-        console.log(' Gráfico cargado correctamente');
-        console.log(`Progreso: ${progreso}%, Color: ${color}`);
-        
-    } catch (error) {
-        console.error(' Error al crear el gráfico:', error);
-        
-        // Mostrar mensaje de error en el centro
-        const textElement = document.getElementById('chartCenterText');
-        if (textElement) {
-            textElement.textContent = 'Error al cargar';
-            textElement.style.color = '#dc3545';
-            textElement.style.fontSize = '0.9rem';
-        }
-    }
-});
-</script>
-
-<style>
-/* Estilos para el gráfico */
-#progressChart {
-    max-width: 200px;
-    max-height: 200px;
-}
-
-#chartCenterText {
-    font-size: 2rem;
-    font-weight: bold;
-    transition: color 0.3s ease;
-    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-/* Contenedor del gráfico */
-.chart-container {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    margin: 0 auto;
-}
-
-/* Responsive para móviles */
-@media (max-width: 768px) {
-    #progressChart {
-        max-width: 150px !important;
-        max-height: 150px !important;
-    }
-    
-    .chart-container {
-        width: 150px !important;
-        height: 150px !important;
-    }
-    
-    #chartCenterText {
-        font-size: 1.5rem !important;
-    }
-}
-
-/* Animación de aparición */
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.8);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
-}
-
-.chart-container {
-    animation: fadeIn 0.5s ease-out;
-}
-</style>
+<script src="{% static 'js/membresias/detalle_membresias.js' %}"></script>
 
 {% endblock %}

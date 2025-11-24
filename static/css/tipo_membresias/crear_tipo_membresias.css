@@ -1,0 +1,243 @@
+/* ================================
+    PALETA DE COLORES CREAR TIPO MEMBRESÍA
+   ================================ */
+
+:root {
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #42484b;
+}
+
+/* ================================
+    CARD HEADER
+   ================================ */
+
+.card-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+}
+
+.card-header h5 {
+  color: var(--gris-oscuro);
+  font-weight: 600;
+}
+
+/* ================================
+    TÍTULOS DE SECCIONES
+   ================================ */
+
+h6.text-primary {
+  color: var(--rojo-1) !important;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--rojo-1);
+  margin-bottom: 1rem;
+}
+
+/* ================================
+    FOCUS DE INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+    ALERTAS INFORMATIVAS
+   ================================ */
+
+.alert-info {
+  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
+  border: 1px solid #b6effb;
+  border-left: 4px solid #0dcaf0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.alert-info .alert-heading {
+  color: #055160;
+  font-weight: 600;
+}
+
+.alert-info strong {
+  color: #055160;
+}
+
+/* ================================
+    INPUT GROUP
+   ================================ */
+
+.input-group-text {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  font-weight: 600;
+  color: var(--gris-oscuro);
+}
+
+/* ================================
+    LABELS
+   ================================ */
+
+.form-label.fw-semibold {
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.text-danger {
+  color: var(--rojo-1) !important;
+  font-weight: 600;
+}
+
+/* ================================
+    MENSAJES DE AYUDA
+   ================================ */
+
+.form-text.text-muted {
+  font-size: 0.875rem;
+  color: #6c757d !important;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.form-text.text-muted i {
+  color: var(--rojo-1);
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+/* Botón Crear - Verde Oscuro */
+.btn-success {
+  background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-success:hover {
+  background: linear-gradient(135deg, var(--rojo-2) 0%, var(--rojo-3) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
+}
+
+/* Botón Cancelar - Gris */
+.btn-secondary {
+  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* ================================
+    VALIDACIÓN DE ERRORES
+   ================================ */
+
+.text-danger.small {
+  font-size: 0.875rem;
+  color: var(--rojo-1) !important;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Header apilado */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* Footer centrado */
+  .card-footer {
+    text-align: center !important;
+    flex-direction: column !important;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-footer .btn:last-child {
+    margin-bottom: 0;
+  }
+
+  .card-footer .me-2 {
+    margin-right: 0 !important;
+  }
+
+  /* Columnas apiladas */
+  .row .col-md-6 {
+    margin-bottom: 1rem;
+  }
+
+  /* Alertas */
+  .alert-info {
+    text-align: center;
+  }
+
+  h6.text-primary {
+    font-size: 0.95rem;
+  }
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+/* Animación de aparición del formulario */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.4s ease;
+}
+
+/* Efecto de envío del formulario */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.btn-success:active {
+  animation: pulse 0.3s ease;
+}
+
+/* Hover suave en inputs */
+.form-control:hover:not(:disabled),
+.form-select:hover:not(:disabled) {
+  border-color: var(--gris-medio);
+  transition: border-color 0.2s ease;
+}

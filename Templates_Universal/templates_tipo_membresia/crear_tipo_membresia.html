@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tipo_membresias/crear_tipo_membresias.css' %}">
+{% endblock %}
+
 {% block title %}Crear Tipo de Membresía{% endblock %}
 
 {% block content %}
@@ -31,7 +35,9 @@
       
       <!-- Header del formulario -->
       <div class="card-header">
-        <h5 class="mb-0">Información del Tipo de Membresía</h5>
+        <h5 class="mb-0">
+          <i class="bi bi-info-circle me-2"></i>Información del Tipo de Membresía
+        </h5>
       </div>
 
       <!-- Body del formulario -->
@@ -67,7 +73,8 @@
                 {% if form.Duracion_meses.errors %}
                   <div class="text-danger small mt-1">{{ form.Duracion_meses.errors }}</div>
                 {% endif %}
-                <small class="text-muted d-block mt-1">
+                <small class="form-text text-muted">
+                  <i class="bi bi-calendar-range me-1"></i>
                   Selecciona la duración de la membresía
                 </small>
               </div>
@@ -80,7 +87,7 @@
                 {{ form.Estado }}
                 {% if form.Estado.errors %}
                   <div class="text-danger small mt-1">{{ form.Estado.errors }}</div>
-                {% endif %} 
+                {% endif %}
               </div>
             </div>
 
@@ -102,7 +109,8 @@
                 {% if form.Precio.errors %}
                   <div class="text-danger small mt-1">{{ form.Precio.errors }}</div>
                 {% endif %}
-                <small class="text-muted d-block mt-1">
+                <small class="form-text text-muted">
+                  <i class="bi bi-wallet2 me-1"></i>
                   Precio total de la membresía por el período completo
                 </small>
               </div>
@@ -115,8 +123,8 @@
                 {% if form.tipo_membresia_img.errors %}
                   <div class="text-danger small mt-1">{{ form.tipo_membresia_img.errors }}</div>
                 {% endif %}
-                <small class="text-muted d-block mt-1">
-                  <i class="bi bi-info-circle me-1"></i>Formatos: JPG, PNG, JPEG, WEBP
+                <small class="form-text text-muted">
+                  <i class="bi bi-image me-1"></i>Formatos: JPG, PNG, JPEG, WEBP
                 </small>
               </div>
 
@@ -146,67 +154,4 @@
     </div>
   </div>
 </div>
-
-<style>
-  .form-label.fw-semibold {
-    color: #495057;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-header {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #e9ecef;
-  }
-
-  h6.text-primary {
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #0d6efd;
-  }
-
-  .input-group-text {
-    background-color: #e9ecef;
-    border: 1px solid #ced4da;
-  }
-
-  .form-control:focus,
-  .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-  }
-
-  .alert-info {
-    background-color: #cff4fc;
-    border-color: #b6effb;
-    color: #055160;
-  }
-
-  @media (max-width: 768px) {
-    .card-body {
-      padding: 1rem !important;
-    }
-
-    h6.text-primary {
-      font-size: 0.95rem;
-    }
-
-    .card-footer {
-      text-align: center !important;
-    }
-
-    .card-footer .btn {
-      width: 100%;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-footer .btn:last-child {
-      margin-bottom: 0;
-    }
-
-    .card-footer .me-2 {
-      margin-right: 0 !important;
-    }
-  }
-</style>
-
 {% endblock %}

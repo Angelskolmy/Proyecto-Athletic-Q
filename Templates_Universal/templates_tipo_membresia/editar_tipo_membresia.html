@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tipo_membresias/editar_tipo_membresias.css' %}">
+{% endblock %}
+
 {% block title %}Editar Tipo de Membresía{% endblock %}
 
 {% block content %}
@@ -24,17 +28,16 @@
   </div>
 </div>
 <!--end::App Content Header-->
-
 <div class="app-content">
   <div class="container-fluid">
     <div class="card shadow-sm">
-      
-      <!-- Header del formulario -->
-      <div class="card-header d-flex justify-content-between align-items-center">
-        <h5 class="mb-0">Editar: {{ tipo.Nombre }}</h5>
-        <span class="badge {% if tipo.Estado == 'Activo' %}bg-success{% else %}bg-danger{% endif %}">
+      <div class="card-header d-flex align-items-center gap-3">
+        <span class="badge {% if tipo.Estado == 'Activo' %}bg-success{% else %}bg-danger{% endif %} fs-6">
           {{ tipo.Estado }}
         </span>
+        <h5 class="mb-0">
+          <i class="bi bi-info-circle me-2"></i>Editar: {{ tipo.Nombre }}
+        </h5>
       </div>
 
       <!-- Body del formulario -->
@@ -54,7 +57,7 @@
               {% if tipo.tipo_membresia_img %}
               <div class="mb-3 text-center">
                 <img src="{{ tipo.tipo_membresia_img.url }}" alt="{{ tipo.Nombre }}" 
-                     class="rounded shadow-sm" style="max-height: 150px; object-fit: cover;">
+                      class="rounded shadow-sm" style="max-height: 150px; object-fit: cover;">
                 <p class="text-muted mt-2 mb-0">Imagen actual</p>
               </div>
               {% endif %}
@@ -79,7 +82,7 @@
                 {% if form.Duracion_meses.errors %}
                   <div class="text-danger small mt-1">{{ form.Duracion_meses.errors }}</div>
                 {% endif %}
-                <small class="text-muted d-block mt-1">
+                <small class="form-text text-muted">
                   <i class="bi bi-exclamation-circle me-1"></i>
                   Cambiar la duración afectará solo a nuevas membresías
                 </small>
@@ -115,7 +118,7 @@
                 {% if form.Precio.errors %}
                   <div class="text-danger small mt-1">{{ form.Precio.errors }}</div>
                 {% endif %}
-                <small class="text-muted d-block mt-1">
+                <small class="form-text text-muted">
                   <strong>Precio actual:</strong> ${{ tipo.Precio|floatformat:0 }}
                 </small>
               </div>
@@ -128,8 +131,8 @@
                 {% if form.tipo_membresia_img.errors %}
                   <div class="text-danger small mt-1">{{ form.tipo_membresia_img.errors }}</div>
                 {% endif %}
-                <small class="text-muted d-block mt-1">
-                  Deja en blanco para mantener la imagen actual
+                <small class="form-text text-muted">
+                  <i class="bi bi-image me-1"></i>Deja en blanco para mantener la imagen actual
                 </small>
               </div>
 
@@ -160,90 +163,8 @@
     </div>
   </div>
 </div>
+{% endblock %}
 
-<!-- Estilos personalizados -->
-<style>
-  h6.text-primary {
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #0d6efd;
-  }
-
-  .alert-warning {
-    border-left: 4px solid #ffc107;
-  }
-
-  .form-control:focus,
-  .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-  }
-
-  .card-footer {
-    border-top: 2px solid #e9ecef;
-  }
-
-  @media (max-width: 768px) {
-    .card-body {
-      padding: 1rem !important;
-    }
-
-    .text-end {
-      text-align: left !important;
-    }
-
-    .btn {
-      width: 100%;
-      margin-bottom: 0.5rem;
-    }
-
-    .btn:last-child {
-      margin-bottom: 0;
-    }
-  }
-</style>
-
-<!-- Script para previsualizar imagen -->
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const inputImagen = document.getElementById('{{ form.tipo_membresia_img.id_for_label }}');
-    
-    if (inputImagen) {
-        inputImagen.addEventListener('change', function(e) {
-            const file = e.target.files[0];
-            
-            if (file) {
-                const reader = new FileReader();
-                
-                reader.onload = function(event) {
-                    // Buscar si ya existe una imagen de previsualización
-                    let preview = document.getElementById('preview-img');
-                    
-                    if (!preview) {
-                        // Crear contenedor de previsualización
-                        const previewContainer = document.createElement('div');
-                        previewContainer.className = 'mt-3 text-center';
-                        previewContainer.innerHTML = `
-                            <p class="text-muted mb-2">
-                                <i class="bi bi-eye me-1"></i>Nueva imagen:
-                            </p>
-                            <img id="preview-img" class="rounded shadow-sm" 
-                                 style="max-height: 150px; object-fit: cover;">
-                        `;
-                        
-                        // Insertar después del input
-                        inputImagen.parentElement.appendChild(previewContainer);
-                        preview = document.getElementById('preview-img');
-                    }
-                    
-                    preview.src = event.target.result;
-                };
-                
-                reader.readAsDataURL(file);
-            }
-        });
-    }
-});
-</script>
-
+{% block extra_js %}
+<script src="{% static 'js/tipo_membresias/editar_tipo_membresias.js' %}"></script>
 {% endblock %}

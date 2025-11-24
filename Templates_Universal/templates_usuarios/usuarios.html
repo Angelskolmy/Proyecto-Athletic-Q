@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/usuarios/usuarios.css' %}">
+{% endblock %}
+
 {% block tittle %}
 Usuarios
 {% endblock %}
@@ -30,7 +34,7 @@ Usuarios
       <!-- Header con filtro y buscador -->
       <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
         <!-- Botón Agregar -->
-        <a href="{% url 'empleados_create' %}" class="btn btn-success mb-2 mb-sm-0">
+        <a href="{% url 'empleados_create' %}" class="btn btn-crear mb-2 mb-sm-0">
           <i class="bi bi-person-plus-fill me-1"></i> Agregar Usuario
         </a>
 
@@ -97,52 +101,96 @@ Usuarios
             {% for UsEmp in Empleados %}
               <tr>
                 <td>{{ UsEmp.Cedula|default:'Sin cédula' }}</td>
+                
+                <!-- Foto -->
                 <td>
-                    {% if UsEmp.empleados_img %}
-                        <img src="{{ UsEmp.empleados_img.url }}" alt="Foto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-                    {% else %}
-                        <img src="{% static 'img/default-user.png' %}" alt="Sin foto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-                    {% endif %}
+                  {% if UsEmp.empleados_img %}
+                    <img src="{{ UsEmp.empleados_img.url }}" alt="Foto" class="rounded-circle user-avatar">
+                  {% else %}
+                    <img src="{% static 'img/default-user.png' %}" alt="Sin foto" class="rounded-circle user-avatar">
+                  {% endif %}
                 </td>
+                
                 <td>{{ UsEmp.first_name|default:'Sin nombre' }}</td>
                 <td>{{ UsEmp.last_name|default:'Sin apellido' }}</td>
+                
+                <!-- Genero -->
                 <td>
-                    {% if UsEmp.Sexo %}
-                    <span class="badge {% if UsEmp.Sexo == 'Masculino' %}text-bg-primary{% else %}text-bg-info{% endif %}">
-                        {{ UsEmp.Sexo }}
+                  {% if UsEmp.Sexo == 'Masculino' %}
+                    <span class="badge badge-masculino">
+                      <i class="bi bi-gender-male me-1"></i>Masculino
                     </span>
-                    {% else %}
-                    <span class="badge text-bg-secondary">No especificado</span>
-                    {% endif %}
+                  {% elif UsEmp.Sexo == 'Femenino' %}
+                    <span class="badge badge-femenino">
+                      <i class="bi bi-gender-female me-1"></i>Femenino
+                    </span>
+                  {% else %}
+                    <span class="badge bg-secondary">
+                      <i class="bi bi-question-circle me-1"></i>No especificado
+                    </span>
+                  {% endif %}
                 </td>
+                
                 <td>{{ UsEmp.email|default:'Sin email' }}</td>
+                
+                <!-- Roles por colores -->
                 <td>
-                    {% for g in UsEmp.groups.all %}
-                        <span class="badge bg-info">{{ g.name }}</span>
-                    {% empty %}
-                        {% if not UsEmp.is_superuser %}
-                        <span class="badge bg-secondary">Sin rol</span>
-                        {% endif %}
+                  {% if UsEmp.groups.exists %}
+                    {% for grupo in UsEmp.groups.all %}
+                      {% if 'admin' in grupo.name|lower or 'administrador' in grupo.name|lower %}
+                        <span class="badge badge-rol-admin">
+                          <i class="bi bi-shield-lock-fill me-1"></i>{{ grupo.name }}
+                        </span>
+                      {% elif 'vendedor' in grupo.name|lower %}
+                        <span class="badge badge-rol-vendedor">
+                          <i class="bi bi-cash-coin me-1"></i>{{ grupo.name }}
+                        </span>
+                      {% elif 'entrenador' in grupo.name|lower or 'coach' in grupo.name|lower %}
+                        <span class="badge badge-rol-entrenador">
+                          <i class="bi bi-person-arms-up me-1"></i>{{ grupo.name }}
+                        </span>
+                      {% else %}
+                        <span class="badge badge-rol-empleado">
+                          <i class="bi bi-person-badge me-1"></i>{{ grupo.name }}
+                        </span>
+                      {% endif %}
                     {% endfor %}
-                </td>
-                <td>
-                    <span class="badge {% if UsEmp.is_active %}text-bg-success{% else %}text-bg-danger{% endif %}">
-                        {% if UsEmp.is_active %}Activo{% else %}Inactivo{% endif %}
+                  {% else %}
+                    <span class="badge bg-secondary">
+                      <i class="bi bi-person me-1"></i>Sin rol
                     </span>
+                  {% endif %}
                 </td>
+                
+                <!-- Estado -->
                 <td>
-                  <a href="{% url 'empleados_edit' UsEmp.id %}" class="btn btn-sm btn-warning me-1" title="Editar">
+                  {% if UsEmp.is_active %}
+                    <span class="badge badge-activo">
+                      <i class="bi bi-check-circle-fill me-1"></i>Activo
+                    </span>
+                  {% else %}
+                    <span class="badge badge-inactivo">
+                      <i class="bi bi-x-circle-fill me-1"></i>Inactivo
+                    </span>
+                  {% endif %}
+                </td>
+                
+                <!-- Acciones -->
+                <td>
+                  <!-- Editar -->
+                  <a href="{% url 'empleados_edit' UsEmp.id %}" class="btn btn-sm btn-editar me-1" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
-                  {% if not UsEmp.Huella_id %}
-                  <button class="btn btn-sm btn-info" title="Registrar Huella" 
-                          onclick="mostrarModalHuella({{ UsEmp.id }})">
-                    <i class="bi bi-fingerprint"></i>
-                  </button>
+                  
+                  <!-- Huellas -->
+                  {% if UsEmp.Huella_id %}
+                    <button class="btn btn-sm btn-huella-registrada" title="Huella registrada">
+                      <i class="bi bi-fingerprint"></i>
+                    </button>
                   {% else %}
-                  <span class="badge bg-success" title="Huella registrada">
-                    <i class="bi bi-fingerprint"></i>
-                  </span>
+                    <button class="btn btn-sm btn-huella-no-registrada" disabled title="Sin huella">
+                      <i class="bi bi-fingerprint"></i>
+                    </button>
                   {% endif %}
                 </td>
               </tr>
@@ -150,16 +198,10 @@ Usuarios
               <tr>
                 <td colspan="9" class="text-center text-muted py-4">
                   <i class="bi bi-inbox display-1"></i>
-                  <p class="mt-2">
-                    {% if search_query or filter_type %}
-                      No se encontraron usuarios que coincidan con los criterios de búsqueda.
-                    {% else %}
-                      No se encontraron usuarios registrados.
-                    {% endif %}
-                  </p>
+                  <p class="mt-2">No se encontraron usuarios.</p>
                   {% if search_query or filter_type %}
                   <a href="{% url 'Empleados' %}" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-arrow-clockwise me-1"></i>Limpiar filtros
+                    <i class="bi bi-x-circle me-1"></i>Limpiar Filtros
                   </a>
                   {% endif %}
                 </td>
@@ -173,7 +215,6 @@ Usuarios
       <!-- Footer con paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
         {% if Empleados.paginator.num_pages > 1 %}
-        <!-- Paginación (Izquierda) -->
         <ul class="pagination pagination-sm mb-0">
           {% if Empleados.has_previous %}
             <li class="page-item">
@@ -209,7 +250,6 @@ Usuarios
         </ul>
         {% endif %}
 
-        <!-- Texto centrado -->
         <div class="flex-grow-1 text-center">
           <span class="text-muted small">
             Mostrando {{ Empleados.start_index }}–{{ Empleados.end_index }} de {{ total_items }} registros
@@ -219,7 +259,6 @@ Usuarios
           </span>
         </div>
 
-        <!-- Dropdown (Derecha) -->
         <div class="dropdown">
           <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             Exportar
@@ -233,63 +272,4 @@ Usuarios
     </div>
   </div>
 </div>
-
-<style>
-  /* --- RESPONSIVE SOLO PARA MÓVILES --- */
-  @media (max-width: 768px) {
-    /* Header apilado */
-    .card-header {
-      flex-direction: column !important;
-      align-items: stretch !important;
-    }
-
-    .card-header .btn {
-      width: 100% !important;
-    }
-
-    .card-header form {
-      width: 100% !important;
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 0.5rem !important;
-    }
-
-    .card-header select,
-    .card-header .input-group {
-      width: 100% !important;
-    }
-
-    /* Tabla scrollable */
-    .table-responsive {
-      overflow-x: auto !important;
-    }
-
-    table th,
-    table td {
-      white-space: nowrap;
-    }
-
-    /* Footer adaptable */
-    .card-footer {
-      flex-direction: column !important;
-      align-items: center !important;
-      text-align: center;
-      gap: 0.75rem;
-    }
-
-    .card-footer ul.pagination {
-      justify-content: center;
-    }
-
-    .card-footer .dropdown {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .card-footer .dropdown .btn {
-      width: auto;
-    }
-  }
-</style>
 {% endblock %}

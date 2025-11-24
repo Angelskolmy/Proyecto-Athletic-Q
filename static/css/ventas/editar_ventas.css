@@ -1,0 +1,443 @@
+/* ================================
+    PALETA DE COLORES EDITAR VENTA
+   ================================ */
+
+:root {
+  /* Rojos (de claro a oscuro) */
+  --rojo-1: #8B0000;  /* Rojo oscuro principal */
+  --rojo-2: #740000;  /* Rojo muy oscuro */
+  --rojo-3: #5D0000;  /* Rojo casi negro */
+  --rojo-4: #460000;  /* Rojo oscuro profundo */
+  --rojo-5: #2E0000;  /* Rojo-negro */
+  --rojo-6: #170000;  /* Casi negro rojizo */
+  
+  /* Negros y Grises */
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #6c757d;
+  --gris-claro: #a8a8a8;
+  --gris-muy-claro: #e9ecef;
+  
+  /* Beige/Crema */
+  --beige-oscuro: #d4c5b9;
+  --beige-claro: #f5f0e8;
+  --beige-muy-claro: #faf8f5;
+}
+
+/* ================================
+    HEADER DE ADVERTENCIA
+   ================================ */
+
+.app-content-header h3 {
+  color: var(--gris-oscuro);
+}
+
+.app-content-header .text-danger {
+  color: var(--rojo-1) !important;
+}
+
+.app-content-header small {
+  color: var(--gris-medio);
+}
+
+/* ================================
+    BADGES DE STOCK
+   ================================ */
+
+.bg-danger-dark {
+  background-color: #911515 !important; /* Rojo oscuro */
+  color: #fff !important;
+}
+
+.bg-warning-dark {
+  background-color: #d97706 !important; /* Amarillo/naranja oscuro */
+  color: #fff !important;
+}
+
+.bg-success-dark {
+  background-color: #047857 !important; /* Verde oscuro */
+  color: #fff !important;
+}
+
+/* ================================
+    CARD DE PRODUCTOS - HEADER GRIS OSCURO
+   ================================ */
+
+.card-header-productos {
+  background: var(--gris-oscuro);
+  color: #fff;
+  border-bottom: 3px solid rgba(255,255,255,0.3);
+}
+
+/* ================================
+    CARD DEL CARRITO - NEGRO
+   ================================ */
+
+.card-header-carrito {
+  background: linear-gradient(135deg, var(--negro) 0%, var(--gris-oscuro) 100%);
+  color: #fff;
+  border-bottom: 3px solid rgba(255,255,255,0.3);
+}
+
+/* ================================
+    GRID DE PRODUCTOS - MÁS ALTO
+   ================================ */
+
+#productos {
+  max-height: 750px;
+  min-height: 650px;
+  overflow-y: auto;
+  align-items: flex-start !important;
+  background-color: var(--beige-muy-claro);
+}
+
+/* Scroll personalizado */
+#productos::-webkit-scrollbar {
+  width: 8px;
+}
+
+#productos::-webkit-scrollbar-track {
+  background: var(--beige-claro);
+  border-radius: 10px;
+}
+
+#productos::-webkit-scrollbar-thumb {
+  background: var(--gris-claro);
+  border-radius: 10px;
+}
+
+#productos::-webkit-scrollbar-thumb:hover {
+  background: var(--gris-medio);
+}
+
+/* ================================
+    CARDS DE PRODUCTOS
+   ================================ */
+
+.producto-card {
+  align-self: flex-start !important;
+  margin-bottom: 0.5rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  border: 2px solid transparent;
+  background-color: var(--beige-muy-claro);
+  animation: fadeIn 0.3s ease;
+}
+
+.producto-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 16px rgba(139, 0, 0, 0.2);
+}
+
+.producto-card.sin-stock {
+  opacity: 0.5;
+  filter: grayscale(50%);
+  cursor: not-allowed;
+  background-color: var(--gris-muy-claro);
+}
+
+.producto-card.sin-stock:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+.producto-card .card {
+  height: auto !important;
+  min-height: 260px;
+  max-height: 280px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--beige-oscuro);
+}
+
+.producto-card .card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: var(--beige-muy-claro);
+}
+
+.producto-card .card-img-top {
+  height: 120px !important;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+/* --- Imagen del producto --- */
+.producto-img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+}
+
+/* --- Badge de stock --- */
+.badge-stock {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  font-size: 0.75rem;
+  padding: 0.35rem 0.6rem;
+}
+
+.bg-success {
+  background-color: var(--rojo-1) !important;
+}
+
+.bg-danger {
+  background-color: var(--negro) !important;
+}
+
+.text-success {
+  color: var(--gris-oscuro) !important;
+}
+
+/* ================================
+    BOTÓN AGREGAR
+   ================================ */
+
+.btn-agregar-producto {
+  background: var(--gris-oscuro);
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+}
+
+.btn-agregar-producto:hover {
+  background: #1c1c1c;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 0, 0, 0.5);
+}
+
+.btn-agregar-producto:disabled {
+  background: linear-gradient(135deg, #6c757d 0%, #495057 100%) !important;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* ================================
+    CARRITO DE VENTA
+   ================================ */
+
+.carrito-item {
+  transition: background-color 0.2s ease;
+  background-color: var(--beige-muy-claro);
+  border: 1px solid var(--beige-oscuro);
+}
+
+.carrito-item:hover {
+  background-color: var(--beige-claro);
+}
+
+.carrito-vacio {
+  padding: 3rem 1rem;
+  color: var(--gris-medio);
+}
+
+.carrito-vacio i {
+  font-size: 4rem;
+  opacity: 0.3;
+  color: var(--gris-claro);
+}
+
+/* --- Botones del carrito --- */
+.btn-cantidad {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  font-size: 1rem;
+  line-height: 1;
+  border-radius: 4px;
+  background-color: var(--gris-medio);
+  color: #fff;
+  border: none;
+}
+
+.btn-cantidad:hover {
+  background-color: var(--gris-oscuro);
+}
+
+.cantidad-display {
+  min-width: 40px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--negro);
+}
+
+/* ================================
+    TARJETAS DE ADVERTENCIA
+   ================================ */
+
+.border-warning {
+  border-left: 4px solid #ffc107 !important;
+}
+
+.border-danger {
+  border-left: 4px solid var(--rojo-1) !important;
+}
+
+.alert-light {
+  background-color: var(--beige-claro) !important;
+  color: var(--negro) !important;
+}
+
+/* ================================
+   BOTÓN PROCESAR VENTA - ROJO OSCURO
+   ================================ */
+
+.btn-procesar-venta {
+  background: linear-gradient(135deg, var(--rojo-2) 0%, var(--rojo-3) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(116, 0, 0, 0.3);
+}
+
+.btn-procesar-venta:hover {
+  background: linear-gradient(135deg, var(--rojo-3) 0%, var(--rojo-4) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 10px rgba(116, 0, 0, 0.4);
+}
+
+/* ================================
+   BOTÓN VACIAR CARRITO - GRIS
+   ================================ */
+
+.btn-secondary {
+  background-color: var(--gris-medio) !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+  background-color: var(--gris-oscuro) !important;
+  border-color: var(--negro) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* ================================
+    STICKY CARRITO
+   ================================ */
+
+.sticky-top {
+  position: sticky;
+  top: 20px;
+  z-index: 10;
+}
+
+/* ================================
+   💰 TOTAL
+   ================================ */
+
+#total {
+  color: var(--rojo-1) !important;
+}
+
+/* ================================
+   --- Filtros ---
+   ================================ */
+
+.filtros-container {
+  background-color: var(--beige-muy-claro);
+  border: 1px solid var(--beige-oscuro);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* ================================
+   --- Animaciones ---
+   ================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================================
+    FOCUS INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+.form-check-input:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 991px) {
+  .sticky-top {
+    position: relative !important;
+    top: 0 !important;
+  }
+  
+  #productos {
+    max-height: 500px !important;
+    min-height: 400px !important;
+  }
+}
+
+@media (min-width: 1400px) {
+  #productos {
+    max-height: 850px !important;
+    min-height: 750px !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .filtros-container {
+    flex-direction: column !important;
+  }
+
+  .filtros-container > * {
+    width: 100% !important;
+    margin-bottom: 0.5rem;
+  }
+
+  .producto-img {
+    height: 100px;
+  }
+
+  .carrito-item {
+    padding: 0.75rem !important;
+  }
+
+  .btn-cantidad {
+    width: 28px;
+    height: 28px;
+    font-size: 0.9rem;
+  }
+
+  /* Card header apilado */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .card-header .btn {
+    width: 100% !important;
+  }
+}

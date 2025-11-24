@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/membresias/editar_membresias.css' %}">
+{% endblock %}
+
 {% block title %}Editar Membresía{% endblock %}
 
 {% block content %}
@@ -8,7 +12,9 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-8">
-                <h3 class="mb-0"><i class="bi bi-pencil-square me-1"></i> Editar Membresía</h3>
+                <h3 class="mb-0">
+                    <i class="bi bi-pencil-square me-2"></i> Editar Membresía
+                </h3>
             </div>
             <div class="col-sm-4">
                 <ol class="breadcrumb float-sm-end">
@@ -25,7 +31,9 @@
     <div class="container-fluid">
         <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <h5 class="mb-0">Editar Membresía #{{ membresia.Id_membresia }}</h5>
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Editar Membresía #{{ membresia.Id_membresia }}
+                </h5>
                 <span class="badge {% if membresia.Estado == 'Activo' %}bg-success{% else %}bg-danger{% endif %}">
                     {{ membresia.Estado }}
                 </span>
@@ -84,8 +92,6 @@
                         </h5>
                         <!-- Estado -->
                         <div class="col-md-6">
-
-                            
                             <div class="mb-3">
                                 {{ form.Estado.label_tag }}
                                 <span class="text-danger">*</span>
@@ -102,8 +108,6 @@
 
                         <!-- Imagen (Opcional) -->
                         <div class="col-md-6">
-                            
-                            <!-- Imagen actual -->
                             {% if membresia.membresia_img %}
                             <div class="mb-3 text-center">
                                 <img src="{{ membresia.membresia_img.url }}" alt="Imagen actual" 
@@ -142,36 +146,4 @@
         </div>
     </div>
 </div>
-
-<style>
-h5.text-primary {
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #b11226;
-}
-
-/* Estilo para campos deshabilitados */
-select[disabled], 
-input[disabled] {
-    background-color: #e9ecef !important;
-    cursor: not-allowed !important;
-    opacity: 0.7;
-}
-
-@media (max-width: 768px) {
-    .card-footer {
-        text-align: center !important;
-    }
-    
-    .card-footer .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    
-    .card-footer .btn:last-child {
-        margin-bottom: 0;
-    }
-}
-</style>
-
 {% endblock %}

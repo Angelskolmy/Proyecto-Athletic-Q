@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/membresias/crear_membresias.css' %}">
+{% endblock %}
+
 {% block title %}Crear Membresía{% endblock %}
 
 {% block content %}
@@ -8,7 +12,9 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-8">
-                <h3 class="mb-0"><i class="bi bi-plus-circle me-1"></i> Nueva Membresía</h3>
+                <h3 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i> Nueva Membresía
+                </h3>
             </div>
             <div class="col-sm-4">
                 <ol class="breadcrumb float-sm-end">
@@ -25,7 +31,9 @@
     <div class="container-fluid">
         <div class="card shadow-sm">
             <div class="card-header">
-                <h5 class="mb-0">Información de la Membresía</h5>
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Información de la Membresía
+                </h5>
             </div>
 
             <form method="POST" enctype="multipart/form-data">
@@ -156,10 +164,10 @@
                 </div>
 
                 <div class="card-footer text-end">
-                    <a href="{% url 'Membresias' %}" class="btn btn-secondary me-2">
+                    <a href="{% url 'Membresias' %}" class="btn btn-cancelar me-2">
                         <i class="bi bi-x-circle"></i> Cancelar
                     </a>
-                    <button type="submit" class="btn btn-success">
+                    <button type="submit" class="btn btn-crear">
                         <i class="bi bi-check-circle"></i> Crear Membresía
                     </button>
                 </div>
@@ -167,36 +175,4 @@
         </div>
     </div>
 </div>
-
-<style>
-h6.text-primary {
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #b11226;
-}
-
-.alert-info {
-    background-color: #cff4fc;
-    border-color: #b6effb;
-}
-
-.alert-light {
-    background-color: #f8f9fa;
-}
-
-@media (max-width: 768px) {
-    .card-footer {
-        text-align: center !important;
-    }
-    
-    .card-footer .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-    
-    .card-footer .btn:last-child {
-        margin-bottom: 0;
-    }
-}
-</style>
 {% endblock %}

@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static currency_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/membresias/membresias.css' %}">
+{% endblock %}
 
 {% block title %}Membresías{% endblock %}
 
@@ -28,7 +32,7 @@
 
       <!-- Header -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <a href="{% url 'membresias_create' %}" class="btn btn-success">
+        <a href="{% url 'membresias_create' %}" class="btn btn-crear">
           <i class="bi bi-plus-circle me-1"></i> Nueva Membresía
         </a>
 
@@ -109,9 +113,9 @@
                   {% endif %}
                 </td>
                 
-                <!-- ✅ MOSTRAR PRECIO DEL TIPO -->
+                <!-- MOSTRAR PRECIO DEL TIPO -->
                 <td class="fw-bold text-success">
-                  ${{ artMemb.For_Id_tipo_membresia.Precio|floatformat:0 }}
+                  {{ artMemb.For_Id_tipo_membresia.Precio|currency_cop }}
                 </td>
                 
                 <td>

@@ -4,9 +4,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Contraseña | Gimnasio </title>
+    <title>Iniciar Sesión | Gimnasio</title>
 
-   <!-- Icono -->
+    <!-- Icono -->
     <link rel="icon" href="{% static 'img/logo2.png' %}" type="image/png">
 
     <!-- AdminLTE -->
@@ -19,44 +19,50 @@
     <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
 
     <!-- CSS personalizado -->
-    <link rel="stylesheet" href="{% static 'css/nuevo2.css' %}">
-
+    <link rel="stylesheet" href="{% static 'css/core_session/login.css' %}">
 
 </head>
 <body>
   <div class=" login-container  d-flex flex-column">
-    <div class="d-flex align-items-center justify-content-center mx-4">
+    <div class="d-flex align-items-center justify-content-center m-4">
       <img src="{% static 'img/logo2.png'%}" class="ms-3" width="60px">
-      <h1 class="color3 mx-3">Cambia tu contraseña<h1>
+      <h1 class="color3 mx-3">Iniciar Sesion<h1>
     </div>
     <div class="car1 d-flex align-items-center justify-content-center">
       <div class=" card2 p-4" style="width: 100%;">
+
+        {% if messages %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            </div>
+          {% endfor %}
+        {% endif %}
+
         <form method="POST" action="{% url 'login'%}">
           {% csrf_token %}
           <div class="col-auto mb-4 flex">
-            <label class="mb-2">Nueva contraseña</label>
             <div class="input-group">
               <div class="input-group-text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
-                </svg>
+                <i class="bi bi-person-fill"></i>
               </div>
-              <input type="text" class="form-control boton" id="autoSizingInputGroup" placeholder="Contraseña">
+              <input type="text" class="form-control boton" id="autoSizingInputGroup" name="usern" placeholder="Usuario">
             </div>
           </div>
           <div class="col-auto mb-4 flex">
-            <label class="mb-2">Confirmar contraseña</label>
             <div class="input-group">
               <div class="input-group-text">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-lock-fill" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M8 0a4 4 0 0 1 4 4v2.05a2.5 2.5 0 0 1 2 2.45v5a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 2 13.5v-5a2.5 2.5 0 0 1 2-2.45V4a4 4 0 0 1 4-4m0 1a3 3 0 0 0-3 3v2h6V4a3 3 0 0 0-3-3"/>
-                </svg>
+                <i class="bi bi-lock-fill"></i>
               </div>
-              <input type="password" class="form-control p-2 boton" id="password" placeholder="Contraseña" required>
+              <input type="password" class="form-control p-2 boton" id="password" name="password" placeholder="Contraseña" required>
             </div>
           </div>
           <button type="submit" class="form-control w-100 color1 color boton">Sing in</button>
         </form>
+        <div class="text-center mt-3 ">
+          <a href="{% url 'correo' %}" class="color3">¿Olvidaste tu contraseña?</a>
+        </div>
       </div>
     </div>
     <div class="mt-auto text-center py-3">

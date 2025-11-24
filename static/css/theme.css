@@ -3,31 +3,51 @@
    ================================ */
 
 /* Paleta principal (modo claro) */
+
 :root {
-  /* 🎯 Color principal */
-  --color-primary: #b11226;       /* Rojo oscuro personalizado */
-  --color-primary-dark: #bbbbbb;
+  /* 🎯 Color principal - ROJO OSCURO */
+  --color-primary: #8B0000;       /* Rojo oscuro más intenso */
+  --color-primary-dark: #6B0000;  /* Rojo muy oscuro */
+  --color-primary-light: #A52A2A; /* Rojo marrón para hover */
 
-  /* 🌈 Colores secundarios más oscuros y sobrios */
-  --color-success: #247d4c;       /* Verde más oscuro */
-  --color-success-dark: #1a6d3e;
+  /* ✅ Verde para ACTIVO / CREAR */
+  --color-success: #28a745;       /* Verde estándar Bootstrap */
+  --color-success-dark: #218838;  /* Verde oscuro hover */
+  --color-success-light: #d4edda; /* Verde claro fondo */
 
-  --color-warning: #f5bc02;       /* Amarillo más oscuro */
-  --color-warning-dark: #d9a405;
+  /* ❌ Rojo para INACTIVO / PELIGRO */
+  --color-danger: #dc3545;        /* Rojo estándar Bootstrap */
+  --color-danger-dark: #c82333;   /* Rojo oscuro hover */
+  --color-danger-light: #f8d7da;  /* Rojo claro fondo */
 
-  --color-info: #138fa7;          /* Azul petróleo oscuro */
-  --color-info-dark: #1a8398;
+  /* 🔵 Azul para MASCULINO */
+  --color-masculino: #007bff;     /* Azul estándar */
+  --color-masculino-dark: #0056b3;/* Azul oscuro */
+  --color-masculino-light: #cce5ff; /* Azul claro */
 
-  --color-danger: #c7152d;        /* Usa el rojo principal */
-  --color-danger-dark: #a60e23;
+  /* 🔴 Rosa-Rojo para FEMENINO */
+  --color-femenino: #e83e8c;      /* Rosa-rojo vibrante */
+  --color-femenino-dark: #d63384; /* Rosa-rojo oscuro */
+  --color-femenino-light: #f8d7e9; /* Rosa claro */
 
-  --color-secondary: #495057;
+  /* ⚠️ Amarillo para ADVERTENCIAS */
+  --color-warning: #ffc107;       /* Amarillo estándar */
+  --color-warning-dark: #e0a800;  /* Amarillo oscuro */
+
+  /* ℹ️ Azul para INFO */
+  --color-info: #17a2b8;          /* Azul turquesa */
+  --color-info-dark: #138496;
+
+  /* 🎨 Colores de UI */
+  --color-secondary: #6c757d;
   --color-light: #f8f9fa;
-  --color-dark: #212529;
+  --color-dark: #343a40;
 
-  --color-navbar-bg: #c7152d; /* Gris claro elegante */ 
-  --color-sidebar-bg: #f1f3f5; /* Sidebar rojo oscuro */ 
-  --color-sidebar-hover: #e11d31; /* Hover más claro */ 
+  /* 🔴 SIDEBAR ROJO OSCURO */
+  --color-sidebar-bg: #f1f3f5;    /* Rojo muy oscuro */
+  
+  /* 🔺 NAVBAR */
+  --color-navbar-bg: #8B0000;     /* Rojo oscuro */
   
   --color-text: #434950; 
   --color-text-light: #ffffff;
@@ -85,6 +105,9 @@ body {
    🔺 NAVBAR
    ================================ */
 
+.user-header {
+  background-color: var(--color-navbar-bg) !important;
+}
 .navbar {
   background-color: var(--color-navbar-bg) !important;
   border-bottom: 1px solid rgba(0, 0, 0, 0.05);
@@ -98,7 +121,7 @@ body {
 
 .navbar .nav-link:hover,
 .breadcrumb a:hover {
-  color: var(--color-primary-dark);
+  color: #a7a7a7;
 }
 
 /* ================================
@@ -106,7 +129,7 @@ body {
    ================================ */
 
 .sidebar-brand {
-  background-color:#c7152d ;
+  background-color: var(--color-navbar-bg)
 }
 
 .app-sidebar {
@@ -233,4 +256,48 @@ a:hover {
 
 .text-primary {
   color: var(--color-primary) !important;
+}
+
+/* ================================
+   🎯 FOCUS GLOBAL PARA TODO EL SISTEMA
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+.form-check-input:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="datetime-local"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="file"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Focus para inputs dentro de input-group */
+.input-group .form-control:focus {
+  z-index: 3;
+}
+
+/* Focus para checkboxes y radios */
+.form-check-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+}
+
+/* Focus para switches */
+.form-switch .form-check-input:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238B0000'/%3e%3c/svg%3e");
 }

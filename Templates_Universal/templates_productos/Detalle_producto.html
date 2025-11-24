@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% load static currency_filters %}
+
 {% block title %}
 Detalle Producto
 {% endblock %}
@@ -100,7 +102,7 @@ Detalle Producto
                     <small class="text-muted d-block mb-1">
                       <i class="bi bi-cart-dash me-1"></i>Precio de Compra
                     </small>
-                    <h5 class="mb-0 fw-bold text-primary">${{ detail.Precio_de_compra }}</h5>
+                    <h5 class="mb-0 fw-bold text-primary">${{ detail.Precio_de_compra|currency_cop }}</h5>
                   </div>
                 </div>
               </div>
@@ -111,7 +113,7 @@ Detalle Producto
                     <small class="text-muted d-block mb-1">
                       <i class="bi bi-cart-check me-1"></i>Precio de Venta
                     </small>
-                    <h5 class="mb-0 fw-bold text-success">${{ detail.Precio_de_venta }}</h5>
+                    <h5 class="mb-0 fw-bold text-success">${{ detail.Precio_de_venta|currency_cop }}</h5>
                   </div>
                 </div>
               </div>

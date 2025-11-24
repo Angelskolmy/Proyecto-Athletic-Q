@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/categorias/crear_categorias.css' %}">
+{% endblock %}
+
+{% block title %}Crear Categoría{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0">
+                    <i class="bi bi-tag-plus me-2"></i> Crear Nueva Categoría
+                </h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Categorias' %}">Categorías</a></li>
+                    <li class="breadcrumb-item active">Crear</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Información de la Categoría
+                </h5>
+            </div>
+
+            <form id="formCrearCategoria" method="POST">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    <!-- Campo Nombre -->
+                    <div class="mb-3">
+                        <label for="{{ form.Nombre.id_for_label }}" class="form-label fw-semibold">
+                            {{ form.Nombre.label }}
+                        </label>
+                        {{ form.Nombre }}
+                        {% if form.Nombre.errors %}
+                            <div class="text-danger">{{ form.Nombre.errors }}</div>
+                        {% endif %}
+                        <small class="text-muted d-block mt-1">
+                            Ingrese un nombre único para la categoría (mínimo 3 caracteres)
+                        </small>
+                    </div>
+
+                    <!-- Campo Estado -->
+                    <div class="mb-3">
+                        <label for="{{ form.Estado.id_for_label }}" class="form-label fw-semibold">
+                            {{ form.Estado.label }}
+                        </label>
+                        {{ form.Estado }}
+                        {% if form.Estado.errors %}
+                            <div class="text-danger">{{ form.Estado.errors }}</div>
+                        {% endif %}
+                        <small class="text-muted d-block mt-1">
+                            Seleccione si la categoría estará activa o inactiva
+                        </small>
+                    </div>
+                </div>
+
+                <div class="card-footer text-end">
+                    <a href="{% url 'Categorias' %}" class="btn btn-cancelar me-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-guardar">
+                        <i class="bi bi-check-circle"></i> Guardar Categoría
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/categorias/crear_categorias.js' %}"></script>
+{% endblock %}

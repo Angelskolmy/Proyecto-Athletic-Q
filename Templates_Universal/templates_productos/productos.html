@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static humanize currency_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos/productos.css' %}">
+{% endblock %}
+
 {% block title %}
 Productos
 {% endblock %}
@@ -10,7 +15,7 @@ Productos
   <div class="container-fluid">
     <div class="row align-items-center">
       <div class="col-sm-8">
-        <h3 class="mb-0">
+        <h3 class="mb-0 titulo-productos">
           <i class="bi bi-box-seam me-2"></i> Gestión de Productos
         </h3>
       </div>
@@ -31,7 +36,7 @@ Productos
       
       <!-- Header con filtros y buscador -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <a href="{% url 'IngresoProd' %}" class="btn btn-success">
+        <a href="{% url 'IngresoProd' %}" class="btn btn-crear">
           <i class="bi bi-plus-circle me-1"></i> Agregar Producto
         </a>
 
@@ -73,42 +78,54 @@ Productos
             {% for Infor_Prod in Productos %} 
               <tr id="producto-{{ Infor_Prod.Id_producto }}">
                 <td>{{ Infor_Prod.Id_producto }}</td>
+                
+                <!-- Imagen -->
                 <td> 
                   {% if Infor_Prod.prod_imagen %}
-                    <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
-                  {% else %} 
-                    <img src="{% static 'img/default-product.png' %}" alt="Sin imagen" class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                    <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" 
+                        class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
+                  {% else %}
+                    <img src="{% static 'img/default-product.png' %}" alt="Sin imagen" 
+                        class="rounded" style="width: 50px; height: 50px; object-fit: cover;">
                   {% endif %}
                 </td>
+                
+                <!-- Nombre -->
                 <td class="fw-semibold">{{ Infor_Prod.Nombre }}</td>
-                <td><span class="badge text-bg-info">{{ Infor_Prod.Catego_Id.Nombre }}</span></td>
+                
+                <!-- Categoría - Badge Azul Oscuro -->
                 <td>
-                  <!-- Stock editable -->
-                  <div class="stock-container" id="stock-container-{{ Infor_Prod.Id_producto }}">
-                    <span class="stock-display badge {% if Infor_Prod.Stock > 10 %}text-bg-success{% elif Infor_Prod.Stock > 0 %}text-bg-warning{% else %}text-bg-danger{% endif %}" 
-                          id="stock-display-{{ Infor_Prod.Id_producto }}"
-                          onclick="editarStock({{ Infor_Prod.Id_producto }})"
-                          style="cursor: pointer;"
-                          title="Clic para editar">
+                  <span class="badge text-bg-primary">
+                    {{ Infor_Prod.Catego_Id.Nombre }}
+                  </span>
+                </td>
+                
+                <!-- Stock Editable - Verde/Amarillo/Rojo Oscuro -->
+                <td>
+                  <div class="stock-container">
+                    <span id="stock-display-{{ Infor_Prod.Id_producto }}" 
+                          class="stock-display badge 
+                            {% if Infor_Prod.Stock > 10 %}text-bg-success
+                            {% elif Infor_Prod.Stock > 0 %}text-bg-warning
+                            {% else %}text-bg-danger{% endif %}"
+                          onclick="editarStock({{ Infor_Prod.Id_producto }})" 
+                          style="cursor: pointer;">
                       {{ Infor_Prod.Stock }}
                       <i class="bi bi-pencil-fill ms-1" style="font-size: 0.7rem;"></i>
                     </span>
                     
-                    <div class="stock-edit d-none" id="stock-edit-{{ Infor_Prod.Id_producto }}">
-                      <div class="input-group input-group-sm" style="width: 120px;">
-                        <input type="number" 
-                               class="form-control form-control-sm text-center" 
-                               id="stock-input-{{ Infor_Prod.Id_producto }}"
-                               value="{{ Infor_Prod.Stock }}"
-                               min="0"
-                               style="width: 60px;">
+                    <div id="stock-edit-{{ Infor_Prod.Id_producto }}" class="stock-edit d-none">
+                      <div class="input-group input-group-sm">
+                        <input type="number" id="stock-input-{{ Infor_Prod.Id_producto }}" 
+                              class="form-control" value="{{ Infor_Prod.Stock }}" 
+                              min="0" style="width: 80px;">
                         <button class="btn btn-success btn-sm" 
-                                onclick="guardarStock({{ Infor_Prod.Id_producto }})"
+                                onclick="guardarStock({{ Infor_Prod.Id_producto }})" 
                                 title="Guardar">
                           <i class="bi bi-check-lg"></i>
                         </button>
                         <button class="btn btn-secondary btn-sm" 
-                                onclick="cancelarStock({{ Infor_Prod.Id_producto }})"
+                                onclick="cancelarStock({{ Infor_Prod.Id_producto }})" 
                                 title="Cancelar">
                           <i class="bi bi-x-lg"></i>
                         </button>
@@ -116,31 +133,43 @@ Productos
                     </div>
                   </div>
                 </td>
-                <td>${{ Infor_Prod.Precio_de_compra }}</td> 
-                <td>${{ Infor_Prod.Precio_de_venta }}</td>
+                
+                <!-- Precio Compra -->
+                <td class="text-muted">{{ Infor_Prod.Precio_de_compra|currency_cop }}</td>
+                
+                <!-- Precio Venta -->
+                <td class="fw-bold text-success">{{ Infor_Prod.Precio_de_venta|currency_cop }}</td>
+                
+                <!-- Estado - Verde/Rojo Oscuro -->
                 <td>
-                  <span class="badge {% if Infor_Prod.Estado == 'Activo' %}text-bg-success{% else %}text-bg-danger{% endif %}">
+                  <span class="badge {% if Infor_Prod.Estado == 'Activo' %}badge-estado-activo{% else %}badge-estado-inactivo{% endif %}">
                     {{ Infor_Prod.Estado }}
                   </span>
                 </td>
-                <td> 
-                  <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}" class="btn btn-sm btn-primary me-1" title="Ver Detalle">
+                
+                <!-- Acciones - Azul Oscuro (Ver) y Amarillo Oscuro (Editar) -->
+                <td>
+                  <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}" 
+                    class="btn btn-sm btn-info me-1" 
+                    title="Ver Detalle">
                     <i class="bi bi-eye-fill"></i>
                   </a>
-                  <a href="#" class="btn btn-sm btn-warning" title="Editar">
+                  <a href="#" 
+                    class="btn btn-sm btn-warning" 
+                    title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
-                </td> 
+                </td>
               </tr>
             {% empty %}
               <tr>
                 <td colspan="9" class="text-center text-muted py-4">
                   <i class="bi bi-inbox display-1"></i>
-                  <p class="mt-2">No se encontraron productos registrados.</p>
+                  <p class="mt-2">No hay productos registrados.</p>
                 </td>
               </tr>
             {% endfor %}
-            </tbody> 
+            </tbody>
           </table>
         </div>
       </div>
@@ -185,109 +214,6 @@ Productos
   </div>
 </div>
 
-<!-- ESTILOS -->
-<style>
-  .stock-container {
-    display: inline-block;
-    position: relative;
-  }
-
-  .stock-display {
-    transition: all 0.2s ease;
-    padding: 0.35rem 0.65rem;
-  }
-
-  .stock-display:hover {
-    transform: scale(1.05);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-  }
-
-  .stock-edit .input-group {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    border-radius: 0.25rem;
-  }
-
-  .stock-edit input:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
-  }
-
-  .toast {
-    min-width: 250px;
-  }
-
-  .toast.bg-success {
-    background-color: #198754 !important;
-    color: white;
-  }
-
-  .toast.bg-danger {
-    background-color: #dc3545 !important;
-    color: white;
-  }
-
-  .toast.bg-success .btn-close,
-  .toast.bg-danger .btn-close {
-    filter: brightness(0) invert(1);
-  }
-
-  @keyframes pulseGreen {
-    0% { background-color: #d1e7dd; }
-    50% { background-color: #198754; }
-    100% { background-color: #d1e7dd; }
-  }
-
-  .stock-updated {
-    animation: pulseGreen 0.6s ease-in-out;
-  }
-
-  /* Responsive */
-  @media (max-width: 768px) {
-    .card-header {
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 0.75rem !important;
-    }
-
-    .card-header .d-flex {
-      flex-direction: column !important;
-      width: 100% !important;
-      gap: 0.5rem !important;
-    }
-
-    .card-header select,
-    .card-header .input-group,
-    .card-header a.btn {
-      width: 100% !important;
-    }
-
-    .table-responsive {
-      overflow-x: auto !important;
-    }
-
-    table th, table td {
-      white-space: nowrap;
-    }
-
-    .card-footer {
-      flex-direction: column !important;
-      align-items: center !important;
-      text-align: center;
-      gap: 0.75rem;
-    }
-
-    .card-footer ul.pagination {
-      justify-content: center;
-    }
-
-    .card-footer .dropdown {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-    }
-  }
-</style>
-
-<script src="{% static 'js/productos-stock.js' %}"></script>
+<script src="{% static 'js/productos/stock.js' %}"></script>
 
 {% endblock %}

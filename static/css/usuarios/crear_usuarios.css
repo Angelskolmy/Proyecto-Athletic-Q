@@ -1,0 +1,180 @@
+/* ================================
+    ESTILOS PARA CREAR USUARIO
+   ================================ */
+
+:root {
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #6c757d;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Header apilado en móviles */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .card-header .btn {
+    width: 100% !important;
+  }
+
+  .card-header .d-flex.ms-auto {
+    width: 100% !important;
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.5rem !important;
+  }
+
+  .card-header select,
+  .card-header .input-group {
+    width: 100% !important;
+  }
+
+  /* Tabla con scroll horizontal */
+  .table-responsive {
+    overflow-x: auto !important;
+  }
+
+  table th,
+  table td {
+    white-space: nowrap;
+  }
+
+  /* Footer apilado */
+  .card-footer {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .card-footer ul.pagination {
+    justify-content: center;
+  }
+
+  .card-footer .dropdown {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .card-footer .dropdown .btn {
+    width: auto;
+  }
+}
+
+/* ================================
+    FOCUS DE INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+.form-check-input:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+/* Botón Guardar - Rojo Oscuro */
+.btn-guardar {
+  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(6, 95, 70, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-guardar:hover {
+  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(6, 95, 70, 0.4);
+}
+
+/* Botón Cancelar - Gris */
+.btn-cancelar {
+  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.btn-cancelar:hover {
+  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* ================================
+    ESTILOS DEL MODAL
+   ================================ */
+
+.modal-header {
+  background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%);
+  color: white;
+}
+
+.modal-content {
+  border-radius: 0.5rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* Barra de progreso */
+.progress {
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #e9ecef;
+}
+
+.progress-bar {
+  background: linear-gradient(90deg, var(--rojo-1) 0%, var(--rojo-2) 100%);
+  transition: width 0.4s ease;
+}
+
+/* Botón de leer huella */
+#btnLeerHuella {
+  background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%);
+  border: none;
+  transition: all 0.3s ease;
+}
+
+#btnLeerHuella:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.4);
+}
+
+/* Icono de huella */
+.modal-body i.bi-fingerprint {
+  font-size: 4rem;
+  color: var(--rojo-1);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 1;
+  }
+}

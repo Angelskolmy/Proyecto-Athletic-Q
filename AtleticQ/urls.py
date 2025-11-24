@@ -14,10 +14,12 @@ urlpatterns = [
     path('', include("Historial.urls")),
     path('', include("Historial_ventas.urls")),
     path('', include("Membresias.urls")),
-    path('TiposMembresia/', include('Tipo_membresia.urls')),
+    path('', include('Tipo_membresia.urls')),
     path('', include("Pago_Membresia.urls")),
     path('', include("Ventas.urls")),  
 ]
+
+handler403 = 'Core_session.views.error_403_view'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

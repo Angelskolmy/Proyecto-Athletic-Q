@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static currency_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/tipo_membresias/tipo_membresias.css' %}">
+{% endblock %}
 
 {% block title %}Tipos de Membresía{% endblock %}
 
@@ -30,7 +34,7 @@
       
       <!-- Header -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
-        <a href="{% url 'CrearTipoMembresia' %}" class="btn btn-success">
+        <a href="{% url 'CrearTipoMembresia' %}" class="btn btn-crear">
           <i class="bi bi-plus-circle me-1"></i> Agregar Tipo de Membresía
         </a>
 
@@ -64,33 +68,54 @@
             {% for tipo in TiposMembresia %}
               <tr>
                 <td>{{ tipo.Id_tipo_membresia }}</td>
+                
+                <!-- Imagen -->
                 <td>
                   {% if tipo.tipo_membresia_img %}
                     <img src="{{ tipo.tipo_membresia_img.url }}" alt="Tipo" 
-                         class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                        class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                   {% else %}
                     <img src="{% static 'img/default-membership.png' %}" alt="Sin imagen" 
-                         class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                        class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
                   {% endif %}
                 </td>
+                
+                <!-- Nombre -->
                 <td class="fw-semibold">{{ tipo.Nombre }}</td>
+                
+                <!-- Duración con color según meses -->
                 <td>
-                  <span class="badge text-bg-primary">
+                  <span class="badge 
+                    {% if tipo.Duracion_meses == 1 %}badge-duracion-1
+                    {% elif tipo.Duracion_meses == 3 %}badge-duracion-3
+                    {% elif tipo.Duracion_meses == 6 %}badge-duracion-6
+                    {% elif tipo.Duracion_meses == 12 %}badge-duracion-12
+                    {% elif tipo.Duracion_meses == 24 %}badge-duracion-24
+                    {% else %}text-bg-primary{% endif %}">
                     {{ tipo.get_Duracion_meses_display }}
                   </span>
                 </td>
-                <td class="fw-bold text-success">${{ tipo.Precio|floatformat:0 }}</td>
+                
+                <!-- Precio -->
+                <td class="fw-bold text-success">{{ tipo.Precio|currency_cop }}</td>
+                
+                <!-- Precio/Mes -->
                 <td class="text-muted">
-                  ${% widthratio tipo.Precio tipo.Duracion_meses 1 %}/mes
+                  {% widthratio tipo.Precio tipo.Duracion_meses 1 %}/mes
                 </td>
+                
+                <!-- Estado -->
                 <td>
                   <span class="badge {% if tipo.Estado == 'Activo' %}text-bg-success{% else %}text-bg-danger{% endif %}">
                     {{ tipo.Estado }}
                   </span>
                 </td>
+                
+                <!-- Acciones -->
                 <td>
                   <a href="{% url 'EditarTipoMembresia' tipo.Id_tipo_membresia %}" 
-                     class="btn btn-sm btn-warning me-1" title="Editar">
+                    class="btn btn-sm btn-warning me-1" 
+                    title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
                 </td>

@@ -46,7 +46,7 @@ class EmpleadoForm(forms.ModelForm):
     class Meta:
         model = User_Empleados
         fields = ['username', 'password', 'first_name', 'last_name', 'email', 
-                 'Eps', 'Sexo', 'Cedula', 'empleados_img', 'Huella_id', 'is_active', 'groups', 'user_permissions']  # Agregar Huella_id
+                    'Eps', 'Sexo', 'Cedula', 'empleados_img', 'Huella_id', 'is_active', 'groups', 'user_permissions']  # Agregar Huella_id
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -92,8 +92,8 @@ class EmpleadoForm(forms.ModelForm):
             'is_active': 'Estado del Usuario'
         }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def _init_(self, *args, **kwargs):
+        super()._init_(*args, **kwargs)
         
         # Si estamos editando, hacer password opcional
         if self.instance and self.instance.pk:
@@ -101,8 +101,10 @@ class EmpleadoForm(forms.ModelForm):
             self.fields['password'].help_text = 'Deja en blanco para mantener la contraseña actual'
             
             # Pre-seleccionar el grupo actual
-            if self.instance.groups.exists():
-                self.fields['groups'].initial = self.instance.groups.first()
+            if self.instance.pk:
+                grupos = self.instance.groups.all()
+                if grupos.exists():
+                    self.fields['groups'].initial = grupos.first().id
                 
             # Pre-seleccionar los permisos actuales
             self.fields['user_permissions'].initial = self.instance.user_permissions.all()

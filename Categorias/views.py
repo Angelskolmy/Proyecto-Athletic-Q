@@ -69,7 +69,7 @@ def CrearCategoria(request):
     else:
         form = CrearCategoriaForm()
 
-    return render(request, 'templates_categoria/crear_categoria.html', {'form': form})
+    return render(request, 'templates_categoria/crear_categorias.html', {'form': form})
 
 @transaction.atomic
 def EditarCategoria(request, id):
@@ -93,7 +93,7 @@ def EditarCategoria(request, id):
     else:
         form = EditarCategoriaForm(instance=categoria_obj)
 
-    return render(request, 'templates_categoria/editar_categoria.html', {
+    return render(request, 'templates_categoria/editar_categorias.html', {
         'categoria': categoria_obj,
         'form': form
     })

@@ -1,0 +1,167 @@
+/* ================================
+    PALETA DE COLORES CATEGORÍAS
+   ================================ */
+
+:root {
+  /* Rojos */
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --rojo-3: #5D0000;
+  
+  /* Negros y Grises */
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #6c757d;
+  
+  /* Estados */
+  --estado-activo: #047857;      /* Verde oscuro */
+  --estado-inactivo: #b91c1c;    /* Rojo oscuro */
+}
+
+/* ================================
+    BADGES DE ESTADO
+   ================================ */
+
+/* Estado Activo - Verde Oscuro */
+.badge.text-bg-success {
+  background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.badge.text-bg-success:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Estado Inactivo - Rojo Oscuro */
+.badge.text-bg-danger {
+  background: linear-gradient(135deg, var(--estado-inactivo) 0%, #991b1b 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+.badge.text-bg-danger:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* ================================
+    BOTONES DE ACCIONES
+   ================================ */
+
+.btn-crear {
+  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-crear:hover {
+  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
+}
+
+/* Editar - Amarillo Oscuro */
+.btn-warning {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(180, 83, 9, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(180, 83, 9, 0.4);
+}
+
+/* ================================
+   ✨ ANIMACIONES DE HOVER
+   ================================ */
+
+tbody tr {
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: rgba(139, 0, 0, 0.05) !important;
+  box-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
+}
+
+/* ================================
+   🎯 FOCUS INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+   📱 RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Header apilado */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .card-header form {
+    width: 100% !important;
+    flex-direction: column !important;
+  }
+
+  .card-header .input-group {
+    width: 100% !important;
+    margin-left: 0 !important;
+  }
+
+  .card-header button,
+  .card-header select {
+    width: 100% !important;
+  }
+
+  /* Tabla scrollable */
+  .table-responsive {
+    overflow-x: auto !important;
+  }
+
+  table th, table td {
+    white-space: nowrap;
+  }
+
+  /* Footer adaptable */
+  .card-footer {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .card-footer ul.pagination {
+    justify-content: center;
+  }
+
+  .card-footer .dropdown {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+}

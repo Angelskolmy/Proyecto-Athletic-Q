@@ -47,9 +47,9 @@
         <div class="card shadow-sm border-0 rounded-4">
           <div class="card-body">
             <div class="d-flex align-items-center mb-4">
-              <img src="{% static 'img/avatar.png' %}" alt="Avatar" class="rounded-circle me-3" width="80" height="80">
+              <img src="{{ request.user.empleados_img.url }}" alt="Avatar" class="rounded-circle me-3" width="80" height="80">
               <div>
-                <h4 class="mb-0 fw-bold">Juan Pérez</h4>
+                <h4 class="mb-0 fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</h4>
                 <p class="text-muted mb-0">Cliente activo</p>
               </div>
               <div class="ms-auto">
@@ -65,33 +65,35 @@
             <h5 class="fw-semibold mb-3"><i class="bi bi-person-lines-fill me-2"></i>Información personal</h5>
             <div class="row mb-4">
               <div class="col-md-6">
-                <p><strong>Correo:</strong> juanperez@email.com</p>
+                <p><strong>Correo:</strong> {{ request.user.email }}</p>
                 <p><strong>Teléfono:</strong> +57 300 123 4567</p>
               </div>
               <div class="col-md-6">
                 <p><strong>Dirección:</strong> Calle 45 #23 - 10</p>
-                <p><strong>Fecha de registro:</strong> 15/03/2024</p>
+                <p><strong>Fecha de registro:</strong> {{ request.user.date_joined }}</p>
               </div>
             </div>
 
             <hr>
 
             <!-- Información de membresía -->
-            <h5 class="fw-semibold mb-3"><i class="bi bi-card-checklist me-2"></i>Mi membresía</h5>
-            <div class="row mb-4">
-              <div class="col-md-6">
-                <p><strong>Tipo:</strong> Premium</p>
-                <p><strong>Duración:</strong> 6 meses</p>
+            {% if membresias %}
+              <h5 class="fw-semibold mb-3"><i class="bi bi-card-checklist me-2"></i>Mi membresía</h5>
+              <div class="row mb-4">
+                <div class="col-md-6">
+                  <p><strong>Tipo:</strong> {{ membresias.For_Id_tipo_membresia.Nombre }}</p>
+                  <p><strong>Duración:</strong> 6 meses</p>
+                </div>
+                <div class="col-md-6">
+                  <p><strong>Fecha de inicio:</strong> {{ membresias.Fecha_inicio|date:"d M Y" }}</p>
+                  <p><strong>Fecha de expiración:</strong> {{ membresias.Fecha_fin|date:"d M Y" }}</p>
+                </div>
               </div>
-              <div class="col-md-6">
-                <p><strong>Fecha de inicio:</strong> 01/07/2025</p>
-                <p><strong>Fecha de expiración:</strong> 01/01/2026</p>
-              </div>
-            </div>
 
-            <div class="text-center">
-              <span class="badge bg-success p-2 px-3 fs-6">Activa</span>
-            </div>
+              <div class="text-center">
+                <span class="badge bg-success p-2 px-3 fs-6">Activa</span>
+              </div>
+            {% endif %}
           </div>
         </div>
       </div>

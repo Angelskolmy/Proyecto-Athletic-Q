@@ -1,0 +1,85 @@
+/* Paleta de colores */
+:root {
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #6c757d;
+}
+
+/* Estilos para la vista previa de imagen */
+.preview-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.preview-image {
+  max-width: 150px;
+  max-height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  transition: transform 0.3s ease;
+}
+
+.preview-image:hover {
+  transform: scale(1.05);
+}
+
+/* Títulos de sección */
+h6.text-primary {
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--rojo-1);
+  color: var(--rojo-1) !important;
+}
+
+/* Campos deshabilitados (solo lectura) */
+.form-control:disabled,
+.form-select:disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* Focus de inputs */
+.form-select:focus,
+.form-control:focus,
+.form-check-input:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .card-header .btn {
+    width: 100% !important;
+  }
+
+  .card-footer {
+    text-align: center !important;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-footer .btn:last-child {
+    margin-bottom: 0;
+  }
+}

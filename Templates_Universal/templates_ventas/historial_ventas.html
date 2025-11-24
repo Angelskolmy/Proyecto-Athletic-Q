@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+{% load static currency_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ventas/historial_ventas.css' %}">
+{% endblock %}
+
+
+{% block title %}Historial de Ventas{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row align-items-center">
+      <div class="col-sm-8">
+        <h3 class="mb-0">
+          <i class="bi bi-clock-history me-2"></i> Historial de Ventas
+        </h3>
+      </div>
+      <div class="col-sm-4 text-end">
+        <ol class="breadcrumb float-sm-end mb-0">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item active">Historial</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Contenido -->
+<div class="app-content">
+  <div class="container-fluid">
+
+    <!-- Cards de estadisticas -->
+    <div class="row mb-4">
+      
+      <!-- Total Recaudado -->
+      <div class="col-lg-6 col-md-6 mb-3">
+        <div class="card stats-card card-recaudado shadow-sm border-0">
+          <div class="card-body d-flex align-items-center p-4">
+            <div class="flex-shrink-0">
+              <div class="stats-icon">
+                <i class="bi bi-cash-stack"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-4">
+              <h6 class="text-light mb-2 text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Total Recaudado</h6>
+              <h3 class="mb-0 fw-bold text-white">{{ total_monto|currency_cop }}</h3>
+              <small class="text-light opacity-75">Todas las ventas registradas</small>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Total de Ventas -->
+      <div class="col-lg-6 col-md-6 mb-3">
+        <div class="card stats-card card-ventas shadow-sm border-0">
+          <div class="card-body d-flex align-items-center p-4">
+            <div class="flex-shrink-0">
+              <div class="stats-icon">
+                <i class="bi bi-cart-check-fill"></i>
+              </div>
+            </div>
+            <div class="flex-grow-1 ms-4">
+              <h6 class="text-light mb-2 text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Total de Ventas</h6>
+              <h3 class="mb-0 fw-bold text-white">{{ total_ventas }}</h3>
+              <small class="text-light opacity-75">Transacciones completadas</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Card Principal -->
+    <div class="card shadow-sm">
+
+      <!-- Header con Filtros -->
+      <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
+        <h5 class="mb-0">
+          <i class="bi bi-filter me-2"></i>Filtrar Historial
+        </h5>
+
+        <form method="GET" class="d-flex align-items-center gap-2 flex-wrap ms-auto">
+          <!-- Filtro por Método de Pago -->
+          <select name="metodo" class="form-select form-select-sm" style="width: 150px;" onchange="this.form.submit()">
+            <option value="">Todos los métodos</option>
+            <option value="Efectivo" {% if filter_metodo == 'Efectivo' %}selected{% endif %}>Efectivo</option>
+            <option value="Credito" {% if filter_metodo == 'Credito' %}selected{% endif %}>Crédito</option>
+            <option value="Debito" {% if filter_metodo == 'Debito' %}selected{% endif %}>Débito</option>
+            <option value="PSE" {% if filter_metodo == 'PSE' %}selected{% endif %}>PSE</option>
+            <option value="Nequi" {% if filter_metodo == 'Nequi' %}selected{% endif %}>Nequi</option>
+          </select>
+
+          <!-- Filtro por Fecha -->
+          <input type="date" name="fecha" class="form-control form-control-sm" 
+                style="width: 170px;" value="{{ filter_fecha }}" onchange="this.form.submit()">
+
+          <!-- Buscador -->
+          <div class="input-group input-group-sm" style="width: 250px;">
+            <input type="text" name="search" class="form-control" 
+                  placeholder="Buscar empleado, ID..." 
+                  value="{{ search_query }}">
+            <button class="btn btn-outline-secondary" type="submit">
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+
+          <!-- Botón limpiar -->
+          {% if search_query or filter_metodo or filter_fecha %}
+          <a href="{% url 'HistorialVentas' %}" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-x-circle"></i>
+          </a>
+          {% endif %}
+
+          <!-- Items por página -->
+          <select name="items_per_page" class="form-select form-select-sm" 
+                  style="width: 120px;" onchange="this.form.submit()">
+            <option value="10" {% if items_per_page == '10' %}selected{% endif %}>10 por página</option>
+            <option value="25" {% if items_per_page == '25' %}selected{% endif %}>25 por página</option>
+            <option value="50" {% if items_per_page == '50' %}selected{% endif %}>50 por página</option>
+          </select>
+        </form>
+      </div>
+
+      <!-- Tabla -->
+      <div class="card-body p-0">
+        <div class="table-responsive">
+          <table class="table table-hover align-middle text-center mb-0">
+            <thead class="table-light">
+              <tr>
+                <th style="width: 8%;">ID Historial</th>
+                <th style="width: 8%;">ID Venta</th>
+                <th style="width: 20%;">Empleado</th>
+                <th style="width: 18%;">Fecha y Hora</th>
+                <th style="width: 15%;">Método de Pago</th>
+                <th style="width: 15%;">Total</th>
+                <th style="width: 24%;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for historial in AllHV %}
+              <tr>
+                <!-- ID Historial -->
+                <td>
+                  <span class="badge badge-id-historial">
+                    #{{ historial.id_registro }}
+                  </span>
+                </td>
+                
+                <!-- ID Venta -->
+                <td>
+                  <span class="badge badge-id-venta">
+                    #{{ historial.id_venta.Id_venta }}
+                  </span>
+                </td>
+                
+                <!-- Empleado -->
+                <td class="fw-semibold">
+                  {{ historial.id_usuario.first_name }} {{ historial.id_usuario.last_name }}
+                </td>
+                
+                <!-- Fecha -->
+                <td>
+                  <i class="bi bi-calendar-event me-1 text-muted"></i>
+                  {{ historial.fecha_venta|date:"d/m/Y H:i" }}
+                </td>
+                
+                <!-- Monto -->
+                <td class="fw-bold" style="color: var(--rojo-1);">
+                  {{ historial.Monto|currency_cop }}
+                </td>
+                
+                <!-- Método de Pago -->
+                <td>
+                  <span class="badge badge-{{ historial.metodo_pago|lower }}">
+                    <i class="bi 
+                      {% if historial.metodo_pago == 'Efectivo' %}bi-cash-coin
+                      {% elif historial.metodo_pago == 'Credito' or historial.metodo_pago == 'Debito' %}bi-credit-card
+                      {% elif historial.metodo_pago == 'Nequi' %}bi-phone
+                      {% else %}bi-wallet2{% endif %} me-1"></i>
+                    {{ historial.metodo_pago }}
+                  </span>
+                </td>
+                
+                <!-- Acciones -->
+                <td>
+                  <a href="{% url 'detalle_venta' historial.id_venta.Id_venta %}" 
+                    class="btn btn-sm btn-detalle me-1" 
+                    title="Ver Detalle">
+                    <i class="bi bi-eye-fill"></i>
+                  </a>
+                  
+                  {% if perms.Ventas.change_venta %}
+                  <a href="{% url 'editar_venta' historial.id_venta.Id_venta %}" 
+                    class="btn btn-sm btn-editar" 
+                    title="Editar">
+                    <i class="bi bi-pencil-fill"></i>
+                  </a>
+                  {% endif %}
+                </td>
+              </tr>
+            {% empty %}
+              <tr>
+                <td colspan="7" class="text-center text-muted py-5">
+                  <i class="bi bi-inbox display-1 opacity-25"></i>
+                  <p class="mt-3 mb-0">No hay registros de ventas</p>
+                </td>
+              </tr>
+            {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer con Paginación -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        {% if AllHV.paginator.num_pages > 1 %}
+        <ul class="pagination pagination-sm mb-0">
+          {% if AllHV.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">«</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ AllHV.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">‹</a>
+            </li>
+          {% endif %}
+
+          {% for num in AllHV.paginator.page_range %}
+            {% if AllHV.number == num %}
+              <li class="page-item active">
+                <span class="page-link">{{ num }}</span>
+              </li>
+            {% elif num > AllHV.number|add:'-3' and num < AllHV.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">
+                  {{ num }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if AllHV.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ AllHV.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">›</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ AllHV.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">»</a>
+            </li>
+          {% endif %}
+        </ul>
+        {% endif %}
+
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small">
+            Mostrando {{ AllHV.start_index }}–{{ AllHV.end_index }} de {{ total_items }} registros
+            {% if search_query or filter_metodo or filter_fecha %}
+              (filtrados)
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

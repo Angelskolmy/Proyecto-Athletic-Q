@@ -5,13 +5,11 @@ from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import Group
 from .models import User_Empleados
-from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.decorators import login_required
 from .forms import EmpleadoForm
+from Membresias.models import Membresia
+from django.contrib.auth.decorators import permission_required
 
-@login_required(login_url='login')
-@permission_required('Empleados.view_user_empleados', login_url='home')
-
+@permission_required('Empleados.view_user_empleados', raise_exception=True)
 @transaction.atomic
 def ListarEmpleados(request):
     # Obtener parámetros de búsqueda, filtro y paginación
@@ -22,6 +20,9 @@ def ListarEmpleados(request):
 
     # Obtener todos los empleados
     empleados = User_Empleados.objects.all().order_by('id')
+    
+    if request.user.groups.filter(name="Empleados").exists():
+        empleados = empleados.filter(groups__name="Usuarios")
     
     # Aplicar búsqueda por nombre, apellido o cédula
     if search_query:
@@ -115,17 +116,22 @@ def EditarEmpleado(request, id):
         if form.is_valid():
             try:
                 empleado = form.save(commit=False)
-                
-                # Solo actualizar contraseña si se proporcionó
-                if form.cleaned_data['password']:
-                    empleado.set_password(form.cleaned_data['password'])
-                
+
+                # Guardar contraseña solo si se escribe una nueva
+                new_password = form.cleaned_data.get('password')
+                if new_password:
+                    empleado.set_password(new_password)
+                else:
+                    # Mantener password original
+                    empleado.password = User_Empleados.objects.get(id=empleado.id).password
+
                 empleado.save()
-                
-                # Actualizar grupos (limpiar y agregar el seleccionado)
-                empleado.groups.clear()
-                if form.cleaned_data['groups']:
-                    empleado.groups.add(form.cleaned_data['groups'])
+
+                # Actualizar grupo solo si seleccionó uno
+                selected_group = form.cleaned_data.get('groups')
+
+                if selected_group:
+                    empleado.groups.set([selected_group])
                 
                 return JsonResponse({
                     'success': True,
@@ -194,6 +200,12 @@ def RegistrarHuella(request, user_id):
     return JsonResponse({'message': 'Método no permitido'}, status=405)
 
 #@permission_required('Empleados.view_suariogym', login_url='home') este permiso puede hacer todo el view si ese usuario tiene ese permiso
-@permission_required('Empleados.usariogym', login_url='login') # este permiso solo sirve para mirar el perfil 
+@permission_required('Empleados.usariogym', raise_exception=True) # este permiso solo sirve para mirar el perfil 
 def UsersGym(request): 
-    return render(request,'templates_perfil/perfil.html')
+    user = request.user
+    
+    membresia = Membresia.objects.filter(id_usuario=user).first()
+    
+    Lister = { 'membresias' : membresia}  
+    
+    return render(request, 'templates_perfil/perfil.html', Lister)

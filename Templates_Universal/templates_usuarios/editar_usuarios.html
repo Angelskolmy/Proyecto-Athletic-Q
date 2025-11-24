@@ -1,4 +1,10 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/usuarios/editar_usuarios.css' %}">
+{% endblock %}
+
 {% block title %}Editar Usuario{% endblock %}
 
 {% block content %}
@@ -35,8 +41,8 @@
                         <div class="col-12 mb-3">
                             <div class="text-center">
                                 <img src="{{ empleado.empleados_img.url }}" alt="Foto actual" 
-                                     class="rounded-circle" style="width: 100px; height: 100px; object-fit: cover;">
-                                <p class="text-muted mt-2">Imagen actual</p>
+                                     class="preview-image">
+                                <p class="text-muted mt-2 mb-0">Imagen actual</p>
                             </div>
                         </div>
                         {% endif %}
@@ -91,19 +97,21 @@
                             </div>
 
                             <div class="mb-3">
-                                {{ form.password.label_tag }}
-                                {{ form.password }}
-                                <small class="form-text text-muted">Deja en blanco para mantener la contraseña actual</small>
-                                {% if form.password.errors %}
-                                    <div class="text-danger">{{ form.password.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
                                 {{ form.email.label_tag }}
                                 {{ form.email }}
                                 {% if form.email.errors %}
                                     <div class="text-danger">{{ form.email.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                {{ form.password.label_tag }}
+                                {{ form.password }}
+                                <small class="form-text text-muted">
+                                    Deja en blanco para mantener la contraseña actual
+                                </small>
+                                {% if form.password.errors %}
+                                    <div class="text-danger">{{ form.password.errors }}</div>
                                 {% endif %}
                             </div>
 
@@ -137,16 +145,13 @@
                                 {% endif %}
                             </div>
                         </div>
-                        <!-- Campo de Huella -->
                         <div class="col-md-4">
                             <div class="mb-3">
                                 {{ form.Huella_id.label_tag }}
                                 {{ form.Huella_id }}
-                                {% if empleado.Huella_id %}
-                                    <small class="form-text text-success">✅ Huella registrada</small>
-                                {% else %}
-                                    <small class="form-text text-warning">⏳ Huella pendiente</small>
-                                {% endif %}
+                                <small class="form-text text-muted">
+                                    ID asignado automáticamente
+                                </small>
                                 {% if form.Huella_id.errors %}
                                     <div class="text-danger">{{ form.Huella_id.errors }}</div>
                                 {% endif %}
@@ -161,16 +166,12 @@
                             <h6 class="text-primary mb-3">Roles y Permisos</h6>
                         </div>
                         
-                        <!-- Grupo/Rol -->
                         <div class="col-md-12 mb-3">
-                            <div class="mb-3">
-                                {{ form.groups.label_tag }}
-                                {{ form.groups }}
-                                <small class="form-text text-muted">Rol actual del usuario</small>
-                                {% if form.groups.errors %}
-                                    <div class="text-danger">{{ form.groups.errors }}</div>
-                                {% endif %}
-                            </div>
+                            {{ form.groups.label_tag }}
+                            {{ form.groups }}
+                            {% if form.groups.errors %}
+                                <div class="text-danger">{{ form.groups.errors }}</div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
@@ -188,95 +189,5 @@
     </div>
 </div>
 
-<script>
-document.getElementById('formEditarUsuario').addEventListener('submit', async function(e) {
-    e.preventDefault();
-    
-    try {
-        const formData = new FormData(this);
-        
-        const response = await fetch("{% url 'empleados_edit' empleado.id %}", {
-            method: 'POST',
-            headers: {
-                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-            },
-            body: formData
-        });
-
-        const data = await response.json();
-        
-        if (response.ok && data.success) {
-            alert(data.message);
-            if (data.redirect) {
-                window.location.href = data.redirect;
-            }
-        } else {
-            throw new Error(data.message || 'Error al actualizar el usuario');
-        }
-    } catch (error) {
-        alert(error.message);
-    }
-});
-</script>
-
-<style>
-  /* --- RESPONSIVE SOLO PARA MÓVILES --- */
-  @media (max-width: 768px) {
-
-    /* Header apilado */
-    .card-header {
-      flex-direction: column !important;
-      align-items: stretch !important;
-    }
-
-    .card-header .btn {
-      width: 100% !important;
-    }
-
-    .card-header .d-flex.ms-auto {
-      width: 100% !important;
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 0.5rem !important;
-    }
-
-    .card-header select,
-    .card-header .input-group {
-      width: 100% !important;
-    }
-
-    /* Tabla scrollable */
-    .table-responsive {
-      overflow-x: auto !important;
-    }
-
-    table th,
-    table td {
-      white-space: nowrap;
-    }
-
-    /* Footer adaptable */
-    .card-footer {
-      flex-direction: column !important;
-      align-items: center !important;
-      text-align: center;
-      gap: 0.75rem;
-    }
-
-    .card-footer ul.pagination {
-      justify-content: center;
-    }
-
-    .card-footer .dropdown {
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .card-footer .dropdown .btn {
-      width: auto;
-    }
-  }
-</style>
+<script src="{% static 'js/usuarios/editar_usuarios.js' %}"></script>
 {% endblock %}
-
