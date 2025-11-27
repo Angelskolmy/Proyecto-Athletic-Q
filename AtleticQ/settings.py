@@ -30,7 +30,8 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [   
+INSTALLED_APPS = [    
+    'Tipo_membresia',
     'Historial_ventas', 
     'Historial',
     'Pago_Membresia',     

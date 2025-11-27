@@ -31,6 +31,7 @@ urlpatterns = [
     path('', include("Historial_ventas.urls")), 
     path('', include("Membresias.urls")), 
     path('', include("Pago_Membresia.urls")),
-    path('', include("Ventas.urls"))
+    path('', include("Ventas.urls")), 
+    path('', include("Tipo_membresia.urls")),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

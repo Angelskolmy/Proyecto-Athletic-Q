@@ -17,7 +17,7 @@ Productos
       <div class="col-sm-4 text-end">
         <ol class="breadcrumb float-sm-end mb-0">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-          <li class="breadcrumb-item active">Productos</li>
+          <li class="breadcrumb-item active"><a href="{% url 'Producto' %}">Producto</a></li>
         </ol>
       </div>
     </div>
@@ -32,25 +32,33 @@ Productos
       <!-- Cabecera -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <!-- Botón Agregar -->
-        <button class="btn btn-success"  data-bs-target="#modalAgregarProducto">
-          <a href="{% url 'IngresoProd' %}" class="text-light"><i class="bi bi-plus-circle me-1">Agregar Producto</i></a>
+        <button class="btn btn-success" data-bs-target="#modalAgregarProducto">
+          <a href="{% url 'IngresoProd' %}" class="text-light"><i class="bi bi-plus-circle me-1">Agregar
+              Producto</i></a>
         </button>
 
         <!-- Filtro + Buscador -->
-        <div class="d-flex align-items-center gap-2 ms-auto flex-wrap"> 
-          <select id="filtroCategoria" class="form-select form-select-sm" style="width: 180px;">
-            {% for Categos_filter in Categorias %}
-            <option value="{{ Categos_filter.Id_categoria }}">{{ Categos_filter.Nombre }}</option>
-            {% endfor %}
-          </select>
+        <form action="{% url 'BusquedaP' %}" method="GET" class="ms-auto">
+          {% csrf_token %}
+          <div class="d-flex align-items-center gap-2 justify-content-end flex-wrap filters" style="min-width:320px;">
+            <select id="filtroCategoria" class="form-select form-select-sm" style="width: 180px;" name="catego_filter"
+              onchange="this.form.submit()">
+              <option value="">selecione</option>
+              {% for Categos_filter in Categorias %}
+              <option value="{{ Categos_filter.Id_categoria }}" {% if request.GET.catego_filter == Categos_filter.Nombre %} selected {% endif %}>{{ Categos_filter.Nombre }}</option>
+              {% endfor %}
+            </select>
 
-          <div class="input-group input-group-sm" style="width: 250px;">
-            <input type="text" id="buscarProducto" class="form-control" placeholder="Buscar producto...">
-            <button class="btn btn-outline-secondary" type="button">
-              <i class="bi bi-search"></i>
-            </button>
+            <div class="input-group input-group-sm" style="width: 250px;">
+              <input type="text" id="buscarProducto" name="Prodnombre_filter" class="form-control"
+                placeholder="Buscar producto..." {% if request.GET.Prodnombre_filter %}value="{{ request.GET.Prodnombre_filter }}"{% endif %}>
+              <button class="btn btn-outline-secondary" type="submit">
+                <i class="bi bi-search"></i>
+              </button>
+            </div>
           </div>
-        </div>
+        </form>
+
       </div>
 
       <!-- Tabla -->
@@ -64,50 +72,52 @@ Productos
                 <th>Nombre</th>
                 <th>Categoría</th>
                 <th>Stock</th>
-                <th>Compra</th> 
-                <th>Venta</th> 
-                <th>Descripción</th>
+                <th>Compra</th>
+                <th>Venta</th>
                 <th>Estado</th>
                 <th>Editar</th>
-                <th>Eliminar</th> 
+                {% if perms.Productos.delete_producto %}
+                <th>Eliminar</th>
+                {% endif %}
                 <th>Detalle</th>
               </tr>
-            </thead> 
-            {% for Infor_Prod in Productos %} 
-            <a href="">
-              
-            </a>
-            <tbody> 
+            </thead>
+            {% if Productos %}
+            {% for Infor_Prod in Productos %}
+            <tbody>
               <tr>
                 <td>{{ Infor_Prod.Id_producto }}</td>
-                <td> 
-                  {%  if Infor_Prod.prod_imagen %}
-                    <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded-circle border" width="38" height="38"> 
-                  {% else %} 
-                    <img src="{% static 'img/persona.jpg' %}" alt="Producto" class="rounded-circle border" width="38" height="38">  
+                <td>
+                  {% if Infor_Prod.prod_imagen %}
+                  <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded-circle border" width="38"
+                    height="38">
+                  {% else %}
+                  <img src="{% static 'img/persona.jpg' %}" alt="Producto" class="rounded-circle border" width="38"
+                    height="38">
                   {% endif %}
                 </td>
                 <td class="fw-semibold">{{ Infor_Prod.Nombre }}</td>
                 <td><span class="badge text-bg-info">{{ Infor_Prod.Catego_Id.Nombre }}</span></td>
                 <td><span class="badge text-bg-success">{{ Infor_Prod.Stock }}</span></td>
-                <td>{{ Infor_Prod.Precio_de_compra }}</td> 
+                <td>{{ Infor_Prod.Precio_de_compra }}</td>
                 <td>{{ Infor_Prod.Precio_de_venta }}</td>
-                <td>{{ Infor_Prod.Descripcion }}</td>
                 <td><span class="badge text-bg-primary">{{ Infor_Prod.Estado }}</span></td>
-                <td> 
-                  <a href="">
-                    <button class="btn btn-sm btn-primary me-1" data-bs-toggle="modal" data-bs-target="#modalEditarProducto" title="Editar">
-                    <i class="bi bi-pencil-fill"></i>
+                <td>
+                  <a href="{% url 'EditProd' Infor_Prod.Id_producto %}">
+                    <button class="btn btn-sm btn-primary me-1" title="Editar">
+                      <i class="bi bi-pencil-fill"></i>
                     </button>
                   </a>
-                </td> 
+                </td>
+                {% if perms.Productos.delete_producto %}
                 <td>
                   <a href="{% url 'DelProd' Infor_Prod.Id_producto %}">
                     <button class="btn btn-sm btn-danger" title="Eliminar">
                       <i class="bi bi-trash-fill"></i>
                     </button>
                   </a>
-                </td> 
+                </td>
+                {% endif %}
                 <td>
                   <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}">
                     <button class="btn btn-sm btn-warning" title="Detalle">
@@ -116,34 +126,128 @@ Productos
                   </a>
                 </td>
               </tr>
-            </tbody> 
+            </tbody>
             {% endfor %}
+            {% endif %}
+
+            {% if niji %}
+            {% for ichi in niji%}
+            <tbody>
+              <tr>
+                <td>{{ ichi.Id_producto }}</td>
+                <td>
+                  {% if ichi.prod_imagen %}
+                  <img src="{{ ichi.prod_imagen.url }}" alt="Producto" class="rounded-circle border" width="38"
+                    height="38">
+                  {% else %}
+                  <img src="{% static 'img/persona.jpg' %}" alt="Producto" class="rounded-circle border" width="38"
+                    height="38">
+                  {% endif %}
+                </td>
+                <td class="fw-semibold">{{ ichi.Nombre }}</td>
+                <td><span class="badge text-bg-info">{{ ichi.Catego_Id.Nombre }}</span></td>
+                <td><span class="badge text-bg-success">{{ ichi.Stock }}</span></td>
+                <td>{{ ichi.Precio_de_compra }}</td>
+                <td>{{ ichi.Precio_de_venta }}</td>
+                <td><span class="badge text-bg-primary">{{ ichi.Estado }}</span></td>
+                <td>
+                  <a href="{% url 'EditProd' ichi.Id_producto %}">
+                    <button class="btn btn-sm btn-primary me-1" title="Editar">
+                      <i class="bi bi-pencil-fill"></i>
+                    </button>
+                  </a>
+                </td>
+                <td>
+                  <a href="{% url 'DelProd' ichi.Id_producto %}">
+                    <button class="btn btn-sm btn-danger" title="Eliminar">
+                      <i class="bi bi-trash-fill"></i>
+                    </button>
+                  </a>
+                </td>
+                <td>
+                  <a href="{% url 'SpecProd' ichi.Id_producto %}">
+                    <button class="btn btn-sm btn-warning" title="Detalle">
+                      <i class="bi bi-eye-fill"></i>
+                    </button>
+                  </a>
+                </td>
+              </tr>
+            </tbody>
+            {% endfor %}
+            {% endif %}
           </table>
         </div>
       </div>
 
       <!-- Paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
+        {% if Productos %}
+        <!-- Paginación -->
         <ul class="pagination pagination-sm mb-0">
-          <li class="page-item"><a class="page-link" href="#">«</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">»</a></li>
+          {% if Productos.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ Productos.previous_page_number }}{{ querystring }}">&laquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+          {% endif %}
+
+          {% for num in Productos.paginator.page_range %}
+          {% if num == Productos.number %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}{{ querystring }}">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+
+          {% if Productos.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ Productos.next_page_number }}{{ querystring }}">&raquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+          {% endif %}
         </ul>
+        {% endif %}
+
+        {% if niji %}
+        <ul class="pagination pagination-sm mb-0">
+          {% if niji.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ niji.previous_page_number }}{{ querystring }}">&laquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+          {% endif %}
+
+          {% for num in niji.paginator.page_range %}
+          {% if num == Productos.number %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}{{ querystring }}">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+
+          {% if niji.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ niji.next_page_number }}{{ querystring }}">&raquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+          {% endif %}
+        </ul>
+        {% endif %}
 
         <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+          <span class="text-muted small">Productos registrados: {{ Counter }}</span>
         </div>
 
         <div class="dropdown">
-          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            Exportar
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
-          </ul>
+          <a href="{% url 'ProdRes' %}">
+            <button class="btn btn-outline-success btn-sm" type="button">
+              Exportar
+            </button>
+          </a>
         </div>
       </div>
     </div>
@@ -190,7 +294,8 @@ Productos
       overflow-x: auto !important;
     }
 
-    table th, table td {
+    table th,
+    table td {
       white-space: nowrap;
     }
 
@@ -213,4 +318,17 @@ Productos
   }
 </style>
 
+<style>
+  .card-header .filters {
+    max-width: 520px;
+    /* ajustar según necesites */
+    margin-left: auto;
+  }
+
+  @media (max-width: 992px) {
+    .card-header .filters {
+      max-width: 100%;
+    }
+  }
+</style>
 {% endblock %}
