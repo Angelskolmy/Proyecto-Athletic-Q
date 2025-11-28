@@ -1,257 +1,189 @@
 {% extends 'base.html' %}
-{% load static %}
 
 {% block title %}
-Nuevo Producto
+Ingreso Productos
 {% endblock %}
 
 {% block content %}
-<!--begin::App Content Header-->
-<div class="app-content-header">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-8">
-        <h3 class="mb-0"><i class="bi bi-plus-circle me-2"></i> Crear Nuevo Producto</h3>
-      </div>
-      <div class="col-sm-4">
-        <ol class="breadcrumb float-sm-end">
-          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-          <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Crear</li>
-        </ol>
-      </div>
-    </div>
-  </div>
-</div>
-<!--end::App Content Header-->
 
-<div class="app-content">
-  <div class="container-fluid">
-    <div class="card shadow-sm">
-      
-      <!-- Header del formulario -->
-      <div class="card-header">
-        <h5 class="mb-0">
-          Información del Producto
-        </h5>
-      </div>
+    <div class="container-fluid py-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div>
+                        <h4 class="mb-0"><i class="bi bi-box-seam me-2 text-danger"></i>Crear Nuevo Producto</h4>
+                        <small class="text-muted">Complete los datos del producto</small>
+                    </div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Nuevo</li>
+                        </ol>
+                    </nav>
+                </div>
 
-      <!-- Body del formulario -->
-      <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
-        
-        <div class="card-body">
-          <div class="row">
-            
-            <!-- Columna izquierda: Información Básica -->
-            <div class="col-md-6">
-              <h6 class="text-primary mb-3">
-                <i class="bi bi-info-circle me-1"></i>Información Básica
-              </h6>
-              
-              <div class="mb-3">
-                <label for="{{ Clave.Nombre.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.Nombre.label }}
-                  <span class="text-danger">*</span>
-                </label>
-                {{ Clave.Nombre }}
-                {% if Clave.Nombre.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.Nombre.errors }}</div>
-                {% endif %}
-              </div>
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <form method="post" enctype="multipart/form-data" novalidate>
+                            {% csrf_token %}
 
-              <div class="mb-3">
-                <label for="{{ Clave.Catego_Id.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.Catego_Id.label }}
-                  <span class="text-danger">*</span>
-                </label>
-                {{ Clave.Catego_Id }}
-                {% if Clave.Catego_Id.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.Catego_Id.errors }}</div>
-                {% endif %}
-              </div>
+                            <div class="row gx-4">
+                                <!-- Left column -->
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <h6 class="section-title mb-0"><i
+                                                    class="bi bi-info-circle me-2 text-primary"></i>Información del Producto
+                                            </h6>
+                                        </div>
+                                        <div class="section-divider mb-3"></div>
 
-              <div class="mb-3">
-                <label for="{{ Clave.Descripcion.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.Descripcion.label }}
-                </label>
-                {{ Clave.Descripcion }}
-                {% if Clave.Descripcion.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.Descripcion.errors }}</div>
-                {% endif %}
-                <small class="text-muted d-block mt-1">Incluye detalles relevantes del producto</small>
-              </div>
+                                        <div class="mb-3">
+                                            {{ Clave.Nombre.label_tag }}
+                                            {{ Clave.Nombre }}
+                                        </div>
 
-              <div class="mb-3">
-                <label for="{{ Clave.Estado.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.Estado.label }}
-                  <span class="text-danger">*</span>
-                </label>
-                {{ Clave.Estado }}
-                {% if Clave.Estado.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.Estado.errors }}</div>
-                {% endif %}
-                <small class="text-muted d-block mt-1">Estado inicial del producto en el sistema</small>
-              </div>
+                                        <div class="mb-3">
+                                            {{ Clave.Catego_Id.label_tag }}
+                                            {{ Clave.Catego_Id }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ Clave.Descripcion.label_tag }}
+                                            {{ Clave.Descripcion }}
+                                            <div class="form-text">Incluye detalles relevantes del producto</div>
+                                        </div>
+
+                                        <div class="mb-0">
+                                            {{ Clave.prod_imagen.label_tag }}
+                                            {{ Clave.prod_imagen }}
+                                            <div class="form-text mt-1">Formatos aceptados: JPG, PNG, JPEG, WEBP</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right column -->
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <h6 class="section-title mb-0"><i
+                                                    class="bi bi-box-seam me-2 text-primary"></i>Inventario y Precios</h6>
+                                        </div>
+                                        <div class="section-divider mb-3"></div>
+
+                                        <div class="mb-3">
+                                            {{ Clave.Stock.label_tag }}
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-end-0"><i
+                                                        class="bi bi-box"></i></span>
+                                                {{ Clave.Stock }}
+                                                <span class="input-group-text bg-white border-start-0">unidades</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <div class="col-md-6 mb-3 mb-md-0">
+                                                {{ Clave.Precio_de_compra.label_tag }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    {{ Clave.Precio_de_compra }}
+                                                </div>
+                                                <div class="form-text">Precio al que se adquiere el producto</div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                {{ Clave.Precio_de_venta.label_tag }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    {{ Clave.Precio_de_venta }}
+                                                </div>
+                                                <div class="form-text">Precio al que se vende al cliente</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0">
+                                            {{ Clave.Estado.label_tag }}
+                                            {{ Clave.Estado }}
+                                            <div class="form-text mt-1">Estado inicial del producto</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <a href="{% url 'Producto' %}" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-danger">Guardar Producto</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-
-            <!-- Columna derecha: Inventario y Precios -->
-            <div class="col-md-6">
-              <h6 class="text-primary mb-3">
-                <i class="bi bi-cash-coin me-1"></i>Inventario y Precios
-              </h6>
-              
-              <div class="mb-3">
-                <label for="{{ Clave.Stock.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.Stock.label }}
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text"><i class="bi bi-box"></i></span>
-                  {{ Clave.Stock }}
-                  <span class="input-group-text">unidades</span>
-                </div>
-                {% if Clave.Stock.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.Stock.errors }}</div>
-                {% endif %}
-              </div>
-
-              <div class="mb-3">
-                <label for="{{ Clave.Precio_de_compra.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.Precio_de_compra.label }}
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  {{ Clave.Precio_de_compra }}
-                </div>
-                {% if Clave.Precio_de_compra.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.Precio_de_compra.errors }}</div>
-                {% endif %}
-                <small class="text-muted d-block mt-1">Precio al que se adquiere el producto</small>
-              </div>
-
-              <div class="mb-3">
-                <label for="{{ Clave.Precio_de_venta.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.Precio_de_venta.label }}
-                  <span class="text-danger">*</span>
-                </label>
-                <div class="input-group">
-                  <span class="input-group-text">$</span>
-                  {{ Clave.Precio_de_venta }}
-                </div>
-                {% if Clave.Precio_de_venta.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.Precio_de_venta.errors }}</div>
-                {% endif %}
-                <small class="text-muted d-block mt-1">Precio al que se vende al cliente</small>
-              </div>
-
-              <div class="mb-3">
-                <label for="{{ Clave.prod_imagen.id_for_label }}" class="form-label fw-semibold">
-                  {{ Clave.prod_imagen.label }}
-                </label>
-                {{ Clave.prod_imagen }}
-                {% if Clave.prod_imagen.errors %}
-                  <div class="text-danger small mt-1">{{ Clave.prod_imagen.errors }}</div>
-                {% endif %}
-                <small class="text-muted d-block mt-1">
-                  <i class="bi bi-info-circle me-1"></i>Formatos aceptados: JPG, PNG, JPEG, WEBP
-                </small>
-              </div>
-            </div>
-          </div>
         </div>
-
-        <!-- Footer con botones de acción -->
-        <div class="card-footer text-end">
-          <a href="{% url 'Producto' %}" class="btn btn-secondary me-2">
-            <i class="bi bi-x-circle me-1"></i>Cancelar
-          </a>
-          <button type="submit" class="btn btn-success">
-            <i class="bi bi-check-circle me-1"></i>Guardar Producto
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
-</div>
+    <style>
+        /* sección: título y línea separadora azul fina */
+        .section-title {
+            color: #c82333;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
 
-<style>
-  /* Estilos personalizados para el formulario */
-  .form-label.fw-semibold {
-    color: #495057;
-    margin-bottom: 0.5rem;
-  }
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #0d6efd, #0d6efd);
+            width: 100%;
+            margin-top: .35rem;
+            margin-bottom: 1.25rem;
+        }
 
-  .card-header {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #e9ecef;
-  }
+        /* inputs ya tienen clases bootstrap; ajuste de altura y radio */
+        input.form-control,
+        textarea.form-control,
+        select.form-select {
+            border-radius: .35rem;
+            height: calc(1.6em + .9rem);
+            box-shadow: none;
+        }
 
-  .text-primary {
-    color: #0d6efd !important;
-  }
+        textarea.form-control {
+            min-height: 84px;
+            height: auto;
+            padding-top: .6rem;
+            padding-bottom: .6rem;
+        }
 
-  h6.text-primary {
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #0d6efd;
-  }
+        /* input-group neutral look */
+        .input-group .input-group-text {
+            border-radius: .35rem;
+        }
 
-  .input-group-text {
-    background-color: #e9ecef;
-    border: 1px solid #ced4da;
-  }
+        .input-group .form-control {
+            border-left: 0;
+            border-right: 0;
+        }
 
-  .form-control:focus,
-  .form-select:focus {
-    border-color: #0d6efd;
-    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-  }
+        /* quitar bordes e "hilos" no deseados */
+        .card .section-card,
+        .card .inner-box {
+            border: none;
+            box-shadow: none;
+            background: transparent;
+        }
 
-  .alert-info {
-    background-color: #cff4fc;
-    border-color: #b6effb;
-    color: #055160;
-  }
+        /* helper text small */
+        .form-text {
+            font-size: .85rem;
+            color: #6c757d;
+        }
 
-  /* Responsive */
-  @media (max-width: 768px) {
-    .card-body {
-      padding: 1rem !important;
-    }
-
-    h6.text-primary {
-      font-size: 0.95rem;
-    }
-
-    .card-footer {
-      text-align: center !important;
-    }
-
-    .card-footer .btn {
-      width: 100%;
-      margin-bottom: 0.5rem;
-    }
-
-    .card-footer .btn:last-child {
-      margin-bottom: 0;
-    }
-
-    .card-footer .me-2 {
-      margin-right: 0 !important;
-    }
-  }
-
-  @media (max-width: 576px) {
-    .input-group-text {
-      font-size: 0.875rem;
-    }
-
-    .alert-info {
-      font-size: 0.875rem;
-    }
-  }
-</style>
+        /* responsive tweaks */
+        @media (max-width: 767.98px) {
+            .section-divider {
+                margin-bottom: .75rem;
+            }
+        }
+    </style>
 
 {% endblock %}
