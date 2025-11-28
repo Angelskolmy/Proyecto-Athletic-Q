@@ -17,7 +17,7 @@ Movimientos de Empleados
       <div class="col-sm-4">
         <ol class="breadcrumb float-sm-end">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Movimientos</li>
+          <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'HistorialU' %}">Movimientos</a></li>
         </ol>
       </div>
     </div>
@@ -32,47 +32,47 @@ Movimientos de Empleados
 
       <!-- Barra de filtros compacta -->
       <div class="card-header d-flex flex-wrap align-items-center justify-content-between">
-        <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto">
+        <form action="{% url 'HistorialBusq' %}" method="get" id="roky">
+          <div class="d-flex flex-wrap align-items-center gap-2 w-100 w-md-auto">
 
-          <!-- Filtro: Empleado -->
-          <div class="input-group input-group-sm" style="width: 180px;">
-            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
-            <input type="text" class="form-control" placeholder="Empleado...">
+            <!-- Filtro: Empleado -->
+            <div class="input-group input-group-sm" style="width: 180px;">
+              <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
+              <input type="text" class="form-control" placeholder="Empleado..." name="HistEmp" value="{{ request.GET.HistEmp|default:'' }}">
+            </div>
+
+            <!-- Filtro: Tipo -->
+            <select class="form-select form-select-sm" style="width: 150px;" name="HistMovimientos">
+              <option value="" disabled {% if not request.GET.HistMovimientos %} selected {% endif %}>Tipo...</option>
+              <option value="Ingresar" {% if request.GET.HistMovimientos == 'Ingresar' %} selected {% endif %}>Ingresar</option>
+              <option value="Editar" {% if request.GET.HistMovimientos == 'Editar' %} selected {% endif %}>Editar</option>
+              <option value="Eliminar" {% if request.GET.HistMovimientos == 'Eliminar' %} selected {% endif %}>Eliminar</option>
+            </select>
+
+            <!-- Filtro: Módulo -->
+            <select class="form-select form-select-sm" style="width: 150px;" name='HistModulo'>
+              <option value="" disabled {% if not request.GET.HistModulo %} selected {% endif %} disabled>Módulo...</option>
+              <option value="usuarios" {% if request.GET.HistModulo == 'usuarios' %} selected {% endif %}>usuarios</option>
+              <option value="ventas" {% if request.GET.HistModulo == 'ventas' %} selected {% endif %}>ventas</option>
+              <option value="productos" {% if request.GET.HistModulo == 'productos' %} selected {% endif %}>productos</option>
+              <option value="categorías" {% if request.GET.HistModulo == 'categorías' %} selected {% endif %}>categorías</option>
+              <option value="membresías" {% if request.GET.HistModulo == 'membresías' %} selected {% endif %}>membresías</option>
+              <option value="Tipo_Membresias" {% if request.GET.HistModulo == 'Tipo_Membresias' %} selected {% endif %}>Tipo_Membresias</option>
+            </select>
+
+            <!-- Filtro: Fecha -->
+            <div class="input-group input-group-sm" style="width: 170px;">
+              <span class="input-group-text bg-light"><i class="bi bi-calendar"></i></span>
+              <input type="date" class="form-control" name="HistFecha">
+            </div>
+
+            <!-- Botones -->
+            <button class="btn btn-sm btn-primary btn-search">
+              <i class="bi bi-search me-1"></i> Buscar
+            </button>
+
           </div>
-
-          <!-- Filtro: Tipo -->
-          <select class="form-select form-select-sm" style="width: 150px;">
-            <option selected disabled>Tipo...</option>
-            <option value="venta">Venta</option>
-            <option value="membresia">Membresía</option>
-            <option value="stock">Stock</option>
-            <option value="usuario">Usuario</option>
-          </select>
-
-          <!-- Filtro: Módulo -->
-          <select class="form-select form-select-sm" style="width: 150px;">
-            <option selected disabled>Módulo...</option>
-            <option value="usuarios">Usuarios</option>
-            <option value="productos">Productos</option>
-            <option value="ventas">Ventas</option>
-            <option value="membresias">Membresías</option>
-          </select>
-
-          <!-- Filtro: Fecha -->
-          <div class="input-group input-group-sm" style="width: 170px;">
-            <span class="input-group-text bg-light"><i class="bi bi-calendar"></i></span>
-            <input type="date" class="form-control">
-          </div>
-
-          <!-- Botones -->
-          <button class="btn btn-sm btn-primary btn-search">
-            <i class="bi bi-search me-1"></i> Buscar
-          </button>
-
-          <button class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-repeat me-1"></i> Limpiar
-          </button>
-        </div>
+        </form>
       </div>
 
       <!-- Tabla -->
@@ -82,52 +82,123 @@ Movimientos de Empleados
             <thead class="table-light">
               <tr>
                 <th>ID</th>
-                <th>Empleado</th>
-                <th>Descripción</th>
                 <th>Fecha</th>
+                <th>Usuario</th>
+                <th>Movimiento</th>
+                <th>Modulo</th>
+                <th>Nombre Objeto</th>
+                <th>ID Objeto</th>
               </tr>
-            </thead> 
-            {% for alhistU in HistU %}
+            </thead>
+            {% if HistU %}
+            {% for rikard in HistU %}
             <tbody>
               <tr>
-                <td>{{ alhistU.Id_historial  }}</td>
-                <td>{{ alhistU.id_usuario.first_name }}</td>
-                <td></td>
-                <td>{{ alhistU.Fecha_y_hora }}</td>
+                <td>{{ rikard.Id_historial }}</td>
+                <td>{{ rikard.Fecha_y_hora }}</td>
+                <td>{{ rikard.id_usuario.first_name }}</td>
+                <td>{{ rikard.TIpo_Movimiento }}</td>
+                <td>{{ rikard.Modulo }}</td>
+                <td>{{ rikard.Nombre_Objeto }}</td>
+                <td>{{ rikard.Id_Objeto }}</td>
               </tr>
-            </tbody> 
+            </tbody>
             {% endfor %}
+            {% endif %}
+
+            {% if Filter %}
+            {% for rikard in Filter %}
+            <tbody>
+              <tr>
+                <td>{{ rikard.Id_historial }}</td>
+                <td>{{ rikard.Fecha_y_hora }}</td>
+                <td>{{ rikard.id_usuario.first_name }}</td>
+                <td>{{ rikard.TIpo_Movimiento }}</td>
+                <td>{{ rikard.Modulo }}</td>
+                <td>{{ rikard.Nombre_Objeto }}</td>
+                <td>{{ rikard.Id_Objeto }}</td>
+              </tr>
+            </tbody>
+            {% endfor %}
+            {% endif %}
           </table>
         </div>
       </div>
 
+      {% if HistU %}
       <!-- Paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
         <!-- Paginación -->
         <ul class="pagination pagination-sm mb-0">
-          <li class="page-item"><a class="page-link" href="#">«</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">»</a></li>
+          {% if HistU.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ HistU.previous_page_number }}{{ querystring }}">&laquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+          {% endif %}
+
+          {% for num in HistU.paginator.page_range %}
+          {% if num == HistU.number %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}{{ querystring }}">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+
+          {% if HistU.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ HistU.next_page_number }}{{ querystring }}">&raquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+          {% endif %}
         </ul>
+
 
         <!-- Texto centrado -->
         <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
+          <span class="text-muted small"> Registros actuales {{ Conter }}</span>
         </div>
 
         <!-- Dropdown Exportar -->
-        <div class="dropdown">
-          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Exportar
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
-          </ul>
+      </div>
+      {% endif %}
+
+      {% if Filter%}
+      <!-- Paginación -->
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <ul class="pagination pagination-sm mb-0">
+          {% if Filter.has_previous %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ Filter.previous_page_number }}{{ querystring }}">&laquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+          {% endif %}
+
+          {% for num in Filter.paginator.page_range %}
+          {% if num == Filter.number %}
+          <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+          {% else %}
+          <li class="page-item"><a class="page-link" href="?page={{ num }}{{ querystring }}">{{ num }}</a></li>
+          {% endif %}
+          {% endfor %}
+
+          {% if Filter.has_next %}
+          <li class="page-item">
+            <a class="page-link" href="?page={{ Filter.next_page_number }}{{ querystring }}">&raquo;</a>
+          </li>
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+          {% endif %}
+        </ul>
+
+        <div class="flex-grow-1 text-center">
+          <span class="text-muted small"> Registros actuales {{ Conter }}</span>
         </div>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>
@@ -183,5 +254,4 @@ Movimientos de Empleados
     }
   }
 </style>
-
 {% endblock %}
