@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Ingreso Productos
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid py-3">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex align-items-center justify-content-between mb-3">
+                    <div>
+                        <h4 class="mb-0"><i class="bi bi-box-seam me-2 text-danger"></i>Editar Producto</h4>
+                        <small class="text-muted">Modifica los datos del producto</small>
+                    </div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb bg-transparent mb-0">
+                            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Editar</li>
+                        </ol>
+                    </nav>
+                </div>
+
+                <div class="card shadow-sm">
+                    <div class="card-body p-4">
+                        <form method="post" enctype="multipart/form-data" novalidate>
+                            {% csrf_token %}
+                            <div class="row gx-4">
+                                <!-- Left column -->
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <h6 class="section-title mb-0"><i
+                                                    class="bi bi-info-circle me-2 text-primary"></i>Información del Producto
+                                            </h6>
+                                        </div>
+                                        <div class="section-divider mb-3"></div>
+
+                                        <div class="mb-3">
+                                            {{ Azat.Nombre.label_tag }}
+                                            {{ Azat.Nombre }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ Azat.Catego_Id.label_tag }}
+                                            {{ Azat.Catego_Id }}
+                                        </div>
+
+                                        <div class="mb-3">
+                                            {{ Azat.Descripcion.label_tag }}
+                                            {{ Azat.Descripcion }}
+                                            <div class="form-text">Incluye detalles relevantes del producto</div>
+                                        </div>
+
+                                        <div class="mb-0">
+                                            {{ Azat.prod_imagen.label_tag }}
+                                            {{ Azat.prod_imagen }}
+                                            <div class="form-text mt-1">Formatos aceptados: JPG, PNG, JPEG, WEBP</div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Right column -->
+                                <div class="col-lg-6">
+                                    <div class="mb-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-2">
+                                            <h6 class="section-title mb-0"><i
+                                                    class="bi bi-box-seam me-2 text-primary"></i>Inventario y Precios</h6>
+                                        </div>
+                                        <div class="section-divider mb-3"></div>
+
+                                        <div class="mb-3">
+                                            {{ Azat.Stock.label_tag }}
+                                            <div class="input-group">
+                                                <span class="input-group-text bg-white border-end-0"><i
+                                                        class="bi bi-box"></i></span>
+                                                {{ Azat.Stock }}
+                                                <span class="input-group-text bg-white border-start-0">unidades</span>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-3 row">
+                                            <div class="col-md-6 mb-3 mb-md-0">
+                                                {{ Azat.Precio_de_compra.label_tag }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    {{ Azat.Precio_de_compra }}
+                                                </div>
+                                                <div class="form-text">Precio al que se adquiere el producto</div>
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                {{ Azat.Precio_de_venta.label_tag }}
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    {{ Azat.Precio_de_venta }}
+                                                </div>
+                                                <div class="form-text">Precio al que se vende al cliente</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="mb-0">
+                                            {{ Azat.Estado.label_tag }}
+                                            {{ Azat.Estado }}
+                                            <div class="form-text mt-1">Estado actual del producto</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="d-flex justify-content-end gap-2 mt-4">
+                                <a href="{% url 'Producto' %}" class="btn btn-outline-secondary">Cancelar</a>
+                                <button type="submit" class="btn btn-danger">Guardar Cambios</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block extra_css %}
+    <style>
+        .section-title {
+            color: #c82333;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .section-divider {
+            height: 2px;
+            background: linear-gradient(90deg, #0d6efd, #0d6efd);
+            width: 100%;
+            margin-top: .35rem;
+            margin-bottom: 1.25rem;
+        }
+
+        input.form-control,
+        textarea.form-control,
+        select.form-select {
+            border-radius: .35rem;
+            height: calc(1.6em + .9rem);
+            box-shadow: none;
+        }
+
+        textarea.form-control {
+            min-height: 84px;
+            height: auto;
+            padding-top: .6rem;
+            padding-bottom: .6rem;
+        }
+
+        .input-group .input-group-text {
+            border-radius: .35rem;
+        }
+
+        .input-group .form-control {
+            border-left: 0;
+            border-right: 0;
+        }
+
+        .form-text {
+            font-size: .85rem;
+            color: #6c757d;
+        }
+
+        @media (max-width: 767.98px) {
+            .section-divider {
+                margin-bottom: .75rem;
+            }
+        }
+    </style>
+
+{% endblock %}
