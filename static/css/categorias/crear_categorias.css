@@ -1,0 +1,150 @@
+/* ================================
+    PALETA DE COLORES CREAR CATEGORÍA
+   ================================ */
+
+:root {
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #42484b;
+  --estado-activo: #047857;
+  --estado-inactivo: #b91c1c;
+}
+
+/* ================================
+    CARD HEADER
+   ================================ */
+
+.card-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+}
+
+.card-header h5 {
+  color: var(--gris-oscuro);
+  font-weight: 600;
+}
+
+/* ================================
+    FOCUS DE INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+/* Botón Guardar - Rojo Oscuro */
+.btn-guardar {
+  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(95, 9, 6, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-guardar:hover {
+  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(95, 6, 6, 0.4);
+}
+
+/* Botón Cancelar - Gris */
+.btn-cancelar {
+  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.btn-cancelar:hover {
+  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* ================================
+    ALERTAS DE ERROR
+   ================================ */
+
+.text-danger {
+  color: var(--rojo-1) !important;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  display: block;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Header apilado */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  /* Footer centrado */
+  .card-footer {
+    text-align: center !important;
+    flex-direction: column !important;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-footer .btn:last-child {
+    margin-bottom: 0;
+  }
+
+  .card-footer .me-2 {
+    margin-right: 0 !important;
+  }
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+/* Animación de aparición del formulario */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.4s ease;
+}
+
+/* Efecto de envío del formulario */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.btn-success:active {
+  animation: pulse 0.3s ease;
+}

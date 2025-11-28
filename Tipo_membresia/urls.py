@@ -1,6 +1,8 @@
 from django.urls import path
+from Tipo_membresia import views
 
-# añade aquí tus rutas cuando tengas vistas; por ahora un listado vacío evita el error
 urlpatterns = [
-    # path('', views.mi_vista, name='tipo_membresia_index'),
+    path('TiposMembresia/', views.listarTiposMembresia, name='TiposMembresia'),
+    path('TiposMembresia/crear/', views.crearTipoMembresia, name='CrearTipoMembresia'),
+    path('TiposMembresia/editar/<int:Id_tipo_membresia>/', views.editarTipoMembresia, name='EditarTipoMembresia'),
 ]

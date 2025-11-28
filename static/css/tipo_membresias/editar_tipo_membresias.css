@@ -1,0 +1,263 @@
+/* ================================
+    PALETA DE COLORES EDITAR TIPO MEMBRESÍA
+   ================================ */
+
+:root {
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #42484b;
+  --estado-activo: #047857;
+  --estado-inactivo: #b91c1c;
+}
+
+/* ================================
+    CARD HEADER
+   ================================ */
+
+.card-header {
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border-bottom: 2px solid #dee2e6;
+}
+
+.card-header h5 {
+  color: var(--gris-oscuro);
+  font-weight: 600;
+}
+
+/* ================================
+    BADGES EN HEADER
+   ================================ */
+
+.card-header .badge.bg-success {
+  background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;
+  box-shadow: 0 2px 4px rgba(4, 120, 87, 0.3);
+}
+
+.card-header .badge.bg-danger {
+  background: linear-gradient(135deg, var(--estado-inactivo) 0%, #991b1b 100%) !important;
+  box-shadow: 0 2px 4px rgba(185, 28, 28, 0.3);
+}
+
+/* ================================
+    TÍTULOS DE SECCIONES
+   ================================ */
+
+h6.text-primary {
+  color: var(--rojo-1) !important;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--rojo-1);
+  margin-bottom: 1rem;
+}
+
+/* ================================
+    FOCUS DE INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+    IMAGEN ACTUAL
+   ================================ */
+
+.card-body img.rounded {
+  border: 2px solid #dee2e6;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card-body img.rounded:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* ================================
+    INPUT GROUP
+   ================================ */
+
+.input-group-text {
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  font-weight: 600;
+  color: var(--gris-oscuro);
+}
+
+/* ================================
+    ALERTAS
+   ================================ */
+
+.alert-warning {
+  background-color: #fff3cd;
+  border-left: 4px solid #ffc107;
+  color: #856404;
+}
+
+.alert-warning .alert-heading {
+  color: #856404;
+  font-weight: 600;
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+/* Botón Actualizar - Amarillo Oscuro */
+.btn-warning {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(180, 83, 9, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(180, 83, 9, 0.4);
+}
+
+/* Botón Cancelar - Gris */
+.btn-secondary {
+  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* ================================
+    VALIDACIÓN DE ERRORES
+   ================================ */
+
+.text-danger.small {
+  font-size: 0.875rem;
+  color: var(--rojo-1) !important;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.form-text.text-muted {
+  font-size: 0.875rem;
+  color: #6c757d !important;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.form-text.text-muted i {
+  color: var(--rojo-1);
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  /* Header apilado */
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .card-header .badge {
+    align-self: center;
+    margin-top: 0.5rem;
+  }
+
+  /* Footer centrado */
+  .card-footer {
+    text-align: center !important;
+    flex-direction: column !important;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-footer .btn:last-child {
+    margin-bottom: 0;
+  }
+
+  .card-footer .me-2 {
+    margin-right: 0 !important;
+  }
+
+  /* Columnas apiladas */
+  .row .col-md-6 {
+    margin-bottom: 1rem;
+  }
+
+  h6.text-primary {
+    font-size: 0.95rem;
+  }
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+/* Animación de aparición del formulario */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: fadeInUp 0.4s ease;
+}
+
+/* Efecto de envío del formulario */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.btn-warning:active {
+  animation: pulse 0.3s ease;
+}
+
+/* Hover suave en inputs */
+.form-control:hover:not(:disabled),
+.form-select:hover:not(:disabled) {
+  border-color: var(--gris-medio);
+  transition: border-color 0.2s ease;
+}
+
+/* ================================
+    PREVISUALIZACIÓN DE IMAGEN
+   ================================ */
+
+#preview-img {
+  transition: all 0.3s ease;
+}
+
+#preview-img:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}

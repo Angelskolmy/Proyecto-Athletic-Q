@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static currency_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/ventas/editar_ventas.css' %}">
+{% endblock %}
+
+{% block title %}Editar Venta #{{ venta.Id_venta }}{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-8">
+        <h3 class="mb-0">
+          <i class="bi bi-shield-lock me-2 text-danger"></i> 
+          Panel de Administración - Editar Venta #{{ venta.Id_venta }}
+        </h3>
+        <small class="text-muted">
+          <i class="bi bi-exclamation-triangle me-1"></i>
+          Esta acción quedará registrada en el sistema
+        </small>
+      </div>
+      <div class="col-sm-4">
+        <ol class="breadcrumb float-sm-end">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+          <li class="breadcrumb-item"><a href="{% url 'HistorialVentas' %}">Historial</a></li>
+          <li class="breadcrumb-item active">Editar Venta</li>
+        </ol>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="app-content">
+  <div class="container-fluid">
+    
+    <form method="POST" action="{% url 'actualizar_venta' venta.Id_venta %}" id="formVenta">
+      {% csrf_token %}
+      
+      <div class="row">
+        
+        <!-- COLUMNA IZQUIERDA: Productos -->
+        <div class="col-lg-8">
+          <div class="card shadow-sm mb-4">
+            <div class="card-header card-header-productos text-white">
+              <h5 class="mb-0">
+                <i class="bi bi-box-seam me-2"></i>Productos Disponibles
+              </h5>
+            </div>
+            
+            <div class="card-body">
+              <!-- Buscador y filtro -->
+              <div class="row mb-3">
+                <div class="col-md-8">
+                  <input type="text" id="buscar" class="form-control" placeholder="Buscar producto...">
+                </div>
+                <div class="col-md-4">
+                  <select id="filtro" class="form-select">
+                    <option value="">Todas las categorías</option>
+                    {% for cat in categorias %}
+                    <option value="{{ cat.Id_categoria }}">{{ cat.Nombre }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+
+              <!-- Grid de productos -->
+              <div class="row g-2" id="productos" style="max-height: 750px; overflow-y: auto; min-height: 650px;">
+                {% for prod in productos %}
+                <div class="col-lg-3 col-md-4 col-sm-6 producto-card" 
+                    data-nombre="{{ prod.Nombre|lower }}" 
+                    data-categoria="{{ prod.Catego_Id.Id_categoria }}">
+                  
+                  <!-- ✅ AGREGAR: max-height para evitar estiramiento -->
+                  <div class="card h-100 {% if prod.Stock <= 0 %}opacity-50{% endif %}" style="max-height: 280px;">
+                    <div class="position-relative">
+                      {% if prod.prod_imagen %}
+                        <img src="{{ prod.prod_imagen.url }}" class="card-img-top" alt="{{ prod.Nombre }}" style="height: 120px; object-fit: cover;">
+                      {% else %}
+                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px;">
+                          <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
+                        </div>
+                      {% endif %}
+                      
+                      <span class="badge position-absolute top-0 end-0 m-2 
+                        {% if prod.Stock <= 5 %}bg-danger-dark{% elif prod.Stock <= 15 %}bg-warning-dark{% else %}bg-success-dark{% endif %}">
+                        Stock: {{ prod.Stock }}
+                      </span>
+                    </div>
+                    
+                    <div class="card-body p-2 d-flex flex-column">
+                      <h6 class="card-title mb-1 fw-bold text-truncate">{{ prod.Nombre }}</h6>
+                      <p class="card-text small text-muted mb-2">{{ prod.Catego_Id.Nombre }}</p>
+                      
+                      <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <span class="fw-bold text-success">{{ prod.Precio_de_venta|currency_cop }}</span>
+                        </div>
+                        
+                        <button type="button" 
+                                class="btn btn-sm btn-agregar-producto w-100"
+                                {% if prod.Stock > 0 %}
+                                  onclick="agregar({{ prod.Id_producto }}, '{{ prod.Nombre|escapejs }}', {{ prod.Precio_de_venta }}, {{ prod.Stock }})"
+                                {% else %}
+                                  disabled
+                                {% endif %}>
+                          <i class="bi bi-cart-plus me-1"></i>Agregar
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUMNA DERECHA: Información de Edición -->
+        <div class="col-lg-4">
+          <div class="card shadow-sm sticky-top" style="top: 20px;">
+            <div class="card-header card-header-carrito text-white">
+              <h5 class="mb-0">
+                <i class="bi bi-cart-check me-2"></i>Editar Productos
+              </h5>
+            </div>
+
+            <div class="card-body">
+              
+              <!-- Información de venta original -->
+              <div class="alert alert-light border-warning border mb-3">
+                <h6 class="alert-heading mb-2">
+                  <i class="bi bi-info-circle me-1"></i>Venta Original
+                </h6>
+                <div class="small">
+                  <div class="d-flex justify-content-between mb-1">
+                    <span>Total anterior:</span>
+                    <strong>{{ venta.Total|currency_cop }}</strong>
+                  </div>
+                  <div class="d-flex justify-content-between">
+                    <span>Fecha:</span>
+                    <strong>{{ venta.Fecha|date:"d/m/Y H:i" }}</strong>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Lista de productos -->
+              <div id="carrito" class="mb-3" style="max-height: 400px; overflow-y: auto;">
+                <!-- Se llena dinámicamente con JS -->
+              </div>
+
+              <!-- Total -->
+              <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
+                <span class="fw-bold">NUEVO TOTAL:</span>
+                <h4 class="mb-0 text-success" id="total">$0</h4>
+              </div>
+
+              <!-- Motivo de edición -->
+              <div class="mb-3">
+                <label class="form-label fw-semibold">
+                  <i class="bi bi-pencil-square me-1"></i>Motivo de la Edición
+                  <span class="text-danger">*</span>
+                </label>
+                <textarea name="observaciones" class="form-control" rows="3" 
+                          placeholder="Describa por qué está editando esta venta (obligatorio)..." required></textarea>
+                <small class="text-muted">
+                  Este motivo quedará registrado en el historial
+                </small>
+              </div>
+
+              <!-- Botones -->
+              <button type="button" class="btn btn-secondary w-100 mb-2" onclick="limpiar()">
+                <i class="bi bi-trash"></i> Vaciar Carrito
+              </button>
+              <button type="submit" class="btn btn-procesar-venta w-100">
+                <i class="bi bi-check-circle"></i> Guardar Cambios
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Carrito inicial (desde Django) -->
+<script>
+const carrito_inicial = {{ carrito_inicial|safe }};
+</script>
+
+<script src="{% static 'js/ventas/editar_ventas.js' %}"></script>
+
+{% endblock %}

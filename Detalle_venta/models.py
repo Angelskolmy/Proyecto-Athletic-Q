@@ -6,18 +6,23 @@ class Detalle_Venta (models.Model):
 
     Id_detalle= models.AutoField(primary_key=True, db_column='Id_detalle') 
     Id_venta= models.ForeignKey(Venta, on_delete=models.CASCADE,db_column='Id_venta') 
-    Id_producto= models.ForeignKey(producto, on_delete=models.CASCADE, db_column='Id_producto') 
+    Id_producto= models.ForeignKey(producto, on_delete=models.CASCADE, db_column='Id_producto')
+    
     Pago_Choice=[
-        ('PSE','PSE'),
-        ('Efectivo','Efectivo'),
-        ('Nequ','Nequ'),
-    ] 
+        ('Efectivo', 'Efectivo'),
+        ('Credito', 'Crédito'),
+        ('Debito', 'Débito'),
+        ('PSE', 'PSE'),
+        ('Nequi', 'Nequi'),
+    ]
+    
     Tipo_Pago= models.CharField(
         max_length=50, 
         default='',
         choices=Pago_Choice, 
         db_column='Tipo_Pago'
     ) 
+    
     Cantidad= models.IntegerField()
     Subtotal= models.DecimalField(max_digits=10, decimal_places=2, db_column='Subtotal') 
     Total= models.DecimalField(max_digits=10, decimal_places=2, db_column='Total') 
