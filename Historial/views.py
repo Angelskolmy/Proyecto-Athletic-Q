@@ -100,7 +100,7 @@ def BusqHistorial (request):
     
     if HistMovimientos and HistModulo and HistFecha: 
 
-        sql_Busqueda3= "SELECT historial_usuario.*, Empleados_user_empleados.* from historial_usuario join Empleados_user_empleados on historial_usuario.id_usuario = Empleados_user_empleados.id WHERE historial_usuario.TIpo_Movimiento= %s and historial_usuario.Modulo= %s and and historial_usuario.Fecha_y_hora= %s"  
+        sql_Busqueda3= "SELECT historial_usuario.*, Empleados_user_empleados.* from historial_usuario join Empleados_user_empleados on historial_usuario.id_usuario = Empleados_user_empleados.id WHERE historial_usuario.TIpo_Movimiento= %s and historial_usuario.Modulo= %s and historial_usuario.Fecha_y_hora= %s "  
 
         BUsqhist= Historial_usuario.objects.raw(sql_Busqueda3,[HistMovimientos, HistModulo, HistFecha])   
 
