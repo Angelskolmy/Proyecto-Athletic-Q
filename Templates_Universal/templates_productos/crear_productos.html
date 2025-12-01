@@ -1,0 +1,229 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos/crear_productos.css' %}">
+{% endblock %}
+
+{% block title %}
+Crear Producto
+{% endblock %}
+
+{% block content %}
+<!--begin::App Content Header-->
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0">
+                    <i class="bi bi-box-seam me-2"></i>Crear Nuevo Producto
+                </h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
+                    <li class="breadcrumb-item active">Crear</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+<!--end::App Content Header-->
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Información del Producto
+                </h5>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    <div class="row">
+                        
+                        <!-- Columna Izquierda: Información Básica -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-tag me-1"></i>Información Básica
+                            </h6>
+
+                            <!-- Nombre -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.Nombre.id_for_label }}" class="form-label fw-semibold">
+                                    Nombre del Producto <span class="text-danger">*</span>
+                                </label>
+                                {{ Clave.Nombre }}
+                                {% if Clave.Nombre.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.Nombre.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Categoría -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.Catego_Id.id_for_label }}" class="form-label fw-semibold">
+                                    Categoría <span class="text-danger">*</span>
+                                </label>
+                                {{ Clave.Catego_Id }}
+                                {% if Clave.Catego_Id.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.Catego_Id.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Descripción -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.Descripcion.id_for_label }}" class="form-label fw-semibold">
+                                    Descripción
+                                </label>
+                                {{ Clave.Descripcion }}
+                                {% if Clave.Descripcion.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.Descripcion.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>Describe las características del producto
+                                </small>
+                            </div>
+
+                            <!-- Estado -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.Estado.id_for_label }}" class="form-label fw-semibold">
+                                    Estado <span class="text-danger">*</span>
+                                </label>
+                                {{ Clave.Estado }}
+                                {% if Clave.Estado.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.Estado.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: Precios y Stock -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-cash-coin me-1"></i>Precios e Inventario
+                            </h6>
+
+                            <!-- Stock -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.Stock.id_for_label }}" class="form-label fw-semibold">
+                                    Stock Inicial <span class="text-danger">*</span>
+                                </label>
+                                {{ Clave.Stock }}
+                                {% if Clave.Stock.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.Stock.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-box me-1"></i>Cantidad inicial disponible
+                                </small>
+                            </div>
+
+                            <!-- Precio de Compra -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.Precio_de_compra.id_for_label }}" class="form-label fw-semibold">
+                                    Precio de Compra <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ Clave.Precio_de_compra }}
+                                </div>
+                                {% if Clave.Precio_de_compra.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.Precio_de_compra.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Precio de Venta -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.Precio_de_venta.id_for_label }}" class="form-label fw-semibold">
+                                    Precio de Venta <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ Clave.Precio_de_venta }}
+                                </div>
+                                {% if Clave.Precio_de_venta.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.Precio_de_venta.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-calculator me-1"></i>Precio al que se venderá el producto
+                                </small>
+                            </div>
+
+                            <!-- Imagen -->
+                            <div class="mb-3">
+                                <label for="{{ Clave.prod_imagen.id_for_label }}" class="form-label fw-semibold">
+                                    Imagen del Producto <span class="text-danger">*</span>
+                                </label>
+                                {{ Clave.prod_imagen }}
+                                {% if Clave.prod_imagen.errors %}
+                                    <div class="text-danger small mt-1">{{ Clave.prod_imagen.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-image me-1"></i>Formatos permitidos: JPG, PNG, GIF
+                                </small>
+                            </div>
+
+                            <!-- Previsualización de imagen -->
+                            <div id="preview-container" class="text-center" style="display: none;">
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-eye me-1"></i>Vista previa:
+                                </p>
+                                <img id="preview-img" class="rounded shadow-sm" 
+                                     style="max-height: 150px; object-fit: cover; border: 2px solid #dee2e6;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer con botones -->
+                <div class="card-footer text-end">
+                    <a href="{% url 'Producto' %}" class="btn btn-cancelar me-2">
+                        <i class="bi bi-x-circle me-1"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-guardar">
+                        <i class="bi bi-check-circle me-1"></i>Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Previsualización de imagen
+document.addEventListener('DOMContentLoaded', function() {
+    const inputImagen = document.querySelector('input[name="prod_imagen"]');
+    
+    if (inputImagen) {
+        inputImagen.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                alert('Por favor selecciona un archivo de imagen válido');
+                inputImagen.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const previewContainer = document.getElementById('preview-container');
+                const previewImg = document.getElementById('preview-img');
+                
+                if (previewContainer && previewImg) {
+                    previewContainer.style.display = 'block';
+                    previewImg.src = event.target.result;
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        });
+    }
+});
+</script>
+
+{% endblock %}

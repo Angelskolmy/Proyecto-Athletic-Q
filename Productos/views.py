@@ -71,7 +71,7 @@ def IngresaProductos(request):
         Cipher= ProductoForm()
 
     Clave={'Clave' : Cipher} 
-    return render (request,'templates_productos/Ingresar_productos.html', Clave)
+    return render (request,'templates_productos/crear_productos.html', Clave)
 
 
 def EliminarProducto(request, Id_producto):   
@@ -107,7 +107,7 @@ def DetalleProducto (request, Id_producto):
     consulta= " SELECT producto.*, categoria.nombre FROM producto join categoria on producto.Catego_Id = categoria.Id_categoria WHERE Id_producto= %s"
     EspecProd= producto.objects.raw(consulta, [Id_producto]) 
     ListEspec= { 'DetalleP' : EspecProd} 
-    return render (request, 'templates_productos/Detalle_producto.html' ,ListEspec)
+    return render (request, 'templates_productos/detalle_producto.html' ,ListEspec)
 
 
 def Editar_Producto (request, Id_producto): 
@@ -147,7 +147,7 @@ def Editar_Producto (request, Id_producto):
     
     Nomicon= {'Azat' : Cifrado} 
 
-    return render (request, 'templates_productos/Editar_producto.html' , Nomicon) 
+    return render (request, 'templates_productos/editar_productos.html' , Nomicon) 
 
 def busqueda_producto (request): 
 

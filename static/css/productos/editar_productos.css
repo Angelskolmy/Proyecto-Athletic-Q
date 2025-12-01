@@ -1,0 +1,327 @@
+/* ================================
+    PALETA DE COLORES EDITAR PRODUCTO
+   ================================ */
+
+:root {
+    --rojo-1: #8B0000;
+    --rojo-2: #740000;
+    --negro: #1a1a1a;
+    --gris-oscuro: #2c2c2c;
+    --gris-medio: #42484b;
+    --gris-claro: #e9ecef;
+    --beige-claro: #faf8f0;
+    --blanco: #ffffff;
+    --verde-oscuro: #047857;
+    --amarillo-oscuro: #b45309;
+}
+
+/* ================================
+    CARD
+   ================================ */
+
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+.card-header h5 {
+    color: var(--gris-oscuro);
+    font-weight: 600;
+}
+
+.card-body {
+    background-color: var(--blanco);
+    padding: 2rem;
+}
+
+.card-footer {
+    background-color: #f8f9fa;
+    border-top: 1px solid #dee2e6;
+    padding: 1rem 1.5rem;
+}
+
+/* ================================
+    BADGE ID
+   ================================ */
+
+.badge-id {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+    color: var(--blanco);
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+/* ================================
+    TÍTULOS DE SECCIONES
+   ================================ */
+
+h6.text-primary {
+    color: var(--rojo-1) !important;
+    font-weight: 600;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--rojo-1);
+    margin-bottom: 1rem;
+}
+
+/* ================================
+    IMAGEN ACTUAL
+   ================================ */
+
+.imagen-actual {
+    max-height: 200px;
+    object-fit: cover;
+    border: 3px solid var(--gris-claro);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.imagen-actual:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* ================================
+    FOCUS DE INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+    outline: none !important;
+}
+
+/* ================================
+    INPUT GROUP
+   ================================ */
+
+.input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    font-weight: 600;
+    color: var(--gris-oscuro);
+}
+
+/* ================================
+    LABELS
+   ================================ */
+
+.form-label.fw-semibold {
+    color: #495057;
+    margin-bottom: 0.5rem;
+}
+
+.text-danger {
+    color: var(--rojo-1) !important;
+    font-weight: 600;
+}
+
+/* ================================
+    MENSAJES DE AYUDA
+   ================================ */
+
+.form-text.text-muted {
+    font-size: 0.875rem;
+    color: #6c757d !important;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+.form-text.text-muted i {
+    color: var(--rojo-1);
+}
+
+/* ================================
+    ALERTAS
+   ================================ */
+
+.alert-warning {
+    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+    border: 1px solid #ffc107;
+    border-left: 4px solid #d97706;
+    border-radius: 10px;
+}
+
+.alert-warning .alert-heading {
+    color: #856404;
+    font-weight: 600;
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+/* Botón Actualizar - Rojo Oscuro */
+.btn-actualizar {
+    background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    padding: 0.5rem 1.25rem;
+}
+
+.btn-actualizar:hover {
+    background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
+}
+
+/* Botón Cancelar - Gris */
+.btn-cancelar {
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+    padding: 0.5rem 1.25rem;
+}
+
+.btn-cancelar:hover {
+    background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* ================================
+    PREVISUALIZACIÓN DE IMAGEN
+   ================================ */
+
+#preview-container {
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    border: 1px dashed #dee2e6;
+}
+
+#preview-img {
+    transition: all 0.3s ease;
+    max-width: 100%;
+}
+
+#preview-img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* ================================
+    VALIDACIÓN DE ERRORES
+   ================================ */
+
+.text-danger.small {
+    font-size: 0.875rem;
+    color: var(--rojo-1) !important;
+    display: block;
+    margin-top: 0.25rem;
+}
+
+/* ================================
+    TEXTAREA
+   ================================ */
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.4s ease;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+.btn-actualizar:active {
+    animation: pulse 0.3s ease;
+}
+
+/* Hover suave en inputs */
+.form-control:hover:not(:disabled),
+.form-select:hover:not(:disabled) {
+    border-color: var(--gris-medio);
+    transition: border-color 0.2s ease;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+    .card-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 0.5rem;
+    }
+
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    .card-footer {
+        text-align: center !important;
+        flex-direction: column !important;
+    }
+
+    .card-footer .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .card-footer .btn:last-child {
+        margin-bottom: 0;
+    }
+
+    .card-footer .me-2 {
+        margin-right: 0 !important;
+    }
+
+    .row .col-md-6 {
+        margin-bottom: 1rem;
+    }
+
+    h6.text-primary {
+        font-size: 0.95rem;
+    }
+
+    .input-group-text {
+        min-width: 40px;
+        justify-content: center;
+    }
+
+    .imagen-actual {
+        max-height: 150px;
+    }
+}

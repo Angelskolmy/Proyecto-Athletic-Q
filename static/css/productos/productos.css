@@ -39,17 +39,6 @@
 }
 
 /* ================================
-    BADGES DE CATEGORÍA
-   ================================ */
-
-.badge.text-bg-primary {
-  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
-  color: #fff !important;
-  border: 1px solid rgba(255,255,255,0.2);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-/* ================================
     BADGES DE ESTADO
    ================================ */
 
@@ -118,7 +107,7 @@
 }
 
 /* ================================
-   📦 STOCK - ESTILOS DE EDICIÓN
+    STOCK - ESTILOS DE EDICIÓN
    ================================ */
 
 .stock-container {
@@ -148,7 +137,7 @@
 }
 
 /* ================================
-   🔔 TOAST NOTIFICACIONES
+    TOAST NOTIFICACIONES
    ================================ */
 
 .toast {
@@ -171,7 +160,7 @@
 }
 
 /* ================================
-   ✨ ANIMACIONES
+    ANIMACIONES
    ================================ */
 
 @keyframes pulseGreen {
@@ -191,7 +180,7 @@
 }
 
 /* ================================
-   🎯 FOCUS INPUTS
+    FOCUS INPUTS
    ================================ */
 
 .form-select:focus,
@@ -206,7 +195,7 @@ textarea:focus {
 }
 
 /* ================================
-   📱 RESPONSIVE
+    RESPONSIVE
    ================================ */
 
 @media (max-width: 768px) {

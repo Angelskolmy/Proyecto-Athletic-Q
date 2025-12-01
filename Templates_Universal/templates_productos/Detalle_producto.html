@@ -1,114 +1,127 @@
 {% extends 'base.html' %}
+{% load static currency_filters %}
 
-{% load static %}
-
-{% block title %}
-Detalle Producto
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos/detalle_producto.css' %}">
 {% endblock %}
 
+{% block title %}Detalle Producto{% endblock %}
+
 {% block content %}
-    <!--begin::App Content Header-->
-    <div class="app-content-header">
-        <div class="container-fluid">
-            <div class="row align-items-center">
-                <div class="col-sm-8">
-                    <h3 class="mb-0">
-                        <i class="bi bi-box-seam me-1"></i> Gestión de Productos
-                    </h3>
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row align-items-center">
+            <div class="col-sm-6">
+                <h3 class="mb-0">
+                    <i class="bi bi-box-seam me-2"></i>Detalle del Producto
+                </h3>
+            </div>
+            <div class="col-sm-6 text-end">
+                <ol class="breadcrumb float-sm-end mb-0">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% for detail in DetalleP %}
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="card">
+            <!-- Header -->
+            <div class="card-header">
+                <h5 class="mb-0">{{ detail.Nombre }}</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <!-- Imagen Grande Vertical -->
+                    <div class="col-lg-5">
+                        <div class="imagen-container">
+                            {% if detail.prod_imagen %}
+                                <img src="{{ detail.prod_imagen.url }}" alt="{{ detail.Nombre }}" class="producto-imagen">
+                            {% else %}
+                                <div class="sin-imagen">
+                                    <i class="bi bi-image"></i>
+                                    <span>Sin imagen</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Información -->
+                    <div class="col-lg-7">
+                        <div class="info-container">
+                            <!-- Sección: Información General -->
+                            <div class="info-section">
+                                <h6 class="section-title">
+                                    <i class="bi bi-info-circle me-2"></i>Información General
+                                </h6>
+                                <div class="info-grid">
+                                    <div class="info-item">
+                                        <span class="info-label">ID Producto</span>
+                                        <span class="info-value">#{{ detail.Id_producto }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Categoría</span>
+                                        <span class="info-value">{{ detail.Catego_Id.Nombre }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Estado</span>
+                                        <span class="info-value">{{ detail.Estado }}</span>
+                                    </div>
+                                    <div class="info-item">
+                                        <span class="info-label">Stock Disponible</span>
+                                        <span class="info-value">{{ detail.Stock }} unidades</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección: Precios -->
+                            <div class="info-section">
+                                <h6 class="section-title">
+                                    <i class="bi bi-currency-dollar me-2"></i>Precios
+                                </h6>
+                                <div class="precios-container">
+                                    <div class="precio-box precio-compra">
+                                        <span class="precio-label">Precio de Compra</span>
+                                        <span class="precio-valor">${{ detail.Precio_de_compra|floatformat:0 }}</span>
+                                    </div>
+                                    <div class="precio-box precio-venta">
+                                        <span class="precio-label">Precio de Venta</span>
+                                        <span class="precio-valor">${{ detail.Precio_de_venta|floatformat:0 }}</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sección: Descripción -->
+                            <div class="info-section">
+                                <h6 class="section-title">
+                                    <i class="bi bi-text-paragraph me-2"></i>Descripción
+                                </h6>
+                                <p class="descripcion-texto">{{ detail.Descripcion|default:"Sin descripción disponible" }}</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-sm-4 text-end">
-                    <ol class="breadcrumb float-sm-end mb-0">
-                        <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-                        <li class="breadcrumb-item active">Productos</li>
-                    </ol>
+            </div>
+
+            <!-- Footer -->
+            <div class="card-footer">
+                <a href="{% url 'Producto' %}" class="btn btn-volver">
+                    <i class="bi bi-arrow-left me-1"></i>Volver
+                </a>
+                <div class="footer-actions">
+                    <a href="{% url 'EditProd' detail.Id_producto %}" class="btn btn-editar">
+                        <i class="bi bi-pencil me-1"></i>Editar
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    <!--end::App Content Header-->
-
-{% for detail in DetalleP %}
-
-<div class="d-flex align-items-center justify-content-center" style="min-height: calc(100vh - 140px);">
-    <div class="container my-4" style="max-width:1100px;">
-        <div class="card shadow-sm w-100">
-            <div class="row g-0">
-                <!-- izquierda: imagen -->
-                <div class="col-lg-5 bg-light d-flex align-items-center justify-content-center p-4">
-                    <!-- Aquí irá la URL de la imagen enviada por la función -->
-                    <img id="detalle-imagen" src="{{ detail.prod_imagen.url }}" alt="Imagen Producto"
-                        class="img-fluid rounded" style="max-height:520px; width:100%; object-fit:contain;">
-                </div>
-
-                <!-- derecha: datos (fondo BLANCO) -->
-                <div class="col-lg-7" style="background:#ffffff;">
-                    <div class="card-body p-5 h-100 d-flex flex-column">
-                        <!-- Encabezado: nombre + estado -->
-                        <div class="d-flex justify-content-between align-items-start mb-4">
-                            <h1 id="detalle-nombre" class="fw-bold mb-0" style="font-size:2rem; line-height:1.05;">
-                                {{ detail.Nombre }} <!-- Nombre enviado por la función -->
-                            </h1>
-
-                            <!-- Estado: solo visualización, destacado -->
-                            <div id="detalle-estado" class="text-end">
-                                <span class="badge rounded-pill text-white"
-                                    style="background:#c82333; font-size:1.1rem; padding:0.5rem 0.9rem; box-shadow:0 2px 6px rgba(0,0,0,0.12);">
-                                    {{ detail.Estado }} <!-- Estado enviado por la función -->
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Datos distribuidos y con más espacio -->
-                        <div class="row g-3 mb-3" style="font-size:1.05rem;">
-                            <div class="col-md-6">
-                                <small class="text-muted">ID</small>
-                                <div class="fw-semibold" id="detalle-id" style="font-size:1.15rem;">
-                                    {{ detail.Id_producto }}</div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <small class="text-muted">Categoría</small>
-                                <div class="fw-semibold" id="detalle-categoria" style="font-size:1.15rem;">
-                                    {{ detail.Catego_Id.Nombre }}</div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <small class="text-muted">Stock</small>
-                                <div class="fw-semibold" id="detalle-stock" style="font-size:1.15rem;">
-                                    {{ detail.Stock }}</div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <small class="text-muted">Precio Compra</small>
-                                <div class="fw-semibold" id="detalle-compra" style="font-size:1.15rem;">$ {{ detail.Precio_de_compra }}</div>
-                            </div>
-
-                            <div class="col-md-6">
-                                <small class="text-muted">Precio Venta</small>
-                                <div class="fw-semibold" id="detalle-venta" style="font-size:1.15rem;">${{ detail.Precio_de_venta }}</div>
-                            </div>
-                        </div>
-
-                        <!-- Descripción: ampliada, solo mostrar contenido actual -->
-                        <div class="mb-3">
-                            <small class="text-muted">Descripción</small>
-                            <div id="detalle-descripcion" class="border rounded p-4 mt-2"
-                                style="background:#ffffff; min-height:180px; font-size:1.05rem; line-height:1.6; color:#212529; overflow:auto;">
-                                {{ detail.Descripcion }} <!-- Descripción enviada por la función -->
-                            </div>
-                        </div>
-
-                        <!-- solo enlace para volver al listado -->
-                        <div class="mt-4 text-end">
-                            <a href="{% url 'Producto' %}" class="btn btn-outline-primary">Volver al listado</a>
-                        </div>
-                    </div>
-                </div> <!-- /col derecha -->
-            </div> <!-- /row -->
-        </div> <!-- /card -->
-    </div> <!-- /container -->
-</div> <!-- /wrapper -->
-
+</div>
 {% endfor %}
-
 {% endblock %}
