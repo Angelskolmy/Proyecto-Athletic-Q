@@ -19,5 +19,6 @@ from django.urls import path,include
 from Historial import views
 
 urlpatterns = [
-    path('HistorialU/',views.listHistU, name='HistorialU')
+    path('HistorialU/',views.listHistU, name='HistorialU'),
+    path('HistorialBusq', views.BusqHistorial, name='HistorialBusq'),
 ]  
