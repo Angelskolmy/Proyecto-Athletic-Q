@@ -65,11 +65,14 @@
               <!-- Grid de productos -->
               <div class="row g-2" id="productos" style="max-height: 750px; overflow-y: auto; min-height: 650px;">
                 {% for prod in productos %}
+                
+                <!-- id="producto-X" y data-stock="Y" -->
                 <div class="col-lg-3 col-md-4 col-sm-6 producto-card" 
+                    id="producto-{{ prod.Id_producto }}"
                     data-nombre="{{ prod.Nombre|lower }}" 
-                    data-categoria="{{ prod.Catego_Id.Id_categoria }}">
+                    data-categoria="{{ prod.Catego_Id.Id_categoria }}"
+                    data-stock="{{ prod.Stock }}">
                   
-                  <!-- ✅ AGREGAR: max-height para evitar estiramiento -->
                   <div class="card h-100 {% if prod.Stock <= 0 %}opacity-50{% endif %}" style="max-height: 280px;">
                     <div class="position-relative">
                       {% if prod.prod_imagen %}
@@ -80,9 +83,10 @@
                         </div>
                       {% endif %}
                       
-                      <span class="badge position-absolute top-0 end-0 m-2 
-                        {% if prod.Stock <= 5 %}bg-danger-dark{% elif prod.Stock <= 15 %}bg-warning-dark{% else %}bg-success-dark{% endif %}">
-                        Stock: {{ prod.Stock }}
+                      <!-- Badge de stock con clase para JavaScript -->
+                      <span class="badge badge-stock position-absolute top-0 end-0 m-2 
+                            {% if prod.Stock <= 5 %}bg-danger-dark{% elif prod.Stock <= 15 %}bg-warning-dark{% else %}bg-success-dark{% endif %}">
+                        {{ prod.Stock }}
                       </span>
                     </div>
                     
@@ -124,26 +128,23 @@
             </div>
 
             <div class="card-body">
-              
-              <!-- Vendedor (pre-seleccionado) -->
               <div class="mb-3">
-                <label class="form-label fw-semibold">Vendedor</label>
-                <input type="hidden" name="empleado_id" value="{{ empleado.id }}">
-                <input type="text" class="form-control" value="{{ empleado.first_name }} {{ empleado.last_name }}" readonly>
+                <label class="form-label fw-semibold">Cedula comprador</label>
+                {{ form.Cedula_Vents }}
               </div>
 
-              <!-- Método de pago -->
+              {{ form.id_usuario }}
+
               <div class="mb-3">
                 <label class="form-label fw-semibold">Método de Pago</label>
-                <select name="metodo_pago" class="form-select">
-                  <option value="Efectivo">Efectivo</option>
-                  <option value="Credito">Crédito</option>
-                  <option value="Debito">Débito</option>
-                  <option value="PSE">PSE</option>
-                  <option value="Nequi">Nequi</option>
-                </select>
+                {{ form.metodo_pago }}
               </div>
 
+              <!-- Numero de transaccion (puede mostrarse/ocultarse con JS) -->
+              <div class="mb-3" id="numero_transaccion" style="display: none;">
+                <label class="form-label fw-semibold">Número de Transacción</label>
+                {{ form.Numero_Transaccion }}
+              </div>
               <hr>
 
               <!-- Lista de productos -->
@@ -172,6 +173,19 @@
     </form>
   </div>
 </div>
+
+<script>
+  document.getElementById('metodo_pago').addEventListener('change', function() {
+    var numeroTransaccionDiv = document.getElementById('numero_transaccion');
+    if (this.value === 'Efectivo' || this.value === 'Nada') {
+      numeroTransaccionDiv.style.display = 'none';
+      numeroTransaccionDiv.querySelector('input').required = false;
+    } else {
+      numeroTransaccionDiv.style.display = 'block';
+      numeroTransaccionDiv.querySelector('input').required = true;
+    }
+  });
+</script>
 
 <script src="{% static 'js/ventas/ventas.js' %}"></script>
 

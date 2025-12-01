@@ -20,17 +20,6 @@ class EmpleadoForm(forms.ModelForm):
         label="Rol del Usuario"
     )
     
-    # Campo para huella dactilar
-    Huella_id = forms.IntegerField(
-        widget=forms.NumberInput(attrs={
-            'class': 'form-control',
-            'placeholder': 'ID de huella dactilar',
-            'readonly': True  # Solo lectura porque se asigna automáticamente
-        }),
-        required=False,
-        label="ID de Huella Dactilar"
-    )
-    
     Sexo = forms.ChoiceField(
         choices=[('', 'Seleccione el género...')] + User_Empleados.Sexo_choice,
         widget=forms.Select(attrs={'class': 'form-select'}),
@@ -46,7 +35,7 @@ class EmpleadoForm(forms.ModelForm):
     class Meta:
         model = User_Empleados
         fields = ['username', 'password', 'first_name', 'last_name', 'email', 
-                    'Eps', 'Sexo', 'Cedula', 'empleados_img', 'Huella_id', 'is_active', 'groups', 'user_permissions']  # Agregar Huella_id
+                'Eps', 'Sexo', 'Cedula', 'empleados_img', 'is_active', 'groups', 'user_permissions']  # Agregar Huella_id
         widgets = {
             'username': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -54,7 +43,9 @@ class EmpleadoForm(forms.ModelForm):
             }),
             'first_name': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ingrese el nombre'
+                'placeholder': 'Ingrese el nombre',
+                'pattern': '[a-zA-Z0-9]+',
+                'title': 'Solo se permiten letras y números'
             }),
             'last_name': forms.TextInput(attrs={
                 'class': 'form-control', 
@@ -70,13 +61,16 @@ class EmpleadoForm(forms.ModelForm):
             }),
             'Cedula': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Ingrese la cédula'
+                'placeholder': 'Ingrese la cédula',
+                'pattern': '{10,11}', 
+                'title': 'La cédula debe tener entre 10 y 11 números'
             }),
             'empleados_img': forms.FileInput(attrs={
                 'class': 'form-control',
                 'accept': 'image/*'
             })
         }
+
 
         labels = {
             'username': 'Nombre de Usuario',
@@ -88,12 +82,22 @@ class EmpleadoForm(forms.ModelForm):
             'Sexo': 'Género',
             'Cedula': 'Número de Cédula',
             'empleados_img': 'Foto de Perfil',
-            'Huella_id': 'ID de Huella Dactilar',
             'is_active': 'Estado del Usuario'
         }
 
-    def _init_(self, *args, **kwargs):
-        super()._init_(*args, **kwargs)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['first_name'].required = True
+        self.fields['last_name'].required = True
+        self.fields['email'].required = True
+        self.fields['password'].required = True
+        self.fields['Eps'].required = False
+        self.fields['Sexo'].required = True 
+        self.fields['Cedula'].required = True
+        self.fields['empleados_img'].required = True
+        self.fields['is_active'].required = True
+        self.fields['groups'].required = True
         
         # Si estamos editando, hacer password opcional
         if self.instance and self.instance.pk:

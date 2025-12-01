@@ -7,33 +7,65 @@ let carrito = [];
 
 /**
  * Agregar producto al carrito
+ * @param {number} id - ID del producto
+ * @param {string} nombre - Nombre del producto
+ * @param {number} precio - Precio del producto
+ * @param {number} stock - Stock disponible del producto
  */
 function agregar(id, nombre, precio, stock) {
+  // Buscar si el producto ya existe en el carrito
   const existe = carrito.find(item => item.id === id);
   
   if (existe) {
-    if (existe.cantidad >= stock) {
-      mostrarAlerta(` Stock insuficiente para ${nombre}`, 'warning');
+    // 🔥 FIX: Leer stock REAL desde el DOM en lugar del stock guardado
+    const stockBadge = document.querySelector(`#producto-${id} .badge-stock`);
+    const stockDisponible = stockBadge ? parseInt(stockBadge.textContent) : stock;
+    
+    // Verificar si ya alcanzó el stock máximo
+    if (existe.cantidad >= stockDisponible) {
+      mostrarAlerta(`⚠️ Stock máximo: ${stockDisponible} unidades`, 'warning');
       return;
     }
+    
+    // Incrementar cantidad
     existe.cantidad++;
+    // Actualizar stock guardado en memoria con el valor real
+    existe.stock = stockDisponible;
   } else {
-    carrito.push({ id, nombre, precio, cantidad: 1, stock });
+    // 🔥 FIX: Leer stock REAL desde el DOM al agregar por primera vez
+    const stockBadge = document.querySelector(`#producto-${id} .badge-stock`);
+    const stockDisponible = stockBadge ? parseInt(stockBadge.textContent) : stock;
+    
+    // Agregar nuevo producto al carrito
+    carrito.push({ 
+      id, 
+      nombre, 
+      precio, 
+      cantidad: 1, 
+      stock: stockDisponible // Usar el stock real del DOM
+    });
   }
   
+  // Actualizar la vista del carrito
   actualizar();
-  mostrarAlerta(` ${nombre} agregado al carrito`, 'success');
+  
+  // Mostrar mensaje de éxito
+  mostrarAlerta(`✅ ${nombre} agregado al carrito`, 'success');
 }
 
 /**
  * Actualizar vista del carrito
+ * Renderiza todos los productos en el carrito y calcula el total
  */
 function actualizar() {
+  // Obtener elementos del DOM
   const container = document.getElementById('carrito');
   const totalElement = document.getElementById('total');
   
+  // Limpiar contenedor
   container.innerHTML = '';
   
+  // Si el carrito está vacío, mostrar mensaje
   if (carrito.length === 0) {
     container.innerHTML = `
       <div class="text-center text-muted carrito-vacio">
@@ -46,13 +78,17 @@ function actualizar() {
     return;
   }
   
+  // Variables para HTML y total
   let html = '';
   let total = 0;
   
+  // Recorrer cada producto en el carrito
   carrito.forEach(item => {
+    // Calcular subtotal del producto
     const subtotal = item.precio * item.cantidad;
     total += subtotal;
     
+    // Construir HTML del producto
     html += `
       <div class="border rounded p-3 mb-2 carrito-item">
         <div class="d-flex justify-content-between align-items-start mb-2">
@@ -82,81 +118,120 @@ function actualizar() {
     `;
   });
   
+  // Actualizar el DOM
   container.innerHTML = html;
   totalElement.textContent = `$${total.toLocaleString('es-CO')}`;
 }
 
 /**
- * Cambiar cantidad de un producto
+ * Cambiar cantidad de un producto en el carrito
+ * @param {number} id - ID del producto
+ * @param {number} cambio - Cantidad a sumar o restar (ej: 1, -1)
  */
 function cambiar(id, cambio) {
+  // Buscar el producto en el carrito
   const item = carrito.find(i => i.id === id);
   if (!item) return;
   
+  // Calcular nueva cantidad
   const nueva = item.cantidad + cambio;
   
+  // Si la nueva cantidad es 0 o menos, eliminar del carrito
   if (nueva <= 0) {
     eliminar(id);
     return;
   }
   
-  if (nueva > item.stock) {
-    mostrarAlerta(` Stock máximo: ${item.stock} unidades`, 'warning');
+  // 🔥 FIX: Leer stock REAL desde el DOM antes de validar
+  const stockBadge = document.querySelector(`#producto-${id} .badge-stock`);
+  const stockDisponible = stockBadge ? parseInt(stockBadge.textContent) : item.stock;
+  
+  // Validar que no exceda el stock disponible
+  if (nueva > stockDisponible) {
+    mostrarAlerta(`⚠️ Stock máximo: ${stockDisponible} unidades`, 'warning');
     return;
   }
   
+  // Actualizar cantidad en el carrito
   item.cantidad = nueva;
+  // Actualizar stock guardado en memoria con el valor real
+  item.stock = stockDisponible;
+  
+  // Actualizar vista
   actualizar();
 }
 
 /**
  * Eliminar producto del carrito
+ * @param {number} id - ID del producto a eliminar
  */
 function eliminar(id) {
+  // Buscar el producto
   const item = carrito.find(i => i.id === id);
   if (!item) return;
   
+  // Eliminar del array
   carrito = carrito.filter(item => item.id !== id);
+  
+  // Actualizar vista
   actualizar();
-  mostrarAlerta(` ${item.nombre} eliminado del carrito`, 'info');
+  
+  // Mostrar mensaje
+  mostrarAlerta(`🗑️ ${item.nombre} eliminado del carrito`, 'info');
 }
 
 /**
  * Limpiar todo el carrito
+ * Pide confirmación antes de vaciar
  */
 function limpiar() {
+  // Si ya está vacío, mostrar advertencia
   if (carrito.length === 0) {
-    mostrarAlerta(' El carrito ya está vacío', 'warning');
+    mostrarAlerta('ℹ️ El carrito ya está vacío', 'warning');
     return;
   }
   
+  // Pedir confirmación
   if (confirm('¿Estás seguro de vaciar el carrito?')) {
+    // Vaciar carrito
     carrito = [];
+    
+    // Actualizar vista
     actualizar();
-    mostrarAlerta(' Carrito vaciado', 'info');
+    
+    // Mostrar mensaje
+    mostrarAlerta('🧹 Carrito vaciado', 'info');
   }
 }
 
 /**
  * Filtrar productos por búsqueda y categoría
+ * Oculta/muestra productos según los filtros aplicados
  */
 function filtrar() {
+  // Obtener valores de los filtros
   const busqueda = document.getElementById('buscar').value.toLowerCase();
   const categoria = document.getElementById('filtro').value;
   
+  // Recorrer todas las tarjetas de productos
   document.querySelectorAll('.producto-card').forEach(card => {
+    // Obtener datos del producto
     const nombre = card.dataset.nombre.toLowerCase();
     const cat = card.dataset.categoria;
     
+    // Verificar coincidencias
     const matchBusqueda = nombre.includes(busqueda);
     const matchCategoria = !categoria || cat === categoria;
     
+    // Mostrar/ocultar según coincidencias
     card.style.display = (matchBusqueda && matchCategoria) ? 'block' : 'none';
   });
 }
 
 /**
- * Mostrar alertas/notificaciones
+ * Mostrar alertas/notificaciones temporales
+ * @param {string} mensaje - Texto a mostrar
+ * @param {string} tipo - Tipo de alerta: success, warning, danger, info
  */
 function mostrarAlerta(mensaje, tipo = 'info') {
   // Crear elemento de alerta
@@ -168,6 +243,7 @@ function mostrarAlerta(mensaje, tipo = 'info') {
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
   `;
   
+  // Agregar al body
   document.body.appendChild(alerta);
   
   // Auto-eliminar después de 3 segundos
@@ -179,14 +255,18 @@ function mostrarAlerta(mensaje, tipo = 'info') {
 
 /**
  * Validar formulario antes de enviar
+ * @param {Event} event - Evento del formulario
+ * @returns {boolean} - true si es válido, false si no
  */
 function validarVenta(event) {
+  // Validar que el carrito no esté vacío
   if (carrito.length === 0) {
     event.preventDefault();
     mostrarAlerta('⚠️ Debes agregar al menos un producto', 'warning');
     return false;
   }
   
+  // Validar que se haya seleccionado un vendedor
   const empleadoId = document.querySelector('select[name="empleado_id"]').value;
   if (!empleadoId) {
     event.preventDefault();
@@ -194,6 +274,7 @@ function validarVenta(event) {
     return false;
   }
   
+  // Validar que se haya seleccionado un método de pago
   const metodoPago = document.querySelector('select[name="metodo_pago"]').value;
   if (!metodoPago) {
     event.preventDefault();
@@ -201,29 +282,33 @@ function validarVenta(event) {
     return false;
   }
   
+  // Todas las validaciones pasaron
   return true;
 }
 
-// Inicializar eventos al cargar la página
+/**
+ * Inicializar eventos al cargar la página
+ * Se ejecuta cuando el DOM está completamente cargado
+ */
 document.addEventListener('DOMContentLoaded', function() {
-  // Filtros
+  // Evento para el buscador de productos
   const buscarInput = document.getElementById('buscar');
-  const filtroSelect = document.getElementById('filtro');
-  
   if (buscarInput) {
     buscarInput.addEventListener('input', filtrar);
   }
   
+  // Evento para el filtro de categorías
+  const filtroSelect = document.getElementById('filtro');
   if (filtroSelect) {
     filtroSelect.addEventListener('change', filtrar);
   }
   
-  // Validación del formulario
+  // Evento para validar el formulario al enviar
   const formVenta = document.getElementById('formVenta');
   if (formVenta) {
     formVenta.addEventListener('submit', validarVenta);
   }
   
-  // Inicializar carrito vacío
+  // Inicializar carrito vacío al cargar
   actualizar();
 });

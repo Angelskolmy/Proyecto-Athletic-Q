@@ -29,16 +29,19 @@ class ProductoForm(forms.ModelForm):
             'Stock':forms.NumberInput(attrs={
                 'Class': 'form-control', 
                 'Placeholder': '',
+                'min':'0',
             }), 
 
             'Precio_de_compra': forms.NumberInput(attrs={ 
                 'Class': 'form-control', 
                 'Placeholder': '',
+                'min':'0',
             }),
 
             'Precio_de_venta': forms.NumberInput(attrs={ 
                 'Class': 'form-control', 
                 'Placeholder': '',
+                'min':'0',
             }),
 
             'prod_imagen': forms.FileInput(attrs={
@@ -53,9 +56,9 @@ class ProductoForm(forms.ModelForm):
 
         } 
 
-    def __init__(self, *args, **kwargs):
+    def _init_(self, *args, **kwargs):
 
-        super().__init__(*args, **kwargs) 
+        super()._init_(*args, **kwargs) 
         
         self.fields['Catego_Id'].queryset = categoria.objects.only('Nombre')
 

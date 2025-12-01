@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/perfil/mi_perfil.css' %}">
+{% endblock %}
+
+{% block title %}Mi Perfil{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">
+                    <i class="bi bi-person-circle me-2"></i>Mi Perfil
+                </h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item active">Mi Perfil</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="row">
+            
+            <!-- Columna Izquierda: Foto y Datos Básicos -->
+            <div class="col-lg-4">
+                <div class="card card-perfil-foto shadow-sm">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-person-circle me-2"></i>Mi Foto
+                        </h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <!-- Foto de Perfil -->
+                        <div class="perfil-imagen-container mb-4">
+                            {% if usuario.empleados_img %}
+                                <img src="{{ usuario.empleados_img.url }}" alt="Foto de perfil" class="perfil-imagen">
+                            {% else %}
+                                <div class="perfil-imagen-placeholder">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Nombre Completo -->
+                        <h4 class="perfil-nombre">{{ usuario.first_name }} {{ usuario.last_name }}</h4>
+                        
+                        <!-- Rol/Grupo -->
+                        <div class="perfil-rol mb-3">
+                            {% for grupo in grupos %}
+                                {% if grupo.name == 'Admin' %}
+                                    <span class="badge badge-rol-admin">
+                                        <i class="bi bi-shield-check me-1"></i>{{ grupo.name }}
+                                    </span>
+                                {% elif grupo.name == 'Empleados' %}
+                                    <span class="badge badge-rol-empleado">
+                                        <i class="bi bi-person-badge me-1"></i>{{ grupo.name }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-rol-default">
+                                        <i class="bi bi-person me-1"></i>{{ grupo.name }}
+                                    </span>
+                                {% endif %}
+                            {% empty %}
+                                <span class="badge badge-rol-default">
+                                    <i class="bi bi-person me-1"></i>Sin rol asignado
+                                </span>
+                            {% endfor %}
+                        </div>
+
+                        <!-- Botones de Acción -->
+                        <div class="d-grid gap-2">
+                            <a href="{% url 'empleados_edit' usuario.id %}" class="btn btn-warning btn-sm">
+                                <i class="bi bi-pencil-fill me-1"></i>Editar Perfil
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Card de Estadísticas -->
+                <div class="card card-stats shadow-sm mt-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-bar-chart me-2"></i>Resumen
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="stat-item">
+                            <div class="stat-icon bg-primary-dark">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value">{{ usuario.date_joined|date:"d/m/Y" }}</span>
+                                <span class="stat-label">Miembro desde</span>
+                            </div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon bg-success-dark">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-value">
+                                    {% if usuario.last_login %}
+                                        {{ usuario.last_login|date:"d/m/Y H:i" }}
+                                    {% else %}
+                                        Nunca
+                                    {% endif %}
+                                </span>
+                                <span class="stat-label">Último acceso</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Columna Derecha: Toda la Información -->
+            <div class="col-lg-8">
+                <!-- Card de Información Personal y Cuenta (UNIFICADO) -->
+                <div class="card card-info-personal shadow-sm">
+                    <div class="card-header">
+                        <h5 class="mb-0">
+                            <i class="bi bi-person-vcard me-2"></i>Información Personal y Cuenta
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Columna 1: Información Personal -->
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-person me-2"></i>Nombre
+                                    </label>
+                                    <p class="info-value">{{ usuario.first_name|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-person me-2"></i>Apellido
+                                    </label>
+                                    <p class="info-value">{{ usuario.last_name|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-card-text me-2"></i>Cédula
+                                    </label>
+                                    <p class="info-value">{{ usuario.Cedula|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-gender-ambiguous me-2"></i>Género
+                                    </label>
+                                    <p class="info-value">
+                                        {% if usuario.Sexo == 'Masculino' %}
+                                            <span class="badge badge-masculino">
+                                                <i class="bi bi-gender-male me-1"></i>Masculino
+                                            </span>
+                                        {% elif usuario.Sexo == 'Femenino' %}
+                                            <span class="badge badge-femenino">
+                                                <i class="bi bi-gender-female me-1"></i>Femenino
+                                            </span>
+                                        {% else %}
+                                            No especificado
+                                        {% endif %}
+                                    </p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-hospital me-2"></i>EPS
+                                    </label>
+                                    <p class="info-value">{{ usuario.Eps|default:"No especificado" }}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Columna 2: Información de Contacto y Cuenta -->
+                            <div class="col-md-6">
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-person-badge me-2"></i>Usuario
+                                    </label>
+                                    <p class="info-value">{{ usuario.username }}</p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-envelope me-2"></i>Correo Electrónico
+                                    </label>
+                                    <p class="info-value">{{ usuario.email|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-telephone me-2"></i>Celular
+                                    </label>
+                                    <p class="info-value">{{ usuario.Celular|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-geo-alt me-2"></i>Dirección
+                                    </label>
+                                    <p class="info-value">{{ usuario.Direccion|default:"No especificado" }}</p>
+                                </div>
+                                
+                                <div class="info-item">
+                                    <label class="info-label">
+                                        <i class="bi bi-fingerprint me-2"></i>Huella Dactilar
+                                    </label>
+                                    <p class="info-value">
+                                        {% if usuario.Huella_id %}
+                                            <span class="badge bg-success">
+                                                <i class="bi bi-check-circle me-1"></i>Registrada
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">
+                                                <i class="bi bi-x-circle me-1"></i>No registrada
+                                            </span>
+                                        {% endif %}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

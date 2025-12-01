@@ -19,7 +19,6 @@ from Historial_ventas.models import Historial_Ventas
 @login_required(login_url='login')
 @permission_required('Ventas.add_venta', login_url='home')
 def ListarVentas(request):
-    """Vista principal de ventas con estadísticas del empleado"""
     
     empleado = request.user
     hoy = timezone.now().date()
@@ -43,6 +42,9 @@ def ListarVentas(request):
     empleados = User_Empleados.objects.filter(is_active=True, is_staff=True).order_by('first_name')
     productos = producto.objects.filter(Estado='Activo').select_related('Catego_Id').order_by('Nombre')
     categorias = categoria.objects.filter(Estado='Activo').order_by('Nombre')
+
+    # <<< CAMBIO: crear form y pasarlo al contexto >>>
+    form = VentaForm(initial={'id_usuario': empleado.id})
     
     context = {
         'empleado': empleado,
@@ -52,6 +54,7 @@ def ListarVentas(request):
         'productos': productos,
         'categorias': categorias,
         'hoy': hoy,
+        'form': form,  # <-- agregado
     }
     
     return render(request, "templates_ventas/ventas.html", context)
@@ -60,90 +63,99 @@ def ListarVentas(request):
 @permission_required('Ventas.add_venta', login_url='Ventas')
 @transaction.atomic
 def ProcesarVenta(request):
-    """Procesar nueva venta"""
-    
     if request.method != 'POST':
         messages.error(request, 'Método no permitido')
         return redirect('Ventas')
-    
+
+    form = VentaForm(request.POST)
+    if not form.is_valid():
+        messages.error(request, 'Datos inválidos en el formulario')
+        return redirect('Ventas')
+
     try:
-        # 1. OBTENER VENDEDOR
-        empleado_id = request.POST.get('empleado_id')
-        empleado = get_object_or_404(User_Empleados, id=empleado_id)
-        
-        # 2. OBTENER MÉTODO DE PAGO
-        metodo_pago = request.POST.get('metodo_pago', 'Efectivo')
-        
-        # 3. OBTENER PRODUCTOS
+        # Productos enviados por JS
         productos_ids = request.POST.getlist('producto_id[]')
         cantidades = request.POST.getlist('cantidad[]')
-        
         if not productos_ids:
             messages.error(request, 'Debe agregar al menos un producto')
             return redirect('Ventas')
-        
-        # 4. CALCULAR TOTAL
+
+        # Calcular total y validar stock
         total = Decimal('0.00')
         items = []
-        
         for i in range(len(productos_ids)):
             prod = get_object_or_404(producto, Id_producto=productos_ids[i])
             cantidad = int(cantidades[i])
-            
             if prod.Stock < cantidad:
                 messages.error(request, f'Stock insuficiente para {prod.Nombre}')
                 return redirect('Ventas')
-            
             subtotal = prod.Precio_de_venta * cantidad
             total += subtotal
-            
-            items.append({
-                'producto': prod,
-                'cantidad': cantidad,
-                'precio': prod.Precio_de_venta,
-                'subtotal': subtotal
-            })
-        
-        # 5. CREAR VENTA
-        venta = Venta.objects.create(
-            id_usuario=empleado,
-            Total=total
-        )
-        
-        # 6. CREAR DETALLES Y DESCONTAR STOCK
+            items.append({'producto': prod, 'cantidad': cantidad, 'subtotal': subtotal})
+
+        # Guardar venta
+        venta = form.save(commit=False)
+        venta.Total = total
+        venta.save()
+
+        # Crear detalles y descontar stock
+        metodo_pago = form.cleaned_data.get('metodo_pago')
         for item in items:
-            item['producto'].Stock -= item['cantidad']
-            item['producto'].save()
-            
+            p = item['producto']
+            p.Stock -= item['cantidad']
+            p.save()
             Detalle_Venta.objects.create(
                 Id_venta=venta,
-                Id_producto=item['producto'],
+                Id_producto=p,
                 Tipo_Pago=metodo_pago,
                 Cantidad=item['cantidad'],
                 Subtotal=item['subtotal'],
                 Total=total
             )
-        
-        # 7. REGISTRAR EN HISTORIAL
-        Historial_Ventas.objects.create(
-            id_usuario=empleado,
+
+        # Registrar historial
+        hist = Historial_Ventas.objects.create(
+            id_usuario=venta.id_usuario,
             id_venta=venta,
             Monto=total,
             metodo_pago=metodo_pago
         )
+
+        # Obtener cedula ingresada
+        cedula_vents = form.cleaned_data.get('Cedula_Vents')
         
-        messages.success(request, f'✅ Venta #{venta.Id_venta} creada - Total: ${total:,.0f}')
+        # Buscar si existe cliente con esa cedula
+        cliente_usuario = None
+        if cedula_vents:
+            cliente_usuario = User_Empleados.objects.filter(Cedula=cedula_vents).first()
+        
+        # Si no existe, usar usuario fantasma (ID 37)
+        if not cliente_usuario:
+            try:
+                cliente_usuario = User_Empleados.objects.get(pk=37)
+            except User_Empleados.DoesNotExist:
+                cliente_usuario = None
+        
+        # Intentar asignar el cliente al historial si tiene ese campo
+        if cliente_usuario:
+            for campo_posible in ('id_cliente', 'cliente', 'id_usuario_cliente', 'usuario_cliente'):
+                if hasattr(hist, campo_posible):
+                    setattr(hist, campo_posible, cliente_usuario)
+                    hist.save()
+                    break
+
+        messages.success(request, f'Venta #{venta.Id_venta} creada - Total: ${total:,.0f}')
         return redirect('Ventas')
-        
+
     except Exception as e:
-        messages.error(request, f'❌ Error: {str(e)}')
+        transaction.set_rollback(True)
+        messages.error(request, f'Error: {str(e)}')
         return redirect('Ventas')
 
 
 @login_required(login_url='login')
 @permission_required('Ventas.view_venta', login_url='Ventas')
 def DetalleVenta(request, id):
-    """Ver detalle de una venta"""
     
     venta = get_object_or_404(
         Venta.objects.select_related('id_usuario'),
@@ -268,9 +280,9 @@ def ActualizarVenta(request, id):
         venta.observaciones_edicion = observaciones
         venta.save()
         
-        messages.success(request, f'✅ Venta #{venta.Id_venta} actualizada exitosamente')
+        messages.success(request, f' Venta #{venta.Id_venta} actualizada exitosamente')
         return redirect('detalle_venta', id=venta.Id_venta)
         
     except Exception as e:
-        messages.error(request, f'❌ Error: {str(e)}')
+        messages.error(request, f' Error: {str(e)}')
         return redirect('editar_venta', id=id)

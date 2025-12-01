@@ -143,16 +143,12 @@
               <tr>
                 <!-- ID Historial -->
                 <td>
-                  <span class="badge badge-id-historial">
                     #{{ historial.id_registro }}
-                  </span>
                 </td>
                 
                 <!-- ID Venta -->
                 <td>
-                  <span class="badge badge-id-venta">
                     #{{ historial.id_venta.Id_venta }}
-                  </span>
                 </td>
                 
                 <!-- Empleado -->
@@ -166,11 +162,6 @@
                   {{ historial.fecha_venta|date:"d/m/Y H:i" }}
                 </td>
                 
-                <!-- Monto -->
-                <td class="fw-bold" style="color: var(--rojo-1);">
-                  {{ historial.Monto|currency_cop }}
-                </td>
-                
                 <!-- Método de Pago -->
                 <td>
                   <span class="badge badge-{{ historial.metodo_pago|lower }}">
@@ -181,6 +172,11 @@
                       {% else %}bi-wallet2{% endif %} me-1"></i>
                     {{ historial.metodo_pago }}
                   </span>
+                </td>
+
+                <!-- Monto -->
+                <td class="fw-bold" style="color: var(--rojo-1);">
+                  {{ historial.Monto|currency_cop }}
                 </td>
                 
                 <!-- Acciones -->

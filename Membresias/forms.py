@@ -11,7 +11,8 @@ class MembresiaForm(forms.ModelForm):
         
         widgets = {
             'id_usuario': forms.Select(attrs={
-                'class': 'form-select',
+                'class': 'form-select select2-clientes',
+                'data-placeholder': 'Buscar usuario por nombre, apellido o cédula...',
             }),
             
             'For_Id_tipo_membresia': forms.Select(attrs={
@@ -29,7 +30,7 @@ class MembresiaForm(forms.ModelForm):
         }
         
         labels = {
-            'id_usuario': 'Cliente',
+            'id_usuario': 'Usuario',  # ⬅️ Cambiar etiqueta
             'For_Id_tipo_membresia': 'Tipo de Membresía',
             'Estado': 'Estado',
             'membresia_img': 'Imagen de la Membresía'
@@ -38,12 +39,17 @@ class MembresiaForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
-        # PLACEHOLDER PARA CLIENTE
-        self.fields['id_usuario'].empty_label = "Seleccione un cliente"
+        # ✅ FILTRAR SOLO USUARIOS DEL GRUPO "Usuarios" Y ACTIVOS
         self.fields['id_usuario'].queryset = User_Empleados.objects.filter(
-            is_active=True,
-            groups__name='Clientes'
+            groups__name='Usuarios',  # ⬅️ CAMBIAR A "Usuarios"
+            is_active=True
         ).order_by('first_name', 'last_name')
+        
+        # ✅ AGREGAR OPCIÓN VACÍA PARA SELECT2
+        self.fields['id_usuario'].empty_label = "Seleccione un usuario..."
+        
+        # ✅ PERSONALIZAR CÓMO SE MUESTRA CADA OPCIÓN
+        self.fields['id_usuario'].label_from_instance = lambda obj: f"{obj.first_name} {obj.last_name} - {obj.Cedula}"
         
         # PLACEHOLDER PARA TIPO DE MEMBRESÍA
         self.fields['For_Id_tipo_membresia'].empty_label = "Seleccione un tipo de membresia"

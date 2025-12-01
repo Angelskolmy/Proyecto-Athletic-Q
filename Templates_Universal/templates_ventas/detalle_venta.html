@@ -67,9 +67,16 @@
               </div>
 
               <div class="row mb-3">
-                <div class="col-sm-4"><strong>Cédula Vendedor:</strong></div>
+                <div class="col-sm-4"><strong>Cedula comprador:</strong></div>
                 <div class="col-sm-8">
-                  {{ venta.id_usuario.Cedula|default:"No registrada" }}
+                  {{ venta.Cedula_Vents|default:"N/A" }}
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-sm-4"><strong>Numero transaccion:</strong></div>
+                <div class="col-sm-8">
+                  {{ venta.Numero_Transaccion }}
                 </div>
               </div>
 
@@ -141,7 +148,7 @@
 
     <!-- Card de Productos -->
     <div class="card shadow-sm mb-4">
-      <div class="card-header bg-primary text-white">
+      <div class="card-header text-white">
         <h5 class="mb-0">
           <i class="bi bi-box-seam me-2"></i>Productos Vendidos
         </h5>

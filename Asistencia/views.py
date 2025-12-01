@@ -1,9 +1,16 @@
 from django.shortcuts import render, redirect
 from .models import asistencia
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import permission_required
 
-@login_required(login_url='login')
+@permission_required('Asistencia.view_asistencia', raise_exception=True)
+def verPerfilasistencias (request):
+    user = request.user
+    if user.groups.filter(name='Admin').exists():
+        return redirect('Asistencias')  # URL de perfil
+    if user.groups.filter(name='Huella').exists():
+        return render (request, "templates_asistencias/asistencias_huella.html") 
+    
 def listarAsistencias (request): 
     #Si NO tiene permiso → redirigir a perfil
     

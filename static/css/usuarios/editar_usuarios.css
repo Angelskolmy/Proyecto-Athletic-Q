@@ -59,6 +59,36 @@ textarea:focus {
   outline: none !important;
 }
 
+/* Botón Guardar - Rojo Oscuro */
+.btn-guardar {
+  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(6, 95, 70, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-guardar:hover {
+  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(6, 95, 70, 0.4);
+}
+
+/* Botón Cancelar - Gris */
+.btn-cancelar {
+  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.btn-cancelar:hover {
+  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
 /* Responsive para móviles */
 @media (max-width: 768px) {
   .card-header {

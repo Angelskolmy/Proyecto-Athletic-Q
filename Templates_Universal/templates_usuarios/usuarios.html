@@ -100,7 +100,7 @@ Usuarios
             <tbody>
             {% for UsEmp in Empleados %}
               <tr>
-                <td>{{ UsEmp.Cedula|default:'Sin cédula' }}</td>
+                <td>{{ UsEmp.Cedula|cut:".|default:'Sin cédula' "}}</td>
                 
                 <!-- Foto -->
                 <td>
@@ -184,13 +184,13 @@ Usuarios
                   
                   <!-- Huellas -->
                   {% if UsEmp.Huella_id %}
-                    <button class="btn btn-sm btn-huella-registrada" title="Huella registrada">
+                    <a href="{% url 'capturar_huella' UsEmp.id %}" class="btn btn-sm btn-huella-registrada" title="Huella registrada">
                       <i class="bi bi-fingerprint"></i>
-                    </button>
+                    </a>
                   {% else %}
-                    <button class="btn btn-sm btn-huella-no-registrada" disabled title="Sin huella">
-                      <i class="bi bi-fingerprint"></i>
-                    </button>
+                    <a href="{% url 'capturar_huella' UsEmp.id %}" cclass="btn btn-sm btn-huella-no-registrada" disabled title="Sin huella">
+                        <i class="bi bi-fingerprint"></i>
+                    </a>
                   {% endif %}
                 </td>
               </tr>

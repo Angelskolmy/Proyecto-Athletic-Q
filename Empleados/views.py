@@ -1,9 +1,17 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.conf import settings
+import os
+import subprocess
+from datetime import datetime
+from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
 from django.db import transaction
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.contrib.auth.models import Group
+from django.conf import settings
+from Asistencia.models import asistencia
 from .models import User_Empleados
 from .forms import EmpleadoForm
 from Membresias.models import Membresia
@@ -13,7 +21,7 @@ from django.contrib.auth.decorators import permission_required
 @transaction.atomic
 def ListarEmpleados(request):
     # Obtener parámetros de búsqueda, filtro y paginación
-    search_query = request.GET.get('search', '').strip() 
+    search_query = request.GET.get('search', '').strip()
     filter_type = request.GET.get('filter', '')
     page_number = request.GET.get('page', 1)
     items_per_page = int(request.GET.get('items_per_page', 10))
@@ -74,38 +82,51 @@ def ListarEmpleados(request):
 def CrearEmpleado(request):
     if request.method == 'POST':
         form = EmpleadoForm(request.POST, request.FILES)
+        
         if form.is_valid():
             try:
                 empleado = form.save(commit=False)
+
+                # Guardar contraseña correctamente
                 empleado.set_password(form.cleaned_data['password'])
                 empleado.save()
-                
-                # Asignar grupo/rol
-                if form.cleaned_data['groups']:
+
+                # Guardar grupo/rol
+                if form.cleaned_data.get('groups'):
                     empleado.groups.add(form.cleaned_data['groups'])
-                
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Usuario creado exitosamente',
-                    'redirect': '/Empleados/',
-                    'show_fingerprint_modal': True,  # Señal para mostrar modal de huella
-                    'user_id': empleado.id
-                })
+
+                # 👉 Redirección normal sin Ajax
+                return redirect(f'/Empleados/{empleado.id}/capturar-huella/')
+
             except Exception as e:
-                return JsonResponse({
-                    'success': False,
-                    'message': f'Error al crear el usuario: {str(e)}'
-                }, status=400)
+                messages.error(request, "Error al crear empleado: ", {str(e)})
+                return render(request,'templates_usuarios/crear_usuarios.html', {'form': form,})
+        
         else:
-            return JsonResponse({
-                'success': False,
-                'message': 'Datos inválidos',
-                'errors': form.errors
-            }, status=400)
+            return render(request,'templates_usuarios/crear_usuarios.html', {'form': form})
+
     else:
+        # GET → mostrar el formulario
         form = EmpleadoForm()
 
     return render(request, 'templates_usuarios/crear_usuarios.html', {'form': form})
+
+
+def capturar_huella(request, empleado_id):
+    empleado = get_object_or_404(User_Empleados, id=empleado_id)
+
+    if request.method == "POST":
+        exe_path = os.path.join(settings.BASE_DIR, 'static', 'exe', 'EnrollmentConsole.exe')
+        try:
+            resultado = subprocess.check_output([exe_path], text=True, shell=True)
+            empleado.Huella_id = resultado.strip()
+            empleado.save()
+            return JsonResponse({"success": True})
+        except Exception:
+            return JsonResponse({"success": False})
+    
+    # GET: renderizamos el HTML
+    return render(request, "templates_huella/huella.html", {"empleado": empleado})
 
 @transaction.atomic
 def EditarEmpleado(request, id):
@@ -157,47 +178,7 @@ def EditarEmpleado(request, id):
         'form': form
     })
 
-# Nueva vista para registro de huella
-@transaction.atomic
-def RegistrarHuella(request, user_id):
-    if request.method == 'POST':
-        try:
-            empleado = get_object_or_404(User_Empleados, id=user_id)
-            huella_data = request.POST.get('huella_data')
-            attempt_number = int(request.POST.get('attempt_number', 1))
-            
-            if huella_data:  # Si se leyó correctamente la huella
-                if attempt_number >= 3:
-                    # Después de 3 intentos exitosos, guardar la huella
-                    empleado.Huella_id = hash(huella_data) % 1000000  # Generar ID único
-                    empleado.save()
-                    
-                    return JsonResponse({
-                        'success': True,
-                        'message': '¡Huella registrada exitosamente!',
-                        'attempts': 3,
-                        'completed': True
-                    })
-                else:
-                    return JsonResponse({
-                        'success': True,
-                        'message': f'Intento {attempt_number}/3 registrado correctamente',
-                        'attempts': attempt_number,
-                        'completed': False
-                    })
-            else:
-                return JsonResponse({
-                    'success': False,
-                    'message': 'No se pudo leer la huella. Intente nuevamente.'
-                })
-                
-        except Exception as e:
-            return JsonResponse({
-                'success': False,
-                'message': f'Error al registrar huella: {str(e)}'
-            }, status=400)
-    
-    return JsonResponse({'message': 'Método no permitido'}, status=405)
+
 
 #@permission_required('Empleados.view_suariogym', login_url='home') este permiso puede hacer todo el view si ese usuario tiene ese permiso
 @permission_required('Empleados.usariogym', raise_exception=True) # este permiso solo sirve para mirar el perfil 
@@ -208,4 +189,26 @@ def UsersGym(request):
     
     Lister = { 'membresias' : membresia}  
     
-    return render(request, 'templates_perfil/perfil.html', Lister)
+    return render(request, 'templates_perfil/datos.html', Lister)
+
+# ...existing code...
+
+from django.contrib.auth.decorators import login_required
+
+@login_required(login_url='login')
+def MiPerfil(request):
+    """Vista de perfil para administradores y empleados"""
+    usuario = request.user
+    
+    # Obtener membresías si tiene
+    membresias = Membresia.objects.filter(id_usuario=usuario).order_by('-Fecha_inicio')
+    
+    # Obtener el grupo/rol del usuario
+    grupos = usuario.groups.all()
+    
+    context = {
+        'usuario': usuario,
+        'membresias': membresias,
+        'grupos': grupos,
+    }
+    return render(request, 'templates_perfil/mi_perfil.html', context)

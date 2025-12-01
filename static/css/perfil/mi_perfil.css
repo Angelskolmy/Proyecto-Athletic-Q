@@ -1,0 +1,324 @@
+:root {
+    --rojo-1: #8B0000;
+    --rojo-2: #740000;
+    --negro: #1a1a1a;
+    --gris-oscuro: #2d2d2d;
+    --gris-medio: #6c757d;
+    --gris-claro: #e9ecef;
+    --beige-claro: #faf8f0;
+    --blanco: #ffffff;
+    --verde-oscuro: #1a5928;
+    --azul-oscuro: #1e3a8a;
+}
+
+/* ================================
+    TODAS LAS CARDS - FONDO BEIGE
+   ================================ */
+.card {
+    background-color: var(--beige-claro) !important;
+    border: none;
+    border-radius: 15px;
+}
+
+/* ================================
+    TODOS LOS CARD-HEADER - ROJO CON LETRA CLARA
+   ================================ */
+.card .card-header,
+.card-perfil-foto .card-header,
+.card-stats .card-header,
+.card-info-personal .card-header,
+.card-info-cuenta .card-header {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+    color: var(--blanco) !important;
+    border-radius: 15px 15px 0 0 !important;
+    border: none !important;
+    padding: 1rem 1.25rem;
+}
+
+.card .card-header h5,
+.card .card-header h6,
+.card .card-header i,
+.card .card-header span {
+    color: var(--blanco) !important;
+}
+
+/* ================================
+   CARD FOTO DE PERFIL
+   ================================ */
+.card-perfil-foto {
+    border: none;
+    background-color: var(--beige-claro) !important;
+}
+
+.perfil-imagen-container {
+    position: relative;
+    display: inline-block;
+}
+
+.perfil-imagen {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+}
+
+.perfil-imagen-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+}
+
+.perfil-imagen-placeholder i {
+    font-size: 4rem;
+    color: var(--gris-claro);
+}
+
+.perfil-nombre {
+    color: var(--negro) !important;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+/* ================================
+   BADGES DE ROL
+   ================================ */
+.badge-rol-admin {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, #a50000 100%) !important;
+    color: var(--blanco);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+.badge-rol-empleado {
+    background: linear-gradient(135deg, var(--azul-oscuro) 0%, #2a5a8c 100%) !important;
+    color: var(--blanco);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+.badge-rol-default {
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+    color: var(--blanco);
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+/* ================================
+   BADGES DE GÉNERO
+   ================================ */
+.badge-masculino {
+    background: linear-gradient(135deg, var(--azul-oscuro) 0%, #2a5a8c 100%) !important;
+    color: var(--blanco);
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+}
+
+.badge-femenino {
+    background: linear-gradient(135deg, #8B1A55 0%, #a52a6a 100%) !important;
+    color: var(--blanco);
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    border-radius: 10px;
+}
+
+/* ================================
+   CARD DE ESTADÍSTICAS
+   ================================ */
+.card-stats {
+    border: none;
+    border-radius: 15px;
+    background-color: var(--beige-claro) !important;
+}
+
+.card-stats .card-header {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+    color: var(--blanco) !important;
+    border-radius: 15px 15px 0 0;
+    border: none;
+    padding: 1rem 1.25rem;
+}
+
+.card-stats .card-header h6,
+.card-stats .card-header i {
+    color: var(--blanco) !important;
+}
+
+.card-stats .card-body {
+    background-color: var(--beige-claro) !important;
+    border-radius: 0 0 15px 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gris-claro);
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    color: var(--blanco);
+}
+
+.bg-primary-dark {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, #a50000 100%);
+}
+
+.bg-success-dark {
+    background: linear-gradient(135deg, var(--verde-oscuro) 0%, #2a7a3a 100%);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-value {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--negro);
+}
+
+.stat-label {
+    font-size: 0.85rem;
+    color: var(--gris-medio);
+}
+
+/* ================================
+   CARDS DE INFORMACIÓN
+   ================================ */
+.card-info-personal,
+.card-info-cuenta {
+    border: none;
+    border-radius: 15px;
+    background-color: var(--beige-claro) !important;
+}
+
+.card-info-personal .card-header {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+    color: var(--blanco) !important;
+    border-radius: 15px 15px 0 0;
+    border: none;
+    padding: 1rem 1.25rem;
+}
+
+.card-info-personal .card-header h5,
+.card-info-personal .card-header i {
+    color: var(--blanco) !important;
+}
+
+.card-info-personal .card-body {
+    background-color: var(--beige-claro) !important;
+    border-radius: 0 0 15px 15px;
+}
+
+.card-info-cuenta .card-header {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+    color: var(--blanco) !important;
+    border-radius: 15px 15px 0 0;
+    border: none;
+    padding: 1rem 1.25rem;
+}
+
+.card-info-cuenta .card-header h5,
+.card-info-cuenta .card-header i {
+    color: var(--blanco) !important;
+}
+
+.card-info-cuenta .card-body {
+    background-color: var(--beige-claro) !important;
+    border-radius: 0 0 15px 15px;
+}
+
+.info-item {
+    margin-bottom: 1.5rem;
+}
+
+.info-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--gris-medio);
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-label i {
+    color: var(--rojo-1);
+}
+
+.info-value {
+    font-size: 1rem;
+    color: var(--negro);
+    margin: 0;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--gris-claro);
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+.btn-warning {
+    background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+    border: none !important;
+    color: #fff !important;
+}
+
+.btn-warning:hover {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+    transform: translateY(-2px);
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+@media (max-width: 991px) {
+    .card-perfil-foto {
+        margin-bottom: 1.5rem;
+    }
+    
+    .perfil-imagen,
+    .perfil-imagen-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .perfil-imagen-placeholder i {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .info-item {
+        margin-bottom: 1rem;
+    }
+    
+    .stat-item {
+        padding: 0.75rem 0;
+    }
+}

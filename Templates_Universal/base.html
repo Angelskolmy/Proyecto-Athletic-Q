@@ -23,6 +23,18 @@
     
     <script src="{% static 'chart.js-4.4.0/chart.umd.js' %}"></script>
   </head>
+
+  {% if messages %}
+  <div class="container-fluid mt-3">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+  </div>
+  {% endif %}
+
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded sidebar-collapse">
     <div class="app-wrapper">
       <nav class="app-header navbar navbar-expand bg-body">
@@ -57,8 +69,12 @@
                   </p>
                 </li>
                 <li class="user-footer">
-                  <a href="#" class="btn btn-default btn-flat">Profile</a>
-                  <a href="{% url 'logout' %}" class="btn btn-default btn-flat float-end">Sign out</a>
+                  <a href="{% url 'mi_perfil' %}" class="btn btn-default btn-flat">
+                    <i class="bi bi-person-circle me-1"></i>Perfil
+                  </a>
+                  <a href="{% url 'logout' %}" class="btn btn-default btn-flat float-end">
+                    <i class="bi bi-box-arrow-right me-1"></i>Salir
+                  </a>
                 </li>
               </ul>
             </li>
@@ -176,7 +192,6 @@
     <script src="{% static 'overlayscrollbars-2.10.1/browser/overlayscrollbars.browser.es6.min.js' %}"></script>
     <script src="{% static 'dist/js/adminlte.js' %}"></script>
     <script src="{% static 'js/script-huella.js' %}"></script>
-    <script src="{% static 'js/productos-stock.js' %}"></script>
 
     <script>
       const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';

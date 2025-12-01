@@ -24,6 +24,9 @@ def login_view(request):
             if user.groups.filter(name='Usuarios').exists():
                 return redirect('Perfil')
             
+            if user.groups.filter(name='Huella').exists():
+                return redirect('AsisVista')
+            
             return redirect('home')  # después de login lo mandamos al dashboard
         else:
             messages.error(request, 'Usuario o contraseña incorrectos.')
