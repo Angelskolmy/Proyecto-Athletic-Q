@@ -21,8 +21,18 @@
     
     {% block extra_css %}{% endblock %}
     
-    <script src="{% static 'chart.js-4.4.0/chart.umd.js' %}"></script>
-  </head>
+    <script src="{% static 'chart.js-4.4.0/chart.umd.js' %}"></script> 
+  </head> 
+  {% if messages %}
+  <div class="container-fluid mt-3">
+      {% for message in messages %}
+      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      </div>
+      {% endfor %}
+  </div>
+  {% endif %}
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded sidebar-collapse">
     <div class="app-wrapper">
       <nav class="app-header navbar navbar-expand bg-body">

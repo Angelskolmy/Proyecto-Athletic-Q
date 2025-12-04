@@ -2,177 +2,247 @@
 
 {% block title %}
 Ingreso Productos
+{% endblock %} 
+
+{% load static currency_filters %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/productos/detalle_producto.css' %}">
 {% endblock %}
+
 
 {% block content %}
 
-    <div class="container-fluid py-3">
+    <!--begin::App Content Header-->
+<div class="app-content-header">
+    <div class="container-fluid">
         <div class="row">
-            <div class="col-12">
-                <div class="d-flex align-items-center justify-content-between mb-3">
-                    <div>
-                        <h4 class="mb-0"><i class="bi bi-box-seam me-2 text-danger"></i>Editar Producto</h4>
-                        <small class="text-muted">Modifica los datos del producto</small>
-                    </div>
-                    <nav aria-label="breadcrumb">
-                        <ol class="breadcrumb bg-transparent mb-0">
-                            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-                            <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
-                            <li class="breadcrumb-item active" aria-current="page">Editar</li>
-                        </ol>
-                    </nav>
-                </div>
-
-                <div class="card shadow-sm">
-                    <div class="card-body p-4">
-                        <form method="post" enctype="multipart/form-data" novalidate>
-                            {% csrf_token %}
-                            <div class="row gx-4">
-                                <!-- Left column -->
-                                <div class="col-lg-6">
-                                    <div class="mb-4">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <h6 class="section-title mb-0"><i
-                                                    class="bi bi-info-circle me-2 text-primary"></i>Información del Producto
-                                            </h6>
-                                        </div>
-                                        <div class="section-divider mb-3"></div>
-
-                                        <div class="mb-3">
-                                            {{ Azat.Nombre.label_tag }}
-                                            {{ Azat.Nombre }}
-                                        </div>
-
-                                        <div class="mb-3">
-                                            {{ Azat.Catego_Id.label_tag }}
-                                            {{ Azat.Catego_Id }}
-                                        </div>
-
-                                        <div class="mb-3">
-                                            {{ Azat.Descripcion.label_tag }}
-                                            {{ Azat.Descripcion }}
-                                            <div class="form-text">Incluye detalles relevantes del producto</div>
-                                        </div>
-
-                                        <div class="mb-0">
-                                            {{ Azat.prod_imagen.label_tag }}
-                                            {{ Azat.prod_imagen }}
-                                            <div class="form-text mt-1">Formatos aceptados: JPG, PNG, JPEG, WEBP</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Right column -->
-                                <div class="col-lg-6">
-                                    <div class="mb-4">
-                                        <div class="d-flex align-items-center justify-content-between mb-2">
-                                            <h6 class="section-title mb-0"><i
-                                                    class="bi bi-box-seam me-2 text-primary"></i>Inventario y Precios</h6>
-                                        </div>
-                                        <div class="section-divider mb-3"></div>
-
-                                        <div class="mb-3">
-                                            {{ Azat.Stock.label_tag }}
-                                            <div class="input-group">
-                                                <span class="input-group-text bg-white border-end-0"><i
-                                                        class="bi bi-box"></i></span>
-                                                {{ Azat.Stock }}
-                                                <span class="input-group-text bg-white border-start-0">unidades</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3 row">
-                                            <div class="col-md-6 mb-3 mb-md-0">
-                                                {{ Azat.Precio_de_compra.label_tag }}
-                                                <div class="input-group">
-                                                    <span class="input-group-text">$</span>
-                                                    {{ Azat.Precio_de_compra }}
-                                                </div>
-                                                <div class="form-text">Precio al que se adquiere el producto</div>
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                {{ Azat.Precio_de_venta.label_tag }}
-                                                <div class="input-group">
-                                                    <span class="input-group-text">$</span>
-                                                    {{ Azat.Precio_de_venta }}
-                                                </div>
-                                                <div class="form-text">Precio al que se vende al cliente</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-0">
-                                            {{ Azat.Estado.label_tag }}
-                                            {{ Azat.Estado }}
-                                            <div class="form-text mt-1">Estado actual del producto</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Actions -->
-                            <div class="d-flex justify-content-end gap-2 mt-4">
-                                <a href="{% url 'Producto' %}" class="btn btn-outline-secondary">Cancelar</a>
-                                <button type="submit" class="btn btn-danger">Guardar Cambios</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+            <div class="col-sm-8">
+                <h3 class="mb-0">
+                    <i class="bi bi-pencil-square me-2"></i>Editar Producto
+                </h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
+                    <li class="breadcrumb-item active">Editar</li>
+                </ol>
             </div>
         </div>
     </div>
-    {% endblock %}
+</div>
+<!--end::App Content Header-->
 
-    {% block extra_css %}
-    <style>
-        .section-title {
-            color: #c82333;
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="card shadow-sm">
+            <div class="card-header d-flex align-items-center gap-3">
+                <span class="badge badge-id">
+                    <i class="bi bi-hash me-1"></i>{{ Azat.instance.Id_producto }}
+                </span>
+                <h5 class="mb-0">
+                    <i class="bi bi-info-circle me-2"></i>Editar: {{ Azat.instance.Nombre }}
+                </h5>
+            </div>
 
-        .section-divider {
-            height: 2px;
-            background: linear-gradient(90deg, #0d6efd, #0d6efd);
-            width: 100%;
-            margin-top: .35rem;
-            margin-bottom: 1.25rem;
-        }
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div class="card-body">
+                    <div class="row">
+                        
+                        <!-- Columna Izquierda: Información Básica -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-tag me-1"></i>Información Básica
+                            </h6>
 
-        input.form-control,
-        textarea.form-control,
-        select.form-select {
-            border-radius: .35rem;
-            height: calc(1.6em + .9rem);
-            box-shadow: none;
-        }
+                            <!-- Imagen actual -->
+                            {% if Azat.instance.prod_imagen %}
+                            <div class="mb-3 text-center">
+                                <img src="{{ Azat.instance.prod_imagen.url }}" alt="{{ Azat.instance.Nombre }}" 
+                                     class="imagen-actual rounded shadow-sm">
+                                <p class="text-muted mt-2 mb-0">Imagen actual</p>
+                            </div>
+                            {% endif %}
 
-        textarea.form-control {
-            min-height: 84px;
-            height: auto;
-            padding-top: .6rem;
-            padding-bottom: .6rem;
-        }
+                            <!-- Nombre -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.Nombre.id_for_label }}" class="form-label fw-semibold">
+                                    Nombre del Producto <span class="text-danger">*</span>
+                                </label>
+                                {{ Azat.Nombre }}
+                                {% if Azat.Nombre.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.Nombre.errors }}</div>
+                                {% endif %}
+                            </div>
 
-        .input-group .input-group-text {
-            border-radius: .35rem;
-        }
+                            <!-- Categoría -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.Catego_Id.id_for_label }}" class="form-label fw-semibold">
+                                    Categoría <span class="text-danger">*</span>
+                                </label>
+                                {{ Azat.Catego_Id }}
+                                {% if Azat.Catego_Id.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.Catego_Id.errors }}</div>
+                                {% endif %}
+                            </div>
 
-        .input-group .form-control {
-            border-left: 0;
-            border-right: 0;
-        }
+                            <!-- Descripción -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.Descripcion.id_for_label }}" class="form-label fw-semibold">
+                                    Descripción
+                                </label>
+                                {{ Azat.Descripcion }}
+                                {% if Azat.Descripcion.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.Descripcion.errors }}</div>
+                                {% endif %}
+                            </div>
 
-        .form-text {
-            font-size: .85rem;
-            color: #6c757d;
-        }
+                            <!-- Estado -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.Estado.id_for_label }}" class="form-label fw-semibold">
+                                    Estado <span class="text-danger">*</span>
+                                </label>
+                                {{ Azat.Estado }}
+                                {% if Azat.Estado.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.Estado.errors }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
 
-        @media (max-width: 767.98px) {
-            .section-divider {
-                margin-bottom: .75rem;
+                        <!-- Columna Derecha: Precios y Stock -->
+                        <div class="col-md-6">
+                            <h6 class="text-primary mb-3">
+                                <i class="bi bi-cash-coin me-1"></i>Precios e Inventario
+                            </h6>
+
+                            <!-- Stock -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.Stock.id_for_label }}" class="form-label fw-semibold">
+                                    Stock <span class="text-danger">*</span>
+                                </label>
+                                {{ Azat.Stock }}
+                                {% if Azat.Stock.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.Stock.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-box me-1"></i>Cantidad actual en inventario
+                                </small>
+                            </div>
+
+                            <!-- Precio de Compra -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.Precio_de_compra.id_for_label }}" class="form-label fw-semibold">
+                                    Precio de Compra <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ Azat.Precio_de_compra }}
+                                </div>
+                                {% if Azat.Precio_de_compra.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.Precio_de_compra.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Precio de Venta -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.Precio_de_venta.id_for_label }}" class="form-label fw-semibold">
+                                    Precio de Venta <span class="text-danger">*</span>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">$</span>
+                                    {{ Azat.Precio_de_venta }}
+                                </div>
+                                {% if Azat.Precio_de_venta.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.Precio_de_venta.errors }}</div>
+                                {% endif %}
+                            </div>
+
+                            <!-- Imagen -->
+                            <div class="mb-3">
+                                <label for="{{ Azat.prod_imagen.id_for_label }}" class="form-label fw-semibold">
+                                    Nueva Imagen
+                                </label>
+                                {{ Azat.prod_imagen }}
+                                {% if Azat.prod_imagen.errors %}
+                                    <div class="text-danger small mt-1">{{ Azat.prod_imagen.errors }}</div>
+                                {% endif %}
+                                <small class="form-text text-muted">
+                                    <i class="bi bi-image me-1"></i>Deja vacío para mantener la imagen actual
+                                </small>
+                            </div>
+
+                            <!-- Previsualización de imagen -->
+                            <div id="preview-container" class="text-center" style="display: none;">
+                                <p class="text-muted mb-2">
+                                    <i class="bi bi-eye me-1"></i>Nueva imagen:
+                                </p>
+                                <img id="preview-img" class="rounded shadow-sm" 
+                                     style="max-height: 150px; object-fit: cover; border: 2px solid #dee2e6;">
+                            </div>
+
+                            <!-- Alerta informativa -->
+                            <div class="alert alert-warning mt-3">
+                                <h6 class="alert-heading mb-2">
+                                    <i class="bi bi-exclamation-triangle me-1"></i>Información
+                                </h6>
+                                <p class="mb-0 small">
+                                    Los cambios realizados afectarán inmediatamente al inventario.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Footer con botones -->
+                <div class="card-footer text-end">
+                    <a href="{% url 'Producto' %}" class="btn btn-cancelar me-2">
+                        <i class="bi bi-x-circle me-1"></i>Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-actualizar">
+                        <i class="bi bi-check-circle me-1"></i>Actualizar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Previsualización de imagen
+document.addEventListener('DOMContentLoaded', function() {
+    const inputImagen = document.querySelector('input[name="prod_imagen"]');
+    
+    if (inputImagen) {
+        inputImagen.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                alert('Por favor selecciona un archivo de imagen válido');
+                inputImagen.value = '';
+                return;
             }
-        }
-    </style>
+            
+            const reader = new FileReader();
+            
+            reader.onload = function(event) {
+                const previewContainer = document.getElementById('preview-container');
+                const previewImg = document.getElementById('preview-img');
+                
+                if (previewContainer && previewImg) {
+                    previewContainer.style.display = 'block';
+                    previewImg.src = event.target.result;
+                }
+            };
+            
+            reader.readAsDataURL(file);
+        });
+    }
+});
+</script>
 
 {% endblock %}

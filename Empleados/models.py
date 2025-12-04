@@ -42,11 +42,10 @@ class User_Empleados(AbstractUser):
         db_column='Sexo'
     ) 
     Cedula= models.IntegerField(unique=True, null=True, db_column='Cedula')  
-    empleados_img= models.CharField(max_length=100 ,null=True, db_column='empleados_img')  
-    Huella_id= models.TextField(db_column='Huella_id', null=True) 
+    empleados_img= models.ImageField(max_length=100 ,null=True, db_column='empleados_img', upload_to='usuarios/')  
     Direccion= models.BinaryField(max_length=50, null=True, db_column='Direccion') 
     Celular= models.IntegerField(null=True, db_column='Celular') 
-    template_huella= models.TextField(null=True, db_column='template_huella')
+    
 
     class Meta: 
 
@@ -54,4 +53,4 @@ class User_Empleados(AbstractUser):
         db_table= 'Empleados_user_empleados'
 
     def __str__(self): 
-        return f" id {self.id} - password {self.password} - last_login {self.last_login} - is_superuser {self.is_superuser} - username {self.username} - first_name {self.first_name} - last_name {self.last_name} - email {self.email} - is_staff{self.is_staff} - is_active {self.is_active} - date_joined {self.date_joined} - EPS {self.Eps} - Sexo {self.Sexo} - Cedula {self.Cedula} - empleados_img {self.empleados_img} - Huella_id {self.Huella_id} - Direccion{self.Direccion} - Celular{self.Celular} - template_huella{self.template_huella}" 
+        return f" id {self.id} - password {self.password} - last_login {self.last_login} - is_superuser {self.is_superuser} - username {self.username} - first_name {self.first_name} - last_name {self.last_name} - email {self.email} - is_staff{self.is_staff} - is_active {self.is_active} - date_joined {self.date_joined} - EPS {self.Eps} - Sexo {self.Sexo} - Cedula {self.Cedula} - empleados_img {self.empleados_img} - Direccion{self.Direccion} - Celular{self.Celular}" 
