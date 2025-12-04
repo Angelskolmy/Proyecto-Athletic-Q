@@ -12,7 +12,10 @@ from .forms import MembresiaForm
 from Empleados.models import User_Empleados
 from Tipo_membresia.models import TipoMembresia
 from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required 
+from django.utils import timezone  
+from Historial.models import Historial_usuario
+
 
 @login_required(login_url='login')
 @permission_required('Membresias.view_membresia', login_url='login')
@@ -51,14 +54,16 @@ def ListarMembresias(request):
             membresias = membresias.filter(Estado='Activo', Fecha_fin__lte=next_week, Fecha_fin__gte=today)
 
     paginator = Paginator(membresias, items_per_page)
-    page_obj = paginator.get_page(page_number)
+    page_obj = paginator.get_page(page_number) 
+
+    
 
     context = {
         'AllMebs': page_obj,
         'total_items': paginator.count,
         'search_query': search_query,
         'filter_type': filter_type,
-        'items_per_page': items_per_page,
+        'items_per_page': items_per_page, 
     }
 
     return render(request, "templates_membresias/membresias.html", context)
@@ -87,7 +92,23 @@ def CrearMembresia(request):
                 fecha_inicio_date = timezone.now().date()
                 membresia.Fecha_fin = fecha_inicio_date + relativedelta(months=duracion_meses)
 
-                membresia.save()
+                membresia.save() 
+
+                histuser5 = request.user
+                histMod5 = 'membresías'
+                histMovs5 = 'ingresar'
+                histFech5 = timezone.now().date()             
+                histNomb5 = membresia.For_Id_tipo_membresia.Nombre
+                histId5 = membresia.Id_membresia
+
+                Historial_usuario.objects.create(
+                    id_usuario= histuser5,
+                    TIpo_Movimiento= histMovs5,
+                    Modulo= histMod5,
+                    Nombre_Objeto= histNomb5,
+                    Id_Objeto= histId5,
+                    Fecha_y_hora= histFech5,
+                )
                 
                 messages.success(
                     request, 
@@ -123,7 +144,23 @@ def EditarMembresia(request, id):
                 membresia_actualizada.Fecha_inicio = membresia.Fecha_inicio
                 membresia_actualizada.Fecha_fin = membresia.Fecha_fin
                 
-                membresia_actualizada.save()
+                membresia_actualizada.save() 
+
+                histuser6 = request.user
+                histMod6 = 'membresías'
+                histMovs6 = 'editar'
+                histFech6 = timezone.now().date()             
+                histNomb6 = membresia.For_Id_tipo_membresia.Nombre
+                histId6 = membresia.Id_membresia
+
+                Historial_usuario.objects.create(
+                    id_usuario= histuser6,
+                    TIpo_Movimiento= histMovs6,
+                    Modulo= histMod6,
+                    Nombre_Objeto= histNomb6,
+                    Id_Objeto= histId6,
+                    Fecha_y_hora= histFech6,
+                )
                 
                 messages.success(request, 'Membresía actualizada exitosamente')
                 return redirect('Membresias')

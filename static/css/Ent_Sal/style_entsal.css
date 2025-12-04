@@ -1,0 +1,105 @@
+.app-content-header .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .app-content-header {
+    padding: 0;
+  }
+
+  .app-content-header .d-flex {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+
+  .app-content-header .left-title {
+    padding-left: 8px;
+    margin-top: 8px;
+  }
+
+  .app-content-header h3 {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .app-content-header .breadcrumb {
+    margin: 0;
+    background: transparent;
+    white-space: nowrap;
+    padding-right: 8px;
+  }
+
+  .app-content-header .breadcrumb li {
+    display: inline-block;
+  }
+
+  .app-content-header .breadcrumb li+li:before {
+    content: '/';
+    padding: 0 6px;
+    color: rgba(0, 0, 0, 0.35);
+  }
+
+
+  @media (max-width: 575.98px) {
+    .app-content-header .d-flex {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .app-content-header .breadcrumb {
+      padding-top: 6px;
+      padding-right: 0;
+    }
+  }
+
+  .info-row {
+    gap: 1rem;
+  }
+
+  .info-card {
+    display: flex;
+    align-items: center;
+    background: rgba(243, 243, 243, 0.98);
+    /* fondo más opaco para notar el rectángulo */
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    /* borde sutil para definir el límite */
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    /* sombra más marcada */
+    min-height: 96px;
+    width: 100%;
+    transition: box-shadow .18s ease, transform .12s ease;
+  }
+
+  .info-card:hover {
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .info-card .icon {
+    flex: 0 0 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #8b0b0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 28px;
+    margin-right: 18px;
+    box-shadow: 0 6px 18px rgba(139, 11, 11, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* variante para icono gris: mismo tratamiento de fondo/borde/sombra */
+  .info-card.alt {
+    background: rgba(243, 243, 243, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .info-card.alt .icon {
+    background: #5c5c5c;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  }

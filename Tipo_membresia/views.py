@@ -4,7 +4,10 @@ from django.db import transaction
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required, permission_required
 from .models import TipoMembresia
-from .forms import TipoMembresiaForm
+from .forms import TipoMembresiaForm 
+from django.utils import timezone  
+from Historial.models import Historial_usuario
+
 
 
 @login_required(login_url='login')
@@ -22,7 +25,23 @@ def crearTipoMembresia(request):
     if request.method == 'POST':
         form = TipoMembresiaForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            Roling3= form.save() 
+
+            histuser4 = request.user
+            histMod4 = 'Tipo_Membresias'
+            histMovs4 = 'ingresar'
+            histFech4 = timezone.now().date()             
+            histNomb4 = Roling3.Nombre 
+            histId4 = Roling3.Id_tipo_membresia
+
+            Historial_usuario.objects.create(
+                id_usuario= histuser4,
+                TIpo_Movimiento= histMovs4,
+                Modulo= histMod4,
+                Nombre_Objeto= histNomb4,
+                Id_Objeto= histId4,
+                Fecha_y_hora= histFech4,
+            )
             messages.success(request, 'Tipo de membresía creado exitosamente.')
             return redirect('TiposMembresia')
     else:  
@@ -39,7 +58,25 @@ def editarTipoMembresia(request, Id_tipo_membresia):
     if request.method == 'POST':
         form = TipoMembresiaForm(request.POST, request.FILES, instance=tipo)
         if form.is_valid():
-            form.save()
+            Roling4= form.save()  
+
+            histuser5 = request.user
+            histMod5 = 'Tipo_Membresias'
+            histMovs5 = 'editar'
+            histFech5 = timezone.now().date()             
+            histNomb5 = Roling4.Nombre 
+            histId5 = Roling4.Id_tipo_membresia
+
+            Historial_usuario.objects.create(
+                id_usuario= histuser5,
+                TIpo_Movimiento= histMovs5,
+                Modulo= histMod5,
+                Nombre_Objeto= histNomb5,
+                Id_Objeto= histId5,
+                Fecha_y_hora= histFech5,
+            )
+
+
             messages.success(request, 'Tipo de membresía actualizado exitosamente.')
             return redirect('TiposMembresia')
     else:

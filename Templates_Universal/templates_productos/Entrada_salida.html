@@ -1,0 +1,432 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<style>
+  .app-content-header .container-fluid {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .app-content-header {
+    padding: 0;
+  }
+
+  .app-content-header .d-flex {
+    width: 100%;
+    align-items: flex-start;
+  }
+
+
+  .app-content-header .left-title {
+    padding-left: 8px;
+    margin-top: 8px;
+  }
+
+  .app-content-header h3 {
+    margin: 0;
+    font-weight: 500;
+  }
+
+  .app-content-header .breadcrumb {
+    margin: 0;
+    background: transparent;
+    white-space: nowrap;
+    padding-right: 8px;
+  }
+
+  .app-content-header .breadcrumb li {
+    display: inline-block;
+  }
+
+  .app-content-header .breadcrumb li+li:before {
+    content: '/';
+    padding: 0 6px;
+    color: rgba(0, 0, 0, 0.35);
+  }
+
+
+  @media (max-width: 575.98px) {
+    .app-content-header .d-flex {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .app-content-header .breadcrumb {
+      padding-top: 6px;
+      padding-right: 0;
+    }
+  }
+
+  .info-row {
+    gap: 1rem;
+  }
+
+  .info-card {
+    display: flex;
+    align-items: center;
+    background: rgba(243, 243, 243, 0.98);
+    /* fondo más opaco para notar el rectángulo */
+    border-radius: 12px;
+    padding: 18px;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    /* borde sutil para definir el límite */
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.12);
+    /* sombra más marcada */
+    min-height: 96px;
+    width: 100%;
+    transition: box-shadow .18s ease, transform .12s ease;
+  }
+
+  .info-card:hover {
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.16);
+    transform: translateY(-2px);
+  }
+
+  .info-card .icon {
+    flex: 0 0 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: #8b0b0b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 28px;
+    margin-right: 18px;
+    box-shadow: 0 6px 18px rgba(139, 11, 11, 0.18);
+    border: 2px solid rgba(255, 255, 255, 0.06);
+  }
+
+  /* variante para icono gris: mismo tratamiento de fondo/borde/sombra */
+  .info-card.alt {
+    background: rgba(243, 243, 243, 0.98);
+    border: 1px solid rgba(0, 0, 0, 0.06);
+  }
+
+  .info-card.alt .icon {
+    background: #5c5c5c;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-3">
+
+  <!-- ENCABEZADO -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="p-0">
+        <div class="app-content-header">
+          <div class="container-fluid px-0">
+            <div class="d-flex justify-content-between align-items-start">
+
+              <!-- TÍTULO a la izquierda (pegado) -->
+              <div class="left-title">
+                <h3 class="mb-0">
+                  <i class="bi bi-box-seam me-1"></i> Entradas y Salidas Productos
+                </h3>
+              </div>
+
+              <!-- BREADCRUMB a la derecha (una sola línea) -->
+              <div>
+                <ol class="breadcrumb mb-0">
+                  <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Producto</a></li>
+                  <li class="breadcrumb-item active">Entradas-Salidas</li>
+                </ol>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CARDS DE INFORMACIÓN (reemplaza la sección actual) -->
+  <div class="row mb-3">
+    <div class="col-12">
+      <div class="d-flex info-row">
+        <!-- Card 1 -->
+        <div class="info-card">
+          <div class="icon">
+            <!-- usa iconos bootstrap icons / fontawesome según tu proyecto -->
+            <i class="bi bi-wallet2"></i>
+          </div>
+          <div class="body">
+            <div class="label">Precio Stock Total</div>
+            <div class="value">${{ Stock_Total }}</div>
+            <div class="muted">Monto total del producto por stock</div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="info-card alt">
+          <div class="icon">
+            <i class="bi bi-cart-check"></i>
+          </div>
+          <div class="body">
+            <div class="label">Numero Salidas</div>
+            <div class="value">{{ Total_Salidas }}</div>
+            <div class="muted">salidas historicas del producto</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- DETALLE PRODUCTO + TABLA ENTRADAS Y SALIDAS -->
+  <div class="row mb-3 align-items-start"> <!-- asegurar alineación superior -->
+    <!-- DETALLE PRODUCTO -->
+    <div class="col-md-4 mb-3 d-flex align-items-stretch"> <!-- columna estira en alto -->
+      <div class="card shadow-sm w-100 h-100 d-flex flex-column"> <!-- card ocupa 100% y es flex column -->
+        {% for detobj in CardObjeto %}
+        <div class="card-body p-4 d-flex flex-column">
+          <!-- IMAGEN arriba (alto fijo para consistencia) -->
+          <div class="bg-light d-flex align-items-center justify-content-center rounded mb-3"
+            style="height:260px; overflow:hidden;">
+            {% if detobj.prod_imagen %}
+            <img id="detalle-imagen" src="{{ detobj.prod_imagen.url }}" alt="Imagen Producto" class="img-fluid"
+              style="max-height:100%; width:auto; object-fit:contain;">
+            {% else %}
+            <img src="{% static 'img/persona.jpg' %}" alt="Imagen Producto" class="img-fluid"
+              style="max-height:100%; width:auto;">
+            {% endif %}
+          </div>
+
+          <!-- NOMBRE (caja centrada) -->
+          <div class="mb-3">
+            <h2 class="h5 fw-bold text-center mb-0" style="background:#f8f9fa; padding:12px; border-radius:6px;">
+              {{ detobj.Nombre }}
+            </h2>
+          </div>
+
+          <!-- GRID DE ATRIBUTOS (2 columnas) -->
+          <div class="row g-2 mb-3" style="font-size:1rem;">
+            <div class="col-6">
+              <div class="border rounded p-2 text-center">
+                <small class="text-muted d-block">ID</small>
+                <div class="fw-semibold">{{ detobj.Id_producto }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="border rounded p-2 text-center">
+                <small class="text-muted d-block">Categoría</small>
+                <div class="fw-semibold">{{ detobj.Catego_Id.Nombre }}</div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="border rounded p-2 text-center">
+                <small class="text-muted d-block">Stock</small>
+                <div class="fw-semibold">{{ detobj.Stock }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="border rounded p-2 text-center">
+                <small class="text-muted d-block">Estado</small>
+                <div>
+                  <span class="badge rounded-pill text-white" style="background:#c82333;">{{ detobj.Estado }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="border rounded p-2 text-center">
+                <small class="text-muted d-block">Precio Venta</small>
+                <div class="fw-semibold">$ {{ detobj.Precio_de_venta }}</div>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="border rounded p-2 text-center">
+                <small class="text-muted d-block">Precio Compra</small>
+                <div class="fw-semibold">$ {{ detobj.Precio_de_compra }}</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- DESCRIPCIÓN (caja grande abajo) -->
+          <div class="mt-auto">
+            <small class="text-muted">Descripción</small>
+            <div id="detalle-descripcion" class="border rounded p-3 mt-2"
+              style="background:#ffffff; min-height:140px; font-size:1rem; line-height:1.5; color:#212529; overflow:auto;">
+              {{ detobj.Descripcion }}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <!-- TABLA ENTRADAS Y SALIDAS -->
+    <div class="col-md-8 mb-3 d-flex align-items-stretch"> <!-- columna estira en alto -->
+      <div class="card shadow-sm w-100 h-100 d-flex flex-column"> <!-- card también ocupa 100% y es flex column -->
+        <div class="card-body"> <!-- card-body ocupará espacio y la tabla permanecerá alineada -->
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div> 
+              <a href="{% url 'IngEstSal' Id_producto %}" class="btn btn-danger btn-sm" >
+              <button class="btn btn-danger btn-sm">
+                <i class="bi bi-plus-lg me-1"></i> Agregar Entrada/Salida
+              </button> 
+              </a>
+            </div>
+            
+             <div class="d-flex align-items-center gap-2">
+              <form action="{% url 'BUsqENsal' %}" method="GET" class="d-flex align-items-center gap-2 flex-nowrap">
+                <input type="hidden" value="{{ Id_producto }}" name="Id_producto">
+
+                <div class="input-group input-group-sm" style="min-width:160px; max-width:220px;">
+                  <input id="tabla-search" type="date" class="form-control" name="Fecha" />
+                </div>
+
+                <div class="input-group input-group-sm" style="min-width:140px; max-width:180px;">
+                  <select name="Cambio_precio" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="Incrementar">Incrementar</option>
+                    <option value="Bajar">Bajar</option>
+                  </select>
+                </div>
+
+                <button class="btn btn-outline-secondary btn-sm" type="submit" title="Buscar">
+                  <i class="bi bi-search"></i>
+                </button>
+              </form>
+            </div>
+            
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:60px; text-align: center;">ID</th>
+                  <th style="width:80px; text-align: center;">Producto</th>
+                  <th style="width:80px; text-align: center;">Tipo_Cambio</th>
+                  <th style="width:120px; text-align: center;">Cambio_precio</th>
+                  <th style="width:140px; text-align: center;">Precio_Afectado</th>
+                  <th style="width:140px; text-align: center;">Stock_Afectado</th>
+                  <th style="width:110px; text-align: center;">Fecha</th>
+                  <th style="width:110px; text-align: center;" class="text-center">Descripcion</th>
+                </tr>
+              </thead>
+              {% if Entradas_Salidas%}
+              {% for rolor in Entradas_Salidas%}
+              <tbody id="tabla-body">
+                <tr>
+                  <td style="text-align: center;">{{ rolor.Id_SalEnt }}</td>
+                  <td style="text-align: center;">
+                    {{ rolor.Id_ProAsoc.Nombre }}
+                  </td>
+                  <td class="fw-semibold" style="text-align: center;">{{ rolor.Tipo_Cambio }}</td>
+                  <td>
+                    <span class="badge rounded-pill" style="background:#b07a3a; color:#fff; text-align: center;">{{ rolor.Cambio_precio }}</span>
+                  </td>
+                  <td class="text-success fw-bold" style="text-align: center;">${{ rolor.Precio_Afectado }}</td>
+                  <td class="text-muted" style="text-align: center;">{{ rolor.Stock_Afectado }}</td>
+                  <td>
+                    <span class="badge rounded-pill bg-success" style="text-align: center;">{{ rolor.Fecha_cambio }}</span>
+                  </td>
+                  <td class="text-center" style="text-align: center;">
+                    {{ rolor.Descripcion_EntSal }}
+                  </td>
+                </tr>
+              </tbody>
+              {% endfor %}
+              {%endif%} 
+
+              {% if Entradas_moebius22%} 
+              {% for maegor in Entradas_moebius22%}
+              <tbody id="tabla-body">
+                <tr>
+                  <td style="text-align: center;">{{ maegor.Id_SalEnt }}</td>
+                  <td style="text-align: center;">
+                    {{ maegor.Id_ProAsoc.Nombre }}
+                  </td>
+                  <td class="fw-semibold" style="text-align: center;">{{ maegor.Tipo_Cambio }}</td>
+                  <td>
+                    <span class="badge rounded-pill" style="background:#b07a3a; color:#fff; text-align: center;">{{ maegor.Cambio_precio }}</span>
+                  </td>
+                  <td class="text-success fw-bold" style="text-align: center;">${{ maegor.Precio_Afectado }}</td>
+                  <td class="text-muted" style="text-align: center;">{{ maegor.Stock_Afectado }}</td>
+                  <td>
+                    <span class="badge rounded-pill bg-success" style="text-align: center;">{{ maegor.Fecha_cambio }}</span>
+                  </td>
+                  <td class="text-center" style="text-align: center;">
+                    {{ maegor.Descripcion_EntSal }}
+                  </td>
+                </tr>
+              </tbody>
+              {% endfor %}
+              {% endif %}
+            </table>
+          </div>
+
+          <!-- paginación -->
+          <div class="d-flex justify-content-between align-items-center mt-3">
+
+            {% if Entradas_Salidas %}
+            <!-- Paginación -->
+            <ul class="pagination pagination-sm mb-0">
+              {% if Entradas_Salidas.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ Entradas_Salidas.previous_page_number }}{{ querystring }}">&laquo;</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+              {% endif %}
+
+              {% for num in Entradas_Salidas.paginator.page_range %}
+              {% if num == Entradas_Salidas.number %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}{{ querystring }}">{{ num }}</a></li>
+              {% endif %}
+              {% endfor %}
+
+              {% if Entradas_Salidas.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ Entradas_Salidas.next_page_number }}{{ querystring }}">&raquo;</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+              {% endif %}
+            </ul>
+            {% endif %} 
+
+            {% if Entradas_moebius22 %}
+            <!-- Paginación -->
+            <ul class="pagination pagination-sm mb-0">
+              {% if Entradas_moebius22.has_previous %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ Entradas_moebius22.previous_page_number }}{{ querystring }}">&laquo;</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+              {% endif %}
+
+              {% for num in Entradas_moebius22.paginator.page_range %}
+              {% if num == Entradas_moebius22.number %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}{{ querystring }}">{{ num }}</a></li>
+              {% endif %}
+              {% endfor %}
+
+              {% if Entradas_moebius22.has_next %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ Entradas_moebius22.next_page_number }}{{ querystring }}">&raquo;</a>
+              </li>
+              {% else %}
+              <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+              {% endif %}
+            </ul>
+            {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+  </div>
+  {% endblock %}

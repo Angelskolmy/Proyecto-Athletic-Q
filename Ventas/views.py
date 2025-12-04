@@ -13,7 +13,9 @@ from Detalle_venta.models import Detalle_Venta
 from Productos.models import producto
 from Empleados.models import User_Empleados
 from Categorias.models import categoria
-from Historial_ventas.models import Historial_Ventas
+from Historial_ventas.models import Historial_Ventas 
+from django.utils import timezone  
+from Historial.models import Historial_usuario
 
 
 @login_required(login_url='login')
@@ -130,7 +132,31 @@ def ProcesarVenta(request):
             id_venta=venta,
             Monto=total,
             metodo_pago=metodo_pago
-        )
+        ) 
+
+        histVend = empleado
+        histMod = 'ventas'
+        histMovs = 'ingresar'
+        histFech = timezone.now().date()             
+        histNomb = f"Venta #{venta.Id_venta}"[:50]  
+        histId = int(venta.Id_venta)
+
+        try:
+            hu = Historial_usuario.objects.create(
+                id_usuario=histVend,
+                TIpo_Movimiento=histMovs,
+                Modulo=histMod,
+                Nombre_Objeto=histNomb,
+                Id_Objeto=histId,
+                Fecha_y_hora=histFech,
+            )
+            print("DEBUG: Historial_usuario created Id_historial =", getattr(hu, 'Id_historial', None))
+        except Exception as exc:
+            import traceback
+            traceback.print_exc()   # ver error real en la consola
+            messages.warning(request, f'⚠️ No se pudo registrar en historial de movimientos: {exc}')
+# ...existing code...
+        
         
         messages.success(request, f'✅ Venta #{venta.Id_venta} creada - Total: ${total:,.0f}')
         return redirect('Ventas')
@@ -266,7 +292,30 @@ def ActualizarVenta(request, id):
         # Actualizar venta
         venta.Total = total
         venta.observaciones_edicion = observaciones
-        venta.save()
+        venta.save() 
+
+        histVend2 = request.user
+        histMod2 = 'ventas'
+        histMovs2 = 'editar'
+        histFech2 = timezone.now().date()             
+        histNomb2 = f"Venta #{venta.Id_venta}"[:50]  
+        histId2 = int(venta.Id_venta) 
+
+        try:
+            hu = Historial_usuario.objects.create(
+                id_usuario=histVend2,
+                TIpo_Movimiento=histMovs2,
+                Modulo=histMod2,
+                Nombre_Objeto=histNomb2,
+                Id_Objeto=histId2,
+                Fecha_y_hora=histFech2,
+            )
+            print("DEBUG: Historial_usuario created Id_historial =", getattr(hu, 'Id_historial', None))
+        except Exception as exc:
+            import traceback
+            traceback.print_exc()   # ver error real en la consola
+            messages.warning(request, f'⚠️ No se pudo registrar en historial de movimientos: {exc}')
+
         
         messages.success(request, f'✅ Venta #{venta.Id_venta} actualizada exitosamente')
         return redirect('detalle_venta', id=venta.Id_venta)

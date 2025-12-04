@@ -27,17 +27,17 @@ class ProductoForm(forms.ModelForm):
             }),
 
             'Stock':forms.NumberInput(attrs={
-                'Class': 'form-control', 
+                'Class': 'form-control numero', 
                 'Placeholder': '',
             }), 
 
             'Precio_de_compra': forms.NumberInput(attrs={ 
-                'Class': 'form-control', 
+                'Class': 'form-control numero', 
                 'Placeholder': '',
             }),
 
             'Precio_de_venta': forms.NumberInput(attrs={ 
-                'Class': 'form-control', 
+                'Class': 'form-control numero', 
                 'Placeholder': '',
             }),
 

@@ -6,7 +6,9 @@ from django.db.models import Q
 from .models import categoria
 from .forms import CrearCategoriaForm, EditarCategoriaForm
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required 
+from django.utils import timezone  
+from Historial.models import Historial_usuario
 
 @login_required(login_url='login')
 
@@ -55,7 +57,24 @@ def CrearCategoria(request):
         form = CrearCategoriaForm(request.POST)
         if form.is_valid():
             try:
-                form.save()
+                Roling= form.save()  
+
+                histuser3 = request.user
+                histMod3 = 'categorías'
+                histMovs3 = 'ingresar'
+                histFech3 = timezone.now().date()             
+                histNomb3 = Roling.Nombre 
+                histId3 = Roling.Id_categoria 
+
+                Historial_usuario.objects.create(
+                    id_usuario= histuser3,
+                    TIpo_Movimiento= histMovs3,
+                    Modulo= histMod3,
+                    Nombre_Objeto= histNomb3,
+                    Id_Objeto= histId3,
+                    Fecha_y_hora= histFech3,
+                )
+
                 return JsonResponse({
                     'success': True,
                     'message': 'Categoría creada exitosamente',
@@ -79,7 +98,24 @@ def EditarCategoria(request, id):
         form = EditarCategoriaForm(request.POST, instance=categoria_obj)
         if form.is_valid():
             try:
-                form.save()
+                Roling2= form.save()
+
+                histuser3 = request.user
+                histMod3 = 'categorías'
+                histMovs3 = 'editar'
+                histFech3 = timezone.now().date()             
+                histNomb3 = Roling2.Nombre 
+                histId3 = Roling2.Id_categoria 
+
+                Historial_usuario.objects.create(
+                id_usuario= histuser3,
+                TIpo_Movimiento= histMovs3,
+                Modulo= histMod3,
+                Nombre_Objeto= histNomb3,
+                Id_Objeto= histId3,
+                Fecha_y_hora= histFech3,
+                )
+
                 return JsonResponse({
                     'success': True,
                     'message': 'Categoría actualizada exitosamente',
