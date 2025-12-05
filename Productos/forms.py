@@ -11,55 +11,63 @@ class ProductoForm(forms.ModelForm):
         widgets={
 
             'Nombre': forms.TextInput(attrs={
-                'Class':'form-control',
-                'Placeholder':'Nombre',
+                'class':'form-control', 
+                'placeholder':'Nombre',
             }), 
             
             'Catego_Id' : forms.Select(attrs={
-                'Class': 'form-select', 
-                'Placeholder':'Seleccione',
+                'class': 'form-select', 
+                'placeholder':'Seleccione',
             }), 
 
             'Descripcion': forms.Textarea(attrs={
-                'Class': 'form-control', 
-                'Placeholder' : '', 
+                'class': 'form-control', 
+                'placeholder' : '', 
                 'rows' : 3, 
             }),
 
             'Stock':forms.NumberInput(attrs={
-                'Class': 'form-control', 
-                'Placeholder': '',
-                'min':'0',
+                'class': 'form-control numero', 
+                'placeholder': '',
+                'id': 'stock',
             }), 
 
             'Precio_de_compra': forms.NumberInput(attrs={ 
-                'Class': 'form-control', 
-                'Placeholder': '',
-                'min':'0',
+                'class': 'form-control numero', 
+                'placeholder': '',
+                'id':'precio_de_compra'
             }),
 
             'Precio_de_venta': forms.NumberInput(attrs={ 
-                'Class': 'form-control', 
-                'Placeholder': '',
-                'min':'0',
+                'class': 'form-control numero', 
+                'placeholder': '',
+                'id':'precio_de_venta'
             }),
 
             'prod_imagen': forms.FileInput(attrs={
-                'Class': 'form-control',
-                'Placeholder': '',
+                'class': 'form-control',
+                'placeholder': '',
             }), 
 
             'Estado' : forms.Select(attrs={
-                'Class':'form-select', 
-                'Placeholder':'Seleccione',
+                'class':'form-select', 
+                'placeholder':'Seleccione',
             }),
 
         } 
 
-    def _init_(self, *args, **kwargs):
-
-        super()._init_(*args, **kwargs) 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
         
-        self.fields['Catego_Id'].queryset = categoria.objects.only('Nombre')
-
-        self.fields['Catego_Id'].label_from_instance = lambda objects: objects.Nombre
+        self.fields['Catego_Id'].queryset = categoria.objects.filter(Estado='Activo')
+        self.fields['Catego_Id'].label_from_instance = lambda obj: obj.Nombre
+        
+        # Si es CREAR (no tiene pk), Estado = Activo y no editable
+        if not self.instance.pk:
+            self.fields['Estado'].initial = 'Activo'
+            self.fields['Estado'].widget = forms.TextInput(attrs={
+                'class': 'form-control',
+                'readonly': True,
+                'value': 'Activo'
+            })
+            

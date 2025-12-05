@@ -44,3 +44,11 @@ class EditarCategoriaForm(forms.ModelForm):
             'Nombre': 'Nombre de la Categoría',
             'Estado': 'Estado'
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Si es CREAR, Estado = Activo y deshabilitado
+        if not self.instance.pk:
+            self.fields['Estado'].initial = 'Activo'
+            self.fields['Estado'].widget.attrs['disabled'] = True

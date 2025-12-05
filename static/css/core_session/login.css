@@ -118,3 +118,58 @@ a {
         width: 60px;
     }
 }
+
+/* ================================
+    FOOTER SENCILLO LOGIN
+   ================================ */
+
+.footer-login {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.footer-login p {
+    margin: 0;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.footer-login a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.footer-login a:hover {
+    color: #fff;
+}
+
+.footer-login .footer-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.footer-login .footer-links a {
+    font-size: 0.8rem;
+}
+
+@media (max-width: 576px) {
+    .footer-login {
+        flex-direction: column;
+        gap: 0.5rem;
+        text-align: center;
+        padding: 0.5rem 1rem;
+    }
+    
+    .footer-login .footer-links {
+        gap: 0.75rem;
+    }
+}

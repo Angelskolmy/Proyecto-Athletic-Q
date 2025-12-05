@@ -1,52 +1,52 @@
 /* ================================
-   🎨 THEME CONFIGURATION
+    THEME CONFIGURATION
    ================================ */
 
 /* Paleta principal (modo claro) */
 
 :root {
-  /* 🎯 Color principal - ROJO OSCURO */
+  /* Color principal - ROJO OSCURO */
   --color-primary: #8B0000;       /* Rojo oscuro más intenso */
   --color-primary-dark: #6B0000;  /* Rojo muy oscuro */
   --color-primary-light: #A52A2A; /* Rojo marrón para hover */
 
-  /* ✅ Verde para ACTIVO / CREAR */
+  /* Verde para ACTIVO / CREAR */
   --color-success: #28a745;       /* Verde estándar Bootstrap */
   --color-success-dark: #218838;  /* Verde oscuro hover */
   --color-success-light: #d4edda; /* Verde claro fondo */
 
-  /* ❌ Rojo para INACTIVO / PELIGRO */
+  /* Rojo para INACTIVO / PELIGRO */
   --color-danger: #dc3545;        /* Rojo estándar Bootstrap */
   --color-danger-dark: #c82333;   /* Rojo oscuro hover */
   --color-danger-light: #f8d7da;  /* Rojo claro fondo */
 
-  /* 🔵 Azul para MASCULINO */
+  /* Azul para MASCULINO */
   --color-masculino: #007bff;     /* Azul estándar */
   --color-masculino-dark: #0056b3;/* Azul oscuro */
   --color-masculino-light: #cce5ff; /* Azul claro */
 
-  /* 🔴 Rosa-Rojo para FEMENINO */
+  /* Rosa-Rojo para FEMENINO */
   --color-femenino: #e83e8c;      /* Rosa-rojo vibrante */
   --color-femenino-dark: #d63384; /* Rosa-rojo oscuro */
   --color-femenino-light: #f8d7e9; /* Rosa claro */
 
-  /* ⚠️ Amarillo para ADVERTENCIAS */
+  /* Amarillo para ADVERTENCIAS */
   --color-warning: #ffc107;       /* Amarillo estándar */
   --color-warning-dark: #e0a800;  /* Amarillo oscuro */
 
-  /* ℹ️ Azul para INFO */
+  /*  Azul para INFO */
   --color-info: #17a2b8;          /* Azul turquesa */
   --color-info-dark: #138496;
 
-  /* 🎨 Colores de UI */
+  /* Colores de UI */
   --color-secondary: #6c757d;
   --color-light: #f8f9fa;
   --color-dark: #343a40;
 
-  /* 🔴 SIDEBAR ROJO OSCURO */
+  /* SIDEBAR ROJO OSCURO */
   --color-sidebar-bg: #f1f3f5;    /* Rojo muy oscuro */
   
-  /* 🔺 NAVBAR */
+  /* NAVBAR */
   --color-navbar-bg: #8B0000;     /* Rojo oscuro */
   
   --color-text: #434950; 
@@ -54,7 +54,7 @@
 }
 
 /* ================================
-   🎨 REEMPLAZO DE CLASES BOOTSTRAP
+    REEMPLAZO DE CLASES BOOTSTRAP
    ================================ */
 
 /* Cards y fondos */
@@ -92,7 +92,7 @@
 
 
 /* ================================
-   🌐 GLOBAL STYLES
+    GLOBAL STYLES
    ================================ */
 
 body {
@@ -102,7 +102,7 @@ body {
 }
 
 /* ================================
-   🔺 NAVBAR
+    NAVBAR
    ================================ */
 
 .user-header {
@@ -163,13 +163,13 @@ body {
   color: var(--color-text-light) !important;
 }
 
-/* 🔹 Tamaño de texto general en los enlaces */
+/* Tamaño de texto general en los enlaces */
 .app-sidebar .nav-link p {
   font-size: 1.1rem !important; /* antes 0.9rem */
   font-weight: 500;
 }
 
-/* 🔹 Tamaño y color de los encabezados del sidebar */
+/* Tamaño y color de los encabezados del sidebar */
 .app-sidebar .nav-header {
   font-size: 0.9rem !important;
   font-weight: 700;
@@ -216,7 +216,7 @@ body {
 
 
 /* ================================
-   🔺 LINKS Y PAGINACIÓN
+    LINKS Y PAGINACIÓN
    ================================ */
 
 a {
@@ -246,7 +246,7 @@ a:hover {
 }
 
 /* ================================
-   🔺 OTROS ELEMENTOS
+    OTROS ELEMENTOS
    ================================ */
 
 .badge.text-bg-primary {
@@ -259,7 +259,7 @@ a:hover {
 }
 
 /* ================================
-   🎯 FOCUS GLOBAL PARA TODO EL SISTEMA
+    FOCUS GLOBAL PARA TODO EL SISTEMA
    ================================ */
 
 .form-select:focus,

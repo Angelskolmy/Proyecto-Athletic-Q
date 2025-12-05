@@ -1,0 +1,157 @@
+{% load static %}
+
+<style>
+  .finger {
+    width: 110px; height: 110px;
+    border-radius: 20px;
+    margin-top: 15px ;
+    display: grid; place-items: center;
+    font-size: 58px;
+    transition: background-color .25s, color .25s, transform .2s;
+  }
+.finger-idle{background:#2b0f12;color:#c0392b;}
+.finger-error{background:#2b0f12;color:#e74c3c;}
+.finger-ok{background:#0b2a16;color:#2ecc71;transform:scale(1.03);}
+
+</style>
+
+<div class="modal fade" id="modalHuella" tabindex="-1" aria-hidden="true"
+        data-capture-url="http://localhost:5000/capture"
+        data-save-url="/Empleados/guardar-huellas/"
+        data-redirect="{% url 'Empleados' %}">
+    <div class="modal-dialog modal-dialog-centered p-2">
+        <div class="modal-content">
+        <div class="modal-header border-0">
+            <h5 class="modal-title"><i class="bi bi-fingerprint me-2"></i> Capturar huella</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="d-flex flex-column align-items-center gap-2 mb-3">
+            <div id="finger-icon" class="finger finger-idle"><i class="bi bi-fingerprint"></i></div>
+            <p id="estado-huella" class="mb-0 text-muted">Listo para capturar…</p>
+        </div>
+        <div class="modal-footer border-0 justify-content-between">
+            <button id="btn-detener" class="btn btn-outline-secondary">
+            <i class="bi bi-stop-circle"></i> Detener
+            </button>
+            <button id="btn-capturar" class="btn btn-primary">
+            <i class="bi bi-record-circle"></i> Iniciar captura
+            </button>
+        </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    (() => {
+    const CAPTURE_URL = document.getElementById("modalHuella").dataset.captureUrl || "http://localhost:5000/capture";
+    const GUARDAR_URL = document.getElementById("modalHuella").dataset.saveUrl || "/Empleados/guardar-huellas/";
+    const REDIR_URL   = document.getElementById("modalHuella").dataset.redirect || "/Empleados/";
+
+    const modalEl  = document.getElementById("modalHuella");
+    const titleEl  = modalEl.querySelector(".modal-title");
+    const estadoEl = document.getElementById("estado-huella");
+    const iconEl   = document.getElementById("finger-icon");
+    const btnDet   = document.getElementById("btn-detener");
+    const btnCap   = document.getElementById("btn-capturar");
+
+    let userIdActual = null;
+    let captureCtrl = null;
+    let saveCtrl = null;
+
+    const STORAGE_KEY = id => `huellaDismissed_${id}`;
+    const setTitulo = (txt) => { if (titleEl) titleEl.textContent = txt; };
+
+    const setEstado = (msg, state="idle") => {
+        estadoEl.innerText = msg;
+        iconEl.classList.remove("finger-idle","finger-ok","finger-error");
+        if (state === "ok") iconEl.classList.add("finger-ok");
+        else if (state === "err") iconEl.classList.add("finger-error");
+        else iconEl.classList.add("finger-idle");
+    };
+
+    const abortAll = () => {
+        if (captureCtrl) { captureCtrl.abort(); captureCtrl = null; }
+        if (saveCtrl)    { saveCtrl.abort();    saveCtrl    = null; }
+        setEstado("Captura cancelada.","err");
+    };
+
+    const limpiarQuery = (url) => {
+        url.searchParams.delete("show_modal");
+        url.searchParams.delete("emp_id");
+        history.replaceState({}, "", url);
+    };
+
+    const getCookie = (name) => {
+        const value = `; ${document.cookie}`;
+        const parts = value.split(`; ${name}=`);
+        if (parts.length === 2) return parts.pop().split(";").shift();
+        return "";
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const url = new URL(location);
+        const empId = url.searchParams.get("emp_id");
+        const showModal = url.searchParams.get("show_modal") === "1";
+        if (empId) userIdActual = empId;
+        setTitulo("Capturar huella");
+        if (showModal && empId && !sessionStorage.getItem(STORAGE_KEY(empId))) {
+        new bootstrap.Modal(modalEl).show();
+        } else {
+        limpiarQuery(url);
+        }
+    });
+
+    modalEl.addEventListener("show.bs.modal", ev => {
+        const btn = ev.relatedTarget;
+        if (btn?.dataset.user) userIdActual = btn.dataset.user;
+        const isEdit = btn?.dataset.mode === "edit" || btn?.dataset.hasHuella === "1";
+        setTitulo(isEdit ? "Editando huella" : "Capturar huella");
+        setEstado("Listo para capturar…","idle");
+    });
+
+    modalEl.addEventListener("hidden.bs.modal", () => {
+        if (userIdActual) sessionStorage.setItem(STORAGE_KEY(userIdActual), "1");
+        limpiarQuery(new URL(location));
+        abortAll();
+        document.body.classList.remove("modal-open");
+        document.querySelectorAll(".modal-backdrop").forEach(b => b.remove());
+    });
+
+    btnDet.addEventListener("click", abortAll);
+
+    btnCap.addEventListener("click", async () => {
+        if (!userIdActual) { setEstado("Falta el usuario.","err"); return; }
+        setEstado("Capturando... coloca el dedo.","idle");
+
+        captureCtrl = new AbortController();
+        try {
+        const r = await fetch(CAPTURE_URL, { method: "POST", signal: captureCtrl.signal });
+        const data = JSON.parse(await r.text());
+        captureCtrl = null;
+        if (!r.ok || !data.ok || !data.xml) throw new Error(data.error || "Captura falló");
+
+        setEstado("Guardando huella...","idle");
+        saveCtrl = new AbortController();
+        const resp = await fetch(GUARDAR_URL, {
+            method: "POST",
+            signal: saveCtrl.signal,
+            headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
+            body: JSON.stringify({ usuario_id: userIdActual, templates: [data.xml] })
+        });
+        const saveData = await resp.json();
+        saveCtrl = null;
+        if (resp.status === 409) {
+            setEstado(saveData.error || "Huella ya registrada para otro usuario. Prueba con otro dedo.","err");
+            return;
+        }
+        if (!resp.ok || !saveData.ok) throw new Error(saveData.error || "Error al guardar");
+
+        setEstado("Huella guardada correctamente.","ok");
+        window.location.href = REDIR_URL;
+        } catch (err) {
+        if (err.name === "AbortError") setEstado("Captura cancelada.","err");
+        else { console.error(err); setEstado("Error: " + err.message,"err"); }
+        }
+    });
+    })();
+</script>

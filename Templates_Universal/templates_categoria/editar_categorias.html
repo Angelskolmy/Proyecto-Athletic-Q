@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-sm-8">
                 <h3 class="mb-0">
-                    <i class="bi bi-pencil-square me-2"></i> Editar Categoría
+                    <i class="bi bi-pencil-square me-2"></i>Editar Categoría
                 </h3>
             </div>
             <div class="col-sm-4">
@@ -29,86 +29,66 @@
 
 <div class="app-content">
     <div class="container-fluid">
-        
-        <!-- Alerta de Advertencia -->
-        <div class="alert alert-warning alert-dismissible fade show mb-3" role="alert">
-            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-            <strong>Importante:</strong> Los cambios realizados afectarán todos los productos asociados a esta categoría.
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">
-                    <i class="bi bi-info-circle me-2"></i>Información de la Categoría
-                </h5>
-            </div>
-
-            <form id="formEditarCategoria" method="POST">
-                {% csrf_token %}
-                
+        <form id="formEditarCategoria" method="POST">
+            {% csrf_token %}
+            
+            <!-- Card Única -->
+            <div class="card shadow-sm">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Información de la Categoría
+                    </h6>
+                    <span class="badge {% if categoria.Estado == 'Activo' %}badge-estado-activo{% else %}badge-estado-inactivo{% endif %}">
+                        {{ categoria.Estado }}
+                    </span>
+                </div>
                 <div class="card-body">
-                    <!-- Campo Nombre -->
-                    <div class="mb-3">
-                        <label for="{{ form.Nombre.id_for_label }}" class="form-label fw-semibold">
-                            {{ form.Nombre.label }}
-                        </label>
-                        {{ form.Nombre }}
-                        {% if form.Nombre.errors %}
-                            <div class="text-danger">{{ form.Nombre.errors }}</div>
-                        {% endif %}
-                        <small class="text-muted d-block mt-1">
-                            Nombre actual: <strong>{{ categoria.Nombre }}</strong>
-                        </small>
-                    </div>
+                    <!-- Campos del formulario -->
+                    <div class="row">
+                        <!-- Nombre -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.Nombre.id_for_label }}" class="form-label">
+                                Nombre <span class="text-danger">*</span>
+                            </label>
+                            {{ form.Nombre }}
+                            {% if form.Nombre.errors %}
+                                <div class="text-danger small mt-1">{{ form.Nombre.errors }}</div>
+                            {% endif %}
+                        </div>
 
-                    <!-- Campo Estado -->
-                    <div class="mb-3">
-                        <label for="{{ form.Estado.id_for_label }}" class="form-label fw-semibold">
-                            {{ form.Estado.label }}
-                        </label>
-                        {{ form.Estado }}
-                        {% if form.Estado.errors %}
-                            <div class="text-danger">{{ form.Estado.errors }}</div>
-                        {% endif %}
-                        <small class="text-muted d-block mt-1">
-                            Estado actual: 
-                            <span class="badge {% if categoria.Estado %}text-bg-success{% else %}text-bg-danger{% endif %}">
-                                {{ categoria.get_Estado_display }}
-                            </span>
-                        </small>
+                        <!-- Estado -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ form.Estado.id_for_label }}" class="form-label">
+                                Estado <span class="text-danger">*</span>
+                            </label>
+                            {{ form.Estado }}
+                            {% if form.Estado.errors %}
+                                <div class="text-danger small mt-1">{{ form.Estado.errors }}</div>
+                            {% endif %}
+                        </div>
                     </div>
 
                     <!-- Información adicional -->
-                    <div class="alert alert-light border">
-                        <h6 class="alert-heading mb-2">
-                            <i class="bi bi-clock-history me-1"></i>Historial de Cambios
-                        </h6>
-                        <div class="small">
-                            <div class="d-flex justify-content-between mb-1">
-                                <span>ID de la categoría:</span>
-                                <strong>#{{ categoria.Id_categoria }}</strong>
-                            </div>
-                            <div class="d-flex justify-content-between">
-                                <span>Productos asociados:</span>
-                                <strong>{{ categoria.productos_count|default:"0" }} producto{{ categoria.productos_count|pluralize }}</strong>
-                            </div>
+                    <div class="alert alert-warning d-flex align-items-start mt-2 mb-4">
+                        <i class="bi bi-exclamation-triangle-fill text-warning fs-5 me-3 mt-1"></i>
+                        <div>
+                            <strong>Nota:</strong> Esta categoría tiene <strong>{{ productos_count }}</strong> producto(s) asociado(s). 
+                            Si la desactivas, no podrá asignarse a nuevos productos.
                         </div>
                     </div>
-                </div>
 
-                <div class="card-footer text-end">
-                    <a href="{% url 'Categorias' %}" class="btn btn-cancelar me-2">
-                        <i class="bi bi-x-circle"></i> Cancelar
-                    </a>
-                    <button type="submit" class="btn btn-actualizar">
-                        <i class="bi bi-check-circle"></i> Actualizar Categoría
-                    </button>
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a href="{% url 'Categorias' %}" class="btn btn-cancelar">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-guardar">
+                            <i class="bi bi-check-circle me-1"></i>Actualizar
+                        </button>
+                    </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
-
-<script src="{% static 'js/categorias/editar_categorias.js' %}"></script>
 {% endblock %}

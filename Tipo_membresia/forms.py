@@ -19,8 +19,7 @@ class TipoMembresiaForm(forms.ModelForm):
             
             'Precio': forms.NumberInput(attrs={
                 'class': 'form-control',
-                'placeholder': '0.00',
-                'step': '0.01',
+                'placeholder': '0',
                 'min': '0'
             }),
             
@@ -35,15 +34,21 @@ class TipoMembresiaForm(forms.ModelForm):
         }
         
         labels = {
-            'Nombre': 'Nombre del Tipo de Membresía',
+            'Nombre': 'Nombre',
             'Duracion_meses': 'Duración',
             'Precio': 'Precio',
             'Estado': 'Estado',
             'tipo_membresia_img': 'Imagen'
         }
     
-    def clean_Precio(self):
-        precio = self.cleaned_data.get('Precio')
-        if precio and precio < 0:
-            raise forms.ValidationError('El precio no puede ser negativo')
-        return precio
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Si es CREAR, Estado = Activo con input readonly
+        if not self.instance.pk:
+            self.fields['Estado'].initial = 'Activo'
+            self.fields['Estado'].widget = forms.TextInput(attrs={
+                'class': 'form-control',
+                'readonly': True,
+                'value': 'Activo'
+            })

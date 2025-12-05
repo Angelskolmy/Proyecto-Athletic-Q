@@ -1,0 +1,181 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ rutina.Nombre }} | Gimnasio</title>
+
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/perfil/cliente.css' %}">
+    
+    <style>
+        .rutina-header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 2rem 0;
+        }
+        
+        .ejercicio-card {
+            border-left: 4px solid #8B0000;
+            transition: all 0.3s ease;
+        }
+        
+        .ejercicio-card:hover {
+            transform: translateX(10px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+        
+        .ejercicio-numero {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #8B0000 0%, #6d0000 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+        
+        .stat-box {
+            background: #f5f5f5;
+            padding: 1rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-box i {
+            font-size: 1.5rem;
+            color: #8B0000;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-cliente">
+        <div class="container">
+            <a href="{% url 'Perfil' %}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Volver
+            </a>
+            <span class="text-white">{{ rutina.Nombre }}</span>
+            <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-box-arrow-right"></i>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Header Rutina -->
+    <div class="rutina-header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <span class="badge badge-{{ rutina.Nivel|lower }} mb-2">{{ rutina.Nivel }}</span>
+                    <h1 class="mb-2">{{ rutina.Nombre }}</h1>
+                    <p class="text-white-50 mb-3">{{ rutina.Descripcion }}</p>
+                    <div class="d-flex gap-3 flex-wrap">
+                        <span class="badge bg-dark px-3 py-2">
+                            <i class="bi bi-tag me-1"></i>{{ rutina.Categoria }}
+                        </span>
+                        <span class="badge bg-dark px-3 py-2">
+                            <i class="bi bi-clock me-1"></i>{{ rutina.Duracion_minutos }} min
+                        </span>
+                        {% if rutina.Calorias_estimadas %}
+                        <span class="badge bg-dark px-3 py-2">
+                            <i class="bi bi-fire me-1"></i>{{ rutina.Calorias_estimadas }} kcal
+                        </span>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-lg-4 text-center mt-4 mt-lg-0">
+                    {% if rutina.rutina_img %}
+                        <img src="{{ rutina.rutina_img.url }}" alt="{{ rutina.Nombre }}" 
+                             class="rounded-3" style="max-height: 200px; object-fit: cover;">
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Ejercicios -->
+    <div class="container py-5">
+        <h4 class="mb-4">
+            <i class="bi bi-list-check me-2 text-danger"></i>
+            Ejercicios ({{ ejercicios.count }})
+        </h4>
+
+        <div class="row">
+            {% for ejercicio in ejercicios %}
+            <div class="col-12 mb-3">
+                <div class="card ejercicio-card">
+                    <div class="card-body">
+                        <div class="row align-items-center">
+                            <div class="col-auto">
+                                <div class="ejercicio-numero">{{ ejercicio.Orden }}</div>
+                            </div>
+                            <div class="col">
+                                <h5 class="mb-1">{{ ejercicio.Nombre }}</h5>
+                                <p class="text-muted mb-0 small">{{ ejercicio.Descripcion }}</p>
+                            </div>
+                            <div class="col-auto d-none d-md-flex gap-3">
+                                <div class="stat-box">
+                                    <i class="bi bi-arrow-repeat d-block"></i>
+                                    <strong>{{ ejercicio.Series }}</strong>
+                                    <small class="d-block text-muted">Series</small>
+                                </div>
+                                <div class="stat-box">
+                                    <i class="bi bi-bullseye d-block"></i>
+                                    <strong>{{ ejercicio.Repeticiones }}</strong>
+                                    <small class="d-block text-muted">Reps</small>
+                                </div>
+                                <div class="stat-box">
+                                    <i class="bi bi-hourglass-split d-block"></i>
+                                    <strong>{{ ejercicio.Descanso_segundos }}s</strong>
+                                    <small class="d-block text-muted">Descanso</small>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Stats móvil -->
+                        <div class="d-flex d-md-none justify-content-around mt-3 pt-3 border-top">
+                            <div class="text-center">
+                                <i class="bi bi-arrow-repeat text-danger"></i>
+                                <span class="ms-1">{{ ejercicio.Series }} series</span>
+                            </div>
+                            <div class="text-center">
+                                <i class="bi bi-bullseye text-danger"></i>
+                                <span class="ms-1">{{ ejercicio.Repeticiones }} reps</span>
+                            </div>
+                            <div class="text-center">
+                                <i class="bi bi-hourglass-split text-danger"></i>
+                                <span class="ms-1">{{ ejercicio.Descanso_segundos }}s</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Esta rutina aún no tiene ejercicios asignados.
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Botón Volver -->
+        <div class="text-center mt-4">
+            <a href="{% url 'Perfil' %}" class="btn btn-danger btn-lg">
+                <i class="bi bi-arrow-left me-2"></i>Volver a Rutinas
+            </a>
+        </div>
+    </div>
+
+    <script src="{% static 'bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

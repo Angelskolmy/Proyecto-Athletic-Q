@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% load static %}
 
 {% block extra_css %}
@@ -27,164 +28,430 @@
 
 <div class="app-content">
     <div class="container-fluid">
-        <div class="card shadow-sm">
-            <div class="card-header">
-                <h5 class="mb-0">Editar Información del Usuario</h5>
-            </div>
-
-            <form id="formEditarUsuario" method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                <div class="card-body">
-                    <div class="row">
-                        <!-- Imagen Actual -->
-                        {% if empleado.empleados_img %}
-                        <div class="col-12 mb-3">
-                            <div class="text-center">
-                                <img src="{{ empleado.empleados_img.url }}" alt="Foto actual" 
-                                     class="preview-image">
-                                <p class="text-muted mt-2 mb-0">Imagen actual</p>
-                            </div>
+        <form id="formEditarUsuario" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <!-- COLUMNA IZQUIERDA: Foto y Estado -->
+                <div class="col-lg-4">
+                    <!-- Card Foto de Perfil -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="bi bi-camera me-2"></i>Foto de Perfil
+                            </h6>
                         </div>
-                        {% endif %}
-
-                        <!-- Información Personal -->
-                        <div class="col-md-6">
-                            <h6 class="text-primary mb-3">Información Personal</h6>
+                        <div class="card-body text-center">
+                            <!-- Preview de imagen actual -->
+                            <div class="preview-container mb-3">
+                                {% if empleado.empleados_img %}
+                                    <img id="preview-img" 
+                                        src="{{ empleado.empleados_img.url }}" 
+                                        class="preview-image" 
+                                        alt="Foto actual"
+                                        onerror="this.classList.add('d-none'); document.getElementById('preview-placeholder').classList.remove('d-none');">
+                                    <div id="preview-placeholder" class="preview-placeholder d-none">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                {% else %}
+                                    <div id="preview-placeholder" class="preview-placeholder">
+                                        <i class="bi bi-person-circle"></i>
+                                    </div>
+                                    <img id="preview-img" class="preview-image d-none" alt="Preview">
+                                {% endif %}
+                            </div>
                             
-                            <div class="mb-3">
-                                {{ form.first_name.label_tag }}
-                                {{ form.first_name }}
-                                {% if form.first_name.errors %}
-                                    <div class="text-danger">{{ form.first_name.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                {{ form.last_name.label_tag }}
-                                {{ form.last_name }}
-                                {% if form.last_name.errors %}
-                                    <div class="text-danger">{{ form.last_name.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                {{ form.Cedula.label_tag }}
-                                {{ form.Cedula }}
-                                {% if form.Cedula.errors %}
-                                    <div class="text-danger">{{ form.Cedula.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                {{ form.Sexo.label_tag }}
-                                {{ form.Sexo }}
-                                {% if form.Sexo.errors %}
-                                    <div class="text-danger">{{ form.Sexo.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <!-- Información de Cuenta -->
-                        <div class="col-md-6">
-                            <h6 class="text-primary mb-3">Información de Cuenta</h6>
-                            
-                            <div class="mb-3">
-                                {{ form.username.label_tag }}
-                                {{ form.username }}
-                                {% if form.username.errors %}
-                                    <div class="text-danger">{{ form.username.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                {{ form.email.label_tag }}
-                                {{ form.email }}
-                                {% if form.email.errors %}
-                                    <div class="text-danger">{{ form.email.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                {{ form.password.label_tag }}
-                                {{ form.password }}
-                                <small class="form-text text-muted">
-                                    Deja en blanco para mantener la contraseña actual
-                                </small>
-                                {% if form.password.errors %}
-                                    <div class="text-danger">{{ form.password.errors }}</div>
-                                {% endif %}
-                            </div>
-
-                            <div class="mb-3">
-                                {{ form.Eps.label_tag }}
-                                {{ form.Eps }}
-                                {% if form.Eps.errors %}
-                                    <div class="text-danger">{{ form.Eps.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Imagen, Estado y Huella -->
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                {{ form.empleados_img.label_tag }}
+                            <!-- Input de imagen -->    
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">
+                                    Cambiar imagen <span class="text-muted">(Opcional)</span>
+                                </label>
                                 {{ form.empleados_img }}
                                 {% if form.empleados_img.errors %}
-                                    <div class="text-danger">{{ form.empleados_img.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.empleados_img.errors }}</div>
                                 {% endif %}
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-info-circle me-1"></i>Formatos: JPG, PNG (máx. 2MB)
+                                </small>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                    </div>
+
+                    <!-- Card Estado y Rol -->
+                    <div class="card shadow-sm">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="bi bi-gear me-2"></i>Configuración
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <!-- Estado -->
                             <div class="mb-3">
-                                {{ form.is_active.label_tag }}
+                                <label class="form-label fw-semibold">
+                                    Estado <span class="text-danger">*</span>
+                                </label>
                                 {{ form.is_active }}
                                 {% if form.is_active.errors %}
-                                    <div class="text-danger">{{ form.is_active.errors }}</div>
+                                    <div class="text-danger small mt-1">{{ form.is_active.errors }}</div>
                                 {% endif %}
                             </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="mb-3">
-                                {{ form.Huella_id.label_tag }}
-                                {{ form.Huella_id }}
-                                {% if form.Huella_id.errors %}
-                                    <div class="text-danger">{{ form.Huella_id.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    </div>
 
-                    <!-- Roles y Permisos -->
-                    <div class="row">
-                        <div class="col-12">
-                            <hr>
-                            <h6 class="text-primary mb-3">Roles y Permisos</h6>
-                        </div>
-                        
-                        <div class="col-md-12 mb-3">
-                            {{ form.groups.label_tag }}
-                            {{ form.groups }}
-                            {% if form.groups.errors %}
-                                <div class="text-danger">{{ form.groups.errors }}</div>
-                            {% endif %}
+                            <!-- Rol -->
+                            <div class="mb-0">
+                                <label class="form-label fw-semibold">
+                                    Rol del Usuario <span class="text-danger">*</span>
+                                </label>
+                                {{ form.groups }}
+                                {% if form.groups.errors %}
+                                    <div class="text-danger small mt-1">{{ form.groups.errors }}</div>
+                                {% endif %}
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-shield-check me-1"></i>Define los permisos del usuario
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="card-footer text-end">
-                    <a href="{% url 'Empleados' %}" class="btn btn-secondary me-2">
-                        <i class="bi bi-x-circle"></i> Cancelar
-                    </a>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="bi bi-save"></i> Guardar Cambios
-                    </button>
+                <!-- COLUMNA DERECHA: Información -->
+                <div class="col-lg-8">
+                    <!-- Card Información Personal -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="bi bi-person-vcard me-2"></i>Información Personal
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Nombre -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Nombre <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.first_name }}
+                                    {% if form.first_name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.first_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Apellido -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Apellido <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.last_name }}
+                                    {% if form.last_name.errors %}
+                                        <div class="text-danger small mt-1">{{ form.last_name.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Cédula -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Cédula <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.Cedula }}
+                                    {% if form.Cedula.errors %}
+                                        <div class="text-danger small mt-1">{{ form.Cedula.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Género -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Género <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.Sexo }}
+                                    {% if form.Sexo.errors %}
+                                        <div class="text-danger small mt-1">{{ form.Sexo.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- EPS -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        EPS <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    {{ form.Eps }}
+                                    {% if form.Eps.errors %}
+                                        <div class="text-danger small mt-1">{{ form.Eps.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Dirección -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Dirección <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    {{ form.Direccion }}
+                                    {% if form.Direccion.errors %}
+                                        <div class="text-danger small mt-1">{{ form.Direccion.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Celular -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Celular <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    {{ form.Celular }}
+                                    {% if form.Celular.errors %}
+                                        <div class="text-danger small mt-1">{{ form.Celular.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Email -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Correo Electrónico <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.email }}
+                                    {% if form.email.errors %}
+                                        <div class="text-danger small mt-1">{{ form.email.errors }}</div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Credenciales -->
+                    <div class="card shadow-sm mb-4">
+                        <div class="card-header">
+                            <h6 class="mb-0">
+                                <i class="bi bi-key me-2"></i>Credenciales de Acceso
+                            </h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <!-- Usuario -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Nombre de Usuario <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.username }}
+                                    {% if form.username.errors %}
+                                        <div class="text-danger small mt-1">{{ form.username.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Contraseña -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Nueva Contraseña <span class="text-muted">(Opcional)</span>
+                                    </label>
+                                    <div class="input-group">
+                                        {{ form.password }}
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="bi bi-eye" id="eyeIcon"></i>
+                                        </button>
+                                    </div>
+                                    {% if form.password.errors %}
+                                        <div class="text-danger small mt-1">{{ form.password.errors }}</div>
+                                    {% endif %}
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="bi bi-info-circle me-1"></i>Dejar en blanco para mantener la actual
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Alerta de seguridad -->
+                            <div class="alert alert-light border mt-2 mb-0">
+                                <div class="d-flex align-items-center">
+                                    <i class="bi bi-info-circle text-primary me-2 fs-5"></i>
+                                    <div class="small">
+                                        <strong>Nota:</strong> Si cambias la contraseña, el usuario deberá 
+                                        iniciar sesión nuevamente con la nueva contraseña.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="card shadow-sm">
+                        <div class="card-botones card-body text-end">
+                            <a href="{% url 'Empleados' %}" class="btn btn-cancelar me-2">
+                                <i class="bi bi-x-circle me-1"></i>Cancelar
+                            </a>
+                            <button type="button" class="btn btn-guardar" onclick="confirmarEdicion()">
+                                <i class="bi bi-check-circle me-1"></i>Guardar Cambios
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </form>
-        </div>
+            </div>
+        </form>
     </div>
 </div>
 
-<script src="{% static 'js/usuarios/editar_usuarios.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // ✅ PRE-SELECCIONAR ROL CON JAVASCRIPT
+    const selectRol = document.querySelector('select[name="groups"]');
+    const rolActual = '{{ empleado.groups.first.pk|default:"" }}';
+    
+    if (selectRol && rolActual) {
+        selectRol.value = rolActual;
+    }
+    
+    // ✅ PRE-SELECCIONAR ESTADO CON JAVASCRIPT
+    const selectEstado = document.querySelector('select[name="is_active"]');
+    const estadoActual = '{{ empleado.is_active|yesno:"True,False" }}';
+    
+    if (selectEstado && estadoActual) {
+        selectEstado.value = estadoActual;
+    }
+
+    // Preview de imagen
+    const inputImagen = document.querySelector('input[name="empleados_img"]');
+    const previewImg = document.getElementById('preview-img');
+    const previewPlaceholder = document.getElementById('preview-placeholder');
+    
+    if (inputImagen) {
+        inputImagen.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            
+            if (!file) return;
+            
+            if (!file.type.match('image.*')) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Por favor selecciona un archivo de imagen válido',
+                    confirmButtonColor: '#8B0000'
+                });
+                inputImagen.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                previewImg.src = event.target.result;
+                previewImg.classList.remove('d-none');
+                if (previewPlaceholder) previewPlaceholder.classList.add('d-none');
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // Toggle password
+    const togglePassword = document.getElementById('togglePassword');
+    const passwordInput = document.querySelector('input[name="password"]');
+    const eyeIcon = document.getElementById('eyeIcon');
+    
+    if (togglePassword && passwordInput) {
+        togglePassword.addEventListener('click', function() {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            eyeIcon.classList.toggle('bi-eye');
+            eyeIcon.classList.toggle('bi-eye-slash');
+        });
+    }
+
+    // Validación de cédula
+    const numeros = document.querySelectorAll('.numero');
+    
+    function validarCedula(input) {
+        const errorDiv = input.parentNode.querySelector('.error-cedula');
+        
+        if (input.value.length > 0 && input.value.length !== 10) {
+            input.classList.add('is-invalid');
+            input.classList.remove('is-valid');
+            
+            if (!errorDiv) {
+                const nuevoError = document.createElement('div');
+                nuevoError.className = 'error-cedula text-danger small mt-1';
+                nuevoError.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>La cédula debe tener exactamente 10 dígitos';
+                input.parentNode.appendChild(nuevoError);
+            }
+            return false;
+        } else if (input.value.length === 10) {
+            input.classList.remove('is-invalid');
+            input.classList.add('is-valid');
+            if (errorDiv) errorDiv.remove();
+            return true;
+        } else {
+            input.classList.remove('is-invalid', 'is-valid');
+            if (errorDiv) errorDiv.remove();
+            return false;
+        }
+    }
+
+    const celularInput = document.querySelector('.numero-celular');
+
+    if (celularInput) {
+        celularInput.addEventListener('keydown', (e) => {
+            if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        celularInput.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const texto = e.clipboardData.getData('text');
+            const soloNumeros = texto.replace(/[^0-9]/g, '').slice(0, 10);
+            celularInput.value = soloNumeros;
+        });
+
+        celularInput.addEventListener('input', () => {
+            celularInput.value = celularInput.value.replace(/[^0-9]/g, '').slice(0, 10);
+        });
+    }
+
+    numeros.forEach(input => {
+        input.addEventListener('keydown', (e) => {
+            if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
+                e.preventDefault();
+            }
+        });
+
+        input.addEventListener('paste', (e) => {
+            e.preventDefault();
+            const texto = e.clipboardData.getData('text');
+            const soloNumeros = texto.replace(/[^0-9]/g, '').slice(0, 10);
+            input.value = soloNumeros;
+            validarCedula(input);
+        });
+
+        input.addEventListener('input', () => {
+            if (input.value < 0) input.value = 0;
+            if (input.value.length > 10) input.value = input.value.slice(0, 10);
+            if (input.value.length === 10) validarCedula(input);
+        });
+
+        input.addEventListener('blur', () => validarCedula(input));
+    });
+});
+
+// Confirmar edición con SweetAlert2
+function confirmarEdicion() {
+    const cedulaInput = document.querySelector('input[name="Cedula"]');
+    if (cedulaInput && cedulaInput.value.length !== 10) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de validación',
+            text: 'La cédula debe tener exactamente 10 dígitos',
+            confirmButtonColor: '#8B0000'
+        });
+        cedulaInput.focus();
+        return;
+    }
+
+    Swal.fire({
+        title: '¿Guardar cambios?',
+        text: '¿Estás seguro de que deseas actualizar la información de este usuario?',
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#8B0000',
+        cancelButtonColor: '#6c757d',
+        confirmButtonText: 'Sí, guardar',
+        cancelButtonText: 'Cancelar'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('formEditarUsuario').submit();
+        }
+    });
+}
+</script>
 {% endblock %}

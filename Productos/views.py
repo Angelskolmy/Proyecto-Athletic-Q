@@ -173,7 +173,7 @@ def busqueda_producto (request):
 
     Conversor= list(BusqPrd) 
     regulador= Paginator(Conversor,20) 
-    Page_number= request.GET.get('page') 
+    Page_number= request.GET.get('page')
     page_objt= regulador.get_page(Page_number)
      
     params = {k: v for k, v in request.GET.items() if k != 'page' and v != ''}

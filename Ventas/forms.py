@@ -2,7 +2,7 @@ from django import forms
 from .models import Venta
 from Empleados.models import User_Empleados
 
-PAYMENT_CHOICES = [
+PAYMENT_CHOICES = [ 
     ('Efectivo', 'Efectivo'),
     ('Credito', 'Crédito'),
     ('Debito', 'Débito'),
@@ -12,7 +12,7 @@ PAYMENT_CHOICES = [
 
 class VentaForm(forms.ModelForm):
     metodo_pago = forms.ChoiceField(
-        choices=PAYMENT_CHOICES,
+        choices=[('', 'Seleccione el metodo de pago...')] + PAYMENT_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select', 'id': 'metodo_pago'}),
         required=True,
         label='Método de Pago'
@@ -29,7 +29,7 @@ class VentaForm(forms.ModelForm):
                 'id': 'Numero_Transaccion'
             }),
             'Cedula_Vents': forms.NumberInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control numero',
                 'placeholder': 'Cédula del cliente...',
                 'id': 'Cedula_Vents'
             }),

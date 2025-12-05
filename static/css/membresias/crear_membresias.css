@@ -1,84 +1,68 @@
-/* ================================
-    PALETA DE COLORES CREAR MEMBRESÍA
-   ================================ */
-
 :root {
-  --rojo-1: #8B0000;
-  --rojo-2: #740000;
-  --negro: #000000;
-  --gris-oscuro: #2c2c2c;
-  --gris-medio: #42484b;
-  --estado-activo: #047857;
-  --estado-inactivo: #b91c1c;
+    --rojo-1: #8B0000;
+    --rojo-2: #740000;
+    --gris-oscuro: #2c2c2c;
+    --gris-medio: #42484b;
+    --beige-claro: #faf8f5;
 }
 
 /* ================================
-    CARD HEADER
+    CARDS
    ================================ */
+
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
 .card-header {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-bottom: 2px solid #dee2e6;
+    background: linear-gradient(135deg, #dddddd 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 1.25rem;
 }
 
-.card-header h5 {
-  color: var(--gris-oscuro);
-  font-weight: 600;
+.card-header h6 {
+    color: var(--gris-oscuro);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
 }
 
-/* ================================
-    TÍTULOS DE SECCIONES
-   ================================ */
-
-h6.text-primary {
-  color: var(--rojo-1) !important;
-  font-weight: 600;
-  padding-bottom: 0.5rem;
-  border-bottom: 2px solid var(--rojo-1);
-  margin-bottom: 1rem;
+.card-body {
+    background: var(--beige-claro);
+    padding: 1.5rem;
 }
 
 /* ================================
-    ALERTAS INFORMATIVAS
+    ALERTA INFORMATIVA
    ================================ */
 
 .alert-info {
-  background: linear-gradient(135deg, #d1ecf1 0%, #bee5eb 100%);
-  border: 1px solid #b6effb;
-  border-left: 4px solid #0dcaf0;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-}
-
-.alert-info .alert-heading {
-  color: #055160;
-  font-weight: 600;
+    background: linear-gradient(135deg, #e8f4fd 0%, #d6ebf9 100%);
+    border: 1px solid #b6d4fe;
+    border-left: 4px solid #0dcaf0;
+    border-radius: 8px;
+    color: #055160;
 }
 
 .alert-info strong {
-  color: #055160;
-}
-
-#precio-display {
-  font-size: 1.2rem;
+    color: #055160;
 }
 
 /* ================================
-    ALERT LIGHT (RESUMEN)
+    LABELS
    ================================ */
 
-.alert-light {
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border: 1px solid #dee2e6;
-  border-left: 4px solid var(--rojo-1);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+.form-label {
+    color: #495057;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
 }
 
-.alert-light h6 {
-  color: var(--gris-oscuro);
-  font-weight: 600;
-  border-bottom: none !important;
-  padding-bottom: 0;
-  margin-bottom: 1rem;
+.form-label .text-danger {
+    color: var(--rojo-1) !important;
 }
 
 /* ================================
@@ -86,107 +70,129 @@ h6.text-primary {
    ================================ */
 
 .form-select:focus,
-.form-control:focus,
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="file"]:focus,
-textarea:focus {
-  border-color: var(--rojo-1) !important;
-  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
-  outline: none !important;
-}
-
-/* ================================
-    CAMPOS OBLIGATORIOS
-   ================================ */
-
-.text-danger {
-  color: var(--rojo-1) !important;
-  font-weight: 600;
-}
-
-.form-text.text-muted {
-  font-size: 0.875rem;
-  color: #6c757d !important;
-  display: block;
-  margin-top: 0.25rem;
-}
-
-.form-text.text-muted i {
-  color: var(--rojo-1);
+.form-control:focus {
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
 }
 
 /* ================================
     BOTONES
    ================================ */
 
-/* Botón Crear - Verde Oscuro */
-.btn-crear {
-  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
-  border: none !important;
-  color: #fff !important;
-  box-shadow: 0 2px 4px rgba(95, 9, 6, 0.3);
-  transition: all 0.3s ease;
+.btn-guardar {
+    background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    padding: 0.4rem 1.2rem;
+    transition: all 0.3s ease;
 }
 
-.btn-crear:hover {
-  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(95, 6, 6, 0.4);
+.btn-guardar:hover {
+    background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+    transform: translateY(-2px);
 }
 
-/* Botón Cancelar - Gris */
 .btn-cancelar {
-  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
-  border: none !important;
-  color: #fff !important;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    padding: 0.4rem 1.2rem;
+    transition: all 0.3s ease;
 }
 
 .btn-cancelar:hover {
-  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+    transform: translateY(-2px);
 }
 
-/* Personalizar Select2 */
+/* ================================
+    SELECT2 - ESTILOS CORREGIDOS
+   ================================ */
+
+/* Contenedor principal */
+.select2-container {
+    width: 100% !important;
+}
+
+/* Selector cerrado */
 .select2-container--default .select2-selection--single {
     height: 38px !important;
     border: 1px solid #ced4da !important;
     border-radius: 0.375rem !important;
+    background-color: #fff !important;
+    padding: 0.375rem 0.75rem !important;
 }
 
+/* Texto dentro del selector */
 .select2-container--default .select2-selection--single .select2-selection__rendered {
-    line-height: 36px !important;
-    padding-left: 12px !important;
+    line-height: 24px !important;
+    padding-left: 0 !important;
+    color: #212529 !important;
 }
 
+/* Flecha del dropdown */
 .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 36px !important;
+    right: 8px !important;
 }
 
-.select2-container--default .select2-search--dropdown .select2-search__field {
+/* Placeholder */
+.select2-container--default .select2-selection--single .select2-selection__placeholder {
+    color: #6c757d !important;
+}
+
+/* Focus del Select2 */
+.select2-container--default.select2-container--focus .select2-selection--single,
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+    outline: none !important;
+}
+
+/* Dropdown abierto */
+.select2-dropdown {
     border: 1px solid #ced4da !important;
     border-radius: 0.375rem !important;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Campo de búsqueda */
+.select2-container--default .select2-search--dropdown .select2-search__field {
+    border: 1px solid #ced4da !important;
+    border-radius: 0.25rem !important;
     padding: 0.5rem !important;
 }
 
-.select2-container--default.select2-container--focus .select2-selection--single {
-    border-color: #8B0000 !important;
-    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+.select2-container--default .select2-search--dropdown .select2-search__field:focus {
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.15rem rgba(139, 0, 0, 0.15) !important;
+    outline: none !important;
 }
 
+/* Opciones del dropdown */
+.select2-container--default .select2-results__option {
+    padding: 0.5rem 0.75rem !important;
+}
 
-/* ================================
-    VALIDACIÓN DE ERRORES
-   ================================ */
+/* Opción seleccionada */
+.select2-container--default .select2-results__option--selected {
+    background-color: #e9ecef !important;
+    color: #212529 !important;
+}
 
-.text-danger.small {
-  font-size: 0.875rem;
-  color: var(--rojo-1) !important;
-  display: block;
-  margin-top: 0.25rem;
+/* Opción en hover */
+.select2-container--default .select2-results__option--highlighted[aria-selected] {
+    background-color: var(--rojo-1) !important;
+    color: #fff !important;
+}
+
+/* Botón limpiar */
+.select2-container--default .select2-selection--single .select2-selection__clear {
+    margin-right: 20px !important;
+    color: #6c757d !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__clear:hover {
+    color: var(--rojo-1) !important;
 }
 
 /* ================================
@@ -194,98 +200,15 @@ textarea:focus {
    ================================ */
 
 @media (max-width: 768px) {
-  /* Header apilado */
-  .card-header {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
-
-  /* Footer centrado */
-  .card-footer {
-    text-align: center !important;
-    flex-direction: column !important;
-  }
-
-  .card-footer .btn {
-    width: 100%;
-    margin-bottom: 0.5rem;
-  }
-
-  .card-footer .btn:last-child {
-    margin-bottom: 0;
-  }
-
-  .card-footer .me-2 {
-    margin-right: 0 !important;
-  }
-
-  /* Columnas apiladas */
-  .row .col-md-6,
-  .row .col-md-4 {
-    margin-bottom: 1rem;
-  }
-
-  /* Alertas */
-  .alert-info .row,
-  .alert-light .row {
-    text-align: center;
-  }
-}
-
-/* ================================
-    ANIMACIONES
-   ================================ */
-
-/* Animación de aparición del formulario */
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.card {
-  animation: fadeInUp 0.4s ease;
-}
-
-/* Animación de la alerta informativa */
-@keyframes slideDown {
-  from {
-    opacity: 0;
-    max-height: 0;
-    overflow: hidden;
-  }
-  to {
-    opacity: 1;
-    max-height: 300px;
-  }
-}
-
-.alert-info:not(.d-none) {
-  animation: slideDown 0.5s ease;
-}
-
-/* Efecto de envío del formulario */
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-}
-
-.btn-success:active {
-  animation: pulse 0.3s ease;
-}
-
-/* Hover suave en inputs */
-.form-control:hover,
-.form-select:hover {
-  border-color: var(--gris-medio);
-  transition: border-color 0.2s ease;
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .d-flex.justify-content-end {
+        flex-direction: column;
+    }
+    
+    .d-flex.justify-content-end .btn {
+        width: 100%;
+    }
 }

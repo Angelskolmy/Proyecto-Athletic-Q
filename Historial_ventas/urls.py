@@ -3,6 +3,5 @@ from django.urls import path,include
 from Historial_ventas import views
 
 urlpatterns = [
-    
-    path('HistorialVentas/', views.ListarHistorialVentas, name='HistorialVentas')
-]  
+    path('HistorialVentas/', views.ListarHistorialVentas, name='HistorialVentas'),
+]

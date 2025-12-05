@@ -6,5 +6,4 @@ urlpatterns = [
     
     path('AsisVistas/', views.verPerfilasistencias , name='AsisVista'),
     path('Asistencias/', views.listarAsistencias, name='Asistencias'),
-]  
-        
+]

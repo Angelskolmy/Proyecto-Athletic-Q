@@ -1,228 +1,333 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-from Empleados.models import User_Empleados
-from random import randint
 from django.http import JsonResponse
 from django.core.mail import send_mail
-from .forms import CambiaContraseñaForm
 from django.contrib.auth.decorators import login_required
+from django.db.models import Sum, Count
+from django.db.models.functions import TruncDay
+from django.utils import timezone
+from datetime import datetime, timedelta
+from decimal import Decimal
+from random import randint
 
-# Vista de login
+from Empleados.models import User_Empleados
+from Membresias.models import Membresia
+from Productos.models import producto as Producto
+from Asistencia.models import Asistencia
+
+from .forms import CambiaContraseñaForm
+
+# ============================
+# VISTA DE LOGIN
+# ============================
 def login_view(request):
+    # Cerrar cualquier sesión previa
     logout(request)
     
     if request.method == 'POST':
-        usern = request.POST.get('usern')
+        username = request.POST.get('username')
         password = request.POST.get('password')
-
-        user = authenticate(request, username=usern, password=password)
-
+        
+        user = authenticate(request, username=username, password=password)
+        
         if user is not None:
             login(request, user)
             
+            # Redirigir según el grupo
             if user.groups.filter(name='Usuarios').exists():
                 return redirect('Perfil')
-            
-            if user.groups.filter(name='Huella').exists():
+            elif user.groups.filter(name='Huella').exists():
                 return redirect('AsisVista')
-            
-            return redirect('home')  # después de login lo mandamos al dashboard
+            else:
+                return redirect('home')
         else:
-            messages.error(request, 'Usuario o contraseña incorrectos.')
-            return redirect('login')
+            messages.error(request, 'Usuario o contraseña incorrectos')
 
     return render(request, 'templates_core_session/login.html')
 
-# funcion de para el envio de codigo 
+
+# ============================
+# RECUPERACIÓN DE CONTRASEÑA
+# ============================
+
 def enviar_codigo(request):
     if request.method == 'POST':
-        email = request.POST.get('email')
-
+        email = request.POST.get('email', '').strip()
+        
         try:
             usuario = User_Empleados.objects.get(email=email)
-
             codigo = randint(100000, 999999)
-
-            request.session['codigo'] = codigo
-            request.session['email'] = email
-
+            
+            request.session['codigo_recuperacion'] = codigo
+            request.session['email_recuperacion'] = email
+            
             send_mail(
-                'Recuperación de contraseña',
+                'Código de recuperación - Athletic-Q',
                 f'Tu código de recuperación es: {codigo}',
-                'smorales.joan@gmail.com',
+                'noreply@athletic-q.com',
                 [email],
                 fail_silently=False,
             )
-
-            # Activar reset del contador SOLO una vez
-            request.session["contador_reset"] = True
-
-            return redirect("codigo_recuperacion")  # ⬅ CAMBIO IMPORTANTE
-
+            
+            messages.success(request, 'Código enviado a tu correo')
+            return redirect('codigo_recuperacion')
+            
         except User_Empleados.DoesNotExist:
-            messages.error(request, 'No existe un usuario con ese correo registrado')
-            return render(request, 'templates_core_session/correo.html')
+            messages.error(request, 'No existe una cuenta con ese correo')
 
     return render(request, 'templates_core_session/correo.html')
 
-# vista para ingresar el codigo 
+
 def vista_codigo(request):
-    #🚫 Si no hay email guardado → volver a ingresar email
-    if "email" not in request.session:
-        return redirect("correo")
-    
-    # limpiar bandera de reinicio si existe
-    request.session.pop("contador_reset", None)
-
-    bandera = request.session.get("contador_reset", False)
-
-    response = render(request, "templates_core_session/codigo_recup.html", {
-        "contador_reset": bandera
-    })
-
-    if "contador_reset" in request.session:
-        del request.session["contador_reset"]
-
-    return response
-
-# funcion para validar codigo 
-def validar_codigo(request):
-    #🚫 Si no hay email guardado → volver a ingresar email
-    if "email" not in request.session:
-        return redirect("correo")
-    
-    if request.method == 'POST':
-        codigo_ingresado = request.POST.get('codigo', '')
-
-        # 1. Verificar si está vacío
-        if not codigo_ingresado.strip():
-            messages.error(request, "Debes ingresar el código.")
-            return redirect('codigo')  # O renderizar nuevamente el template
-
-        # 2. Verificar que sea un número
-        if not codigo_ingresado.isdigit():
-            messages.error(request, "El código debe ser numérico.")
-            return redirect('codigo')
-
-        # 3. Convertir a entero SI ya es seguro hacerlo
-        codigo_ingresado = int(codigo_ingresado)
-
-        codigo_sesion = request.session.get('codigo')
-        
-        if str(codigo_ingresado) == str(codigo_sesion):
-            # Invalidar código porque ya fue usado
-            
-            
-            request.session["codigo_valido"] = True
-            
-            del request.session["codigo"]
-            
-            return redirect("contra_nueva")
-        else:
-            messages.error(request, "El código ingresado es incorrecto.")
-            return redirect('codigo')
-        
+    if 'email_recuperacion' not in request.session:
+        return redirect('correo')
     return render(request, 'templates_core_session/codigo_recup.html')
 
-# funcion para invalidar codigo 
-def invalidar_codigo(request):
-    #🚫 Si no hay email guardado → volver a ingresar email
-    if "email" not in request.session:
-        return redirect("correo")
-    
-    request.session['codigo'] = None
-    return JsonResponse({'status': 'ok'})
 
-# funcion para reenviar  codigo 
-def reenviar_codigo(request):
-    #🚫 Si no hay email guardado → volver a ingresar email
-    if "email" not in request.session:
-        return redirect("correo")
-    
-    email = request.session.get('email')
-
-    if not email:
-        return JsonResponse({'error': 'No hay email en sesión'}, status=400)
-
-    # Generar nuevo código
-    import random
-    codigo = random.randint(100000, 999999)
-
-    request.session['codigo'] = codigo
-
-    # Enviar correo
-    send_mail(
-                'Tu nuevo código',
-                f'Tu nuevo código es: {codigo}',
-                'smorales.joan@gmail.com',
-                [email],
-                fail_silently=False,
-            )
-
-    return JsonResponse({'status': 'ok'})
-
-
-# vista para cambiar contraseña
-def vista_cambiar_contraseña(request):
-    #🚫 Si no hay email guardado → volver a ingresar email
-    if "email" not in request.session:
-        return redirect("correo")
-    
-    if not request.session.get("codigo_valido"):
-        
-        return redirect("codigo_recuperacion")
-    
-    request.session["codigo_valido"] = None
-    
-    
-    email = request.session.get('email')
-    usuario = User_Empleados.objects.get(email=email)
-
+def validar_codigo(request):
     if request.method == 'POST':
-        form = CambiaContraseñaForm(usuario, request.POST)
+        codigo_ingresado = request.POST.get('codigo', '')
+        codigo_guardado = request.session.get('codigo_recuperacion')
+        
+        if str(codigo_ingresado) == str(codigo_guardado):
+            return redirect('contra_nueva')
+        else:
+            messages.error(request, 'Código incorrecto')
+            return redirect('codigo_recuperacion')
+    
+    return redirect('codigo_recuperacion')
+
+
+def invalidar_codigo(request):
+    request.session.pop('codigo_recuperacion', None)
+    request.session.pop('email_recuperacion', None)
+    return redirect('correo')
+
+
+def reenviar_codigo(request):
+    email = request.session.get('email_recuperacion')
+    if email:
+        codigo = randint(100000, 999999)
+        request.session['codigo_recuperacion'] = codigo
+        
+        send_mail(
+            'Nuevo código de recuperación - Athletic-Q',
+            f'Tu nuevo código de recuperación es: {codigo}',
+            'noreply@athletic-q.com',
+            [email],
+            fail_silently=False,
+        )
+        
+        return JsonResponse({'success': True})
+    
+    return JsonResponse({'success': False})
+
+
+def vista_cambiar_contraseña(request):
+    if 'email_recuperacion' not in request.session:
+        return redirect('correo')
+    
+    if request.method == 'POST':
+        form = CambiaContraseñaForm(request.POST)
         if form.is_valid():
-            form.save()
+            email = request.session.get('email_recuperacion')
+            nueva_password = form.cleaned_data['password1']
+            
+            usuario = User_Empleados.objects.get(email=email)
+            usuario.set_password(nueva_password)
+            usuario.save()
+            
+            request.session.pop('codigo_recuperacion', None)
+            request.session.pop('email_recuperacion', None)
+            
+            messages.success(request, 'Contraseña actualizada correctamente')
             return redirect('login')
     else:
-        form = CambiaContraseñaForm(usuario)
-
-    return render(request, 'templates_core_session/contra_nueva.html', {'form': form})
+        form = CambiaContraseñaForm()
     
-# error de permisos
+    return render(request, 'templates_core_session/contra_nueva.html', {'form': form})
+
+
+# ============================
+# ERRORES / LOGOUT
+# ============================
+
 def error_403_view(request, exception=None):
-    # Si NO está autenticado → login
-    if not request.user.is_authenticated:
-        return redirect('login')
+    return render(request, 'errors/403.html', status=403)
 
-    # Si está autenticado pero sin permisos → mostrar página 403
-    return render(request, 'templates_errores/403.html', status=403)
 
-# Vista para cerrar sesión
+def error_404_view(request, exception=None):
+    return render(request, 'errors/404.html', status=404)
+
+
 def logout_view(request):
     logout(request)
     return redirect('login')
 
-# Vista del dashboard (protegida)
+
+# ============================
+# DASHBOARD (HOME) + CHARTS
+# ============================
+
 @login_required(login_url='login')
 def home_view(request):
-
-    user = request.user
-
-    # ADMIN → Admin dashboard
-    if user.is_superuser:
-        return render(request, 'templates_core_session/home.html')
+    """Vista principal del dashboard con estadísticas"""
     
-    if user.groups.filter(name='Admin').exists():
-        return render(request, 'templates_core_session/home.html')
+    hoy = timezone.now().date()
     
-    # INSPECTOR → su página
-    if user.groups.filter(name='Inspector').exists():
-        return render(request, 'templates_core_session/home.html')
+    # ========================================
+    # CARD 1: USUARIOS ACTIVOS
+    # ========================================
+    usuarios_activos = User_Empleados.objects.filter(is_active=True).count()
+    
+    # ========================================
+    # CARD 2: MEMBRESÍAS POR VENCER (próximos 7 días)
+    # ========================================
+    fecha_limite = hoy + timedelta(days=7)
+    membresias_por_vencer = Membresia.objects.filter(
+        Estado='Activo',
+        Fecha_fin__gte=hoy,
+        Fecha_fin__lte=fecha_limite
+    ).count()
+    
+    # ========================================
+    # CARD 3: ASISTENCIAS DEL MES
+    # ========================================
+    primer_dia_mes = hoy.replace(day=1)
+    asistencias_mes = Asistencia.objects.filter(
+        fecha_entrada__date__gte=primer_dia_mes,
+        fecha_entrada__date__lte=hoy
+    ).count()
+    
+    # ========================================
+    # CARD 4: PRODUCTOS CON STOCK BAJO (menos de 10)
+    # ========================================
+    stock_bajo = Producto.objects.filter(
+        Estado='Activo',
+        Stock__lt=10
+    ).count()
+    
+    # ========================================
+    # ASISTENCIAS DE HOY
+    # ========================================
+    asistencias_hoy = Asistencia.objects.filter(
+        fecha_entrada__date=hoy
+    ).count()
+    
+    context = {
+        'usuarios_activos': usuarios_activos,
+        'membresias_por_vencer': membresias_por_vencer,
+        'asistencias_mes': asistencias_mes,
+        'asistencias_hoy': asistencias_hoy,
+        'stock_bajo': stock_bajo,
+    }
+    
+    return render(request, 'templates_core_session/home.html', context)
 
-    # EMPLEADO → su página
-    if user.groups.filter(name='Empleados').exists():
-        return render(request, 'templates_core_session/home.html')
 
-    # USUARIO NORMAL → Perfil
-    return redirect('Perfil')
+@login_required(login_url='login')
+def home_chart(request, name):
+    """
+    API para obtener datos de gráficos vía AJAX
+    name puede ser: 'asistencias' o 'membresias'
+    """
+    
+    hoy = timezone.now().date()
+    
+    # ========================================
+    # GRÁFICO DE ASISTENCIAS (últimos 7 días)
+    # ========================================
+    if name == 'asistencias':
+        
+        fecha_inicio = hoy - timedelta(days=6)
+        fecha_fin = hoy
+        
+        # Consultar asistencias agrupadas por día
+        asistencias = Asistencia.objects.filter(
+            fecha_entrada__date__gte=fecha_inicio,
+            fecha_entrada__date__lte=fecha_fin
+        ).annotate(
+            dia=TruncDay('fecha_entrada')
+        ).values('dia').annotate(
+            total=Count('id')
+        ).order_by('dia')
+        
+        # Crear diccionario con los datos
+        asistencias_dict = {}
+        for a in asistencias:
+            if a['dia']:
+                asistencias_dict[a['dia'].date()] = a['total']
+        
+        # Llenar todos los días del rango
+        labels = []
+        data = []
+        dias_semana = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
+        
+        current = fecha_inicio
+        while current <= fecha_fin:
+            dia_nombre = dias_semana[current.weekday()]
+            labels.append(f"{dia_nombre} {current.day}")
+            data.append(asistencias_dict.get(current, 0))
+            current += timedelta(days=1)
+        
+        return JsonResponse({
+            'labels': labels,
+            'data': data,
+            'total': sum(data)
+        })
+    
+    # ========================================
+    # GRÁFICO DE MEMBRESÍAS (por tipo)
+    # ========================================
+    elif name == 'membresias':
+        
+        # Contar membresías activas por tipo
+        membresias = Membresia.objects.filter(
+            Estado='Activo'
+        ).values(
+            'For_Id_tipo_membresia__Nombre'
+        ).annotate(
+            cantidad=Count('Id_membresia')
+        ).order_by('-cantidad')
+        
+        labels = [m['For_Id_tipo_membresia__Nombre'] or 'Sin tipo' for m in membresias]
+        data = [m['cantidad'] for m in membresias]
+        
+        return JsonResponse({
+            'labels': labels,
+            'data': data,
+            'total': sum(data)
+        })
+    
+    # ========================================
+    # GRÁFICO DE USUARIOS POR ROL
+    # ========================================
+    elif name == 'usuarios':
+        
+        from django.contrib.auth.models import Group
+        
+        usuarios_por_grupo = []
+        grupos = Group.objects.all()
+        
+        for grupo in grupos:
+            count = User_Empleados.objects.filter(groups=grupo, is_active=True).count()
+            if count > 0:
+                usuarios_por_grupo.append({
+                    'nombre': grupo.name,
+                    'cantidad': count
+                })
+        
+        # Ordenar por cantidad
+        usuarios_por_grupo.sort(key=lambda x: x['cantidad'], reverse=True)
+        
+        labels = [u['nombre'] for u in usuarios_por_grupo]
+        data = [u['cantidad'] for u in usuarios_por_grupo]
+        
+        return JsonResponse({
+            'labels': labels,
+            'data': data,
+            'total': sum(data)
+        })
+    
+    return JsonResponse({'error': 'Gráfico no encontrado'}, status=404)

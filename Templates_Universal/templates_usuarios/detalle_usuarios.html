@@ -1,0 +1,314 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/usuarios/detalle_usuarios.css' %}">
+{% endblock %}
+
+{% block title %}Detalle Usuario{% endblock %}
+
+{% block content %}
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-6">
+                <h3 class="mb-0">
+                    <i class="bi bi-person-vcard me-2"></i>Detalle de Usuario
+                </h3>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Empleados' %}">Usuarios</a></li>
+                    <li class="breadcrumb-item active">Detalle</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-content">
+    <div class="container-fluid">
+        <div class="row">
+            
+            <!-- COLUMNA IZQUIERDA: Foto y Estado -->
+            <div class="col-lg-4">
+                <!-- Card Foto -->
+                <div class="card card-perfil shadow-sm mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-person-circle me-2"></i>Foto de Perfil
+                        </h6>
+                    </div>
+                    <div class="card-body text-center">
+                        <!-- Foto -->
+                        <div class="perfil-imagen-container mb-3">
+                            {% if empleado.empleados_img and empleado.empleados_img.name %}
+                                <img src="{{ empleado.empleados_img.url }}" alt="Foto" class="perfil-imagen">
+                            {% else %}
+                                <div class="perfil-imagen-placeholder">
+                                    <i class="bi bi-person-circle"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <!-- Nombre -->
+                        <h4 class="perfil-nombre mb-2">{{ empleado.first_name }} {{ empleado.last_name }}</h4>
+                        <p class="text-muted mb-3">@{{ empleado.username }}</p>
+                        
+                        <!-- Rol -->
+                        <div class="mb-3">
+                            {% for grupo in empleado.groups.all %}
+                                {% if grupo.name == 'Admin' %}
+                                    <span class="badge badge-rol-admin">
+                                        <i class="bi bi-shield-check me-1"></i>{{ grupo.name }}
+                                    </span>
+                                {% elif grupo.name == 'Entrenador' %}
+                                    <span class="badge badge-rol-entrenador">
+                                        <i class="bi bi-person-badge me-1"></i>{{ grupo.name }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge badge-rol-empleado">
+                                        <i class="bi bi-person me-1"></i>{{ grupo.name }}
+                                    </span>
+                                {% endif %}
+                            {% empty %}
+                                <span class="badge bg-secondary">Sin rol asignado</span>
+                            {% endfor %}
+                        </div>
+                        
+                        <!-- Estado -->
+                        <div>
+                            {% if empleado.is_active %}
+                                <span class="badge badge-activo">
+                                    <i class="bi bi-check-circle me-1"></i>Activo
+                                </span>
+                            {% else %}
+                                <span class="badge badge-inactivo">
+                                    <i class="bi bi-x-circle me-1"></i>Inactivo
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Estadísticas -->
+                <div class="card card-stats shadow-sm">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-bar-chart me-2"></i>Estadísticas
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <!-- Huella -->
+                        <div class="stat-item">
+                            <div class="stat-icon {% if tiene_huella %}bg-success-dark{% else %}bg-warning-dark{% endif %}">
+                                <i class="bi bi-fingerprint"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Huella Dactilar</span>
+                                <span class="stat-value">{% if tiene_huella %}Registrada{% else %}No registrada{% endif %}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Asistencias del mes -->
+                        <div class="stat-item">
+                            <div class="stat-icon bg-primary-dark">
+                                <i class="bi bi-calendar-check"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Asistencias (este mes)</span>
+                                <span class="stat-value">{{ asistencias_mes }}</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Fecha de registro -->
+                        <div class="stat-item">
+                            <div class="stat-icon bg-info-dark">
+                                <i class="bi bi-clock-history"></i>
+                            </div>
+                            <div class="stat-info">
+                                <span class="stat-label">Fecha de Registro</span>
+                                <span class="stat-value">{{ empleado.date_joined|date:"d/m/Y" }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COLUMNA DERECHA: Información -->
+            <div class="col-lg-8">
+                <!-- Card Información Personal -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-person-vcard me-2"></i>Información Personal
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Nombre -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-person me-2"></i>Nombre
+                                    </span>
+                                    <span class="info-value">{{ empleado.first_name|default:"-" }}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Apellido -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-person me-2"></i>Apellido
+                                    </span>
+                                    <span class="info-value">{{ empleado.last_name|default:"-" }}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Cédula -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-card-text me-2"></i>Cédula
+                                    </span>
+                                    <span class="info-value">{{ empleado.Cedula|default:"-" }}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Género -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-gender-ambiguous me-2"></i>Género
+                                    </span>
+                                    <span class="info-value">
+                                        {% if empleado.Sexo == 'Masculino' %}
+                                            <span class="badge badge-masculino">
+                                                <i class="bi bi-gender-male me-1"></i>{{ empleado.Sexo }}
+                                            </span>
+                                        {% elif empleado.Sexo == 'Femenino' %}
+                                            <span class="badge badge-femenino">
+                                                <i class="bi bi-gender-female me-1"></i>{{ empleado.Sexo }}
+                                            </span>
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- EPS -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-hospital me-2"></i>EPS
+                                    </span>
+                                    <span class="info-value">{{ empleado.Eps|default:"-" }}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Dirección -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-geo-alt me-2"></i>Dirección
+                                    </span>
+                                    <span class="info-value">{{ empleado.Direccion|default:"-" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Información de Contacto -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-telephone me-2"></i>Información de Contacto
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Email -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-envelope me-2"></i>Correo Electrónico
+                                    </span>
+                                    <span class="info-value">
+                                        <a href="mailto:{{ empleado.email }}" class="text-decoration-none">
+                                            {{ empleado.email|default:"-" }}
+                                        </a>
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Celular -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-phone me-2"></i>Celular
+                                    </span>
+                                    <span class="info-value">{{ empleado.Celular|default:"-" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card Información de Cuenta -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-key me-2"></i>Información de Cuenta
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Username -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-person-badge me-2"></i>Usuario
+                                    </span>
+                                    <span class="info-value">{{ empleado.username }}</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Último acceso -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-clock me-2"></i>Último Acceso
+                                    </span>
+                                    <span class="info-value">
+                                        {% if empleado.last_login %}
+                                            {{ empleado.last_login|date:"d/m/Y H:i" }}
+                                        {% else %}
+                                            Nunca
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Botones de Acción -->
+                <div class="card shadow-sm">
+                    <div class="card-body card-botones text-end">
+                        <a href="{% url 'Empleados' %}" class="btn btn-volver me-2">
+                            <i class="bi bi-arrow-left me-1"></i>Volver
+                        </a>
+                        <a href="{% url 'empleados_edit' empleado.id %}" class="btn btn-editar">
+                            <i class="bi bi-pencil me-1"></i>Editar Usuario
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

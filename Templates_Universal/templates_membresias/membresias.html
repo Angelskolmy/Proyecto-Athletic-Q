@@ -30,40 +30,35 @@
   <div class="container-fluid">
     <div class="card shadow-sm border-0">
 
-      <!-- Header -->
+      <!-- Header con filtros automáticos -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <a href="{% url 'membresias_create' %}" class="btn btn-crear">
           <i class="bi bi-plus-circle me-1"></i> Nueva Membresía
         </a>
 
-        <form method="GET" class="d-flex align-items-center gap-2 ms-auto flex-wrap">
-          <select name="filter" class="form-select form-select-sm" style="width: 180px;" onchange="this.form.submit()">
+        <form method="GET" id="formFiltros" class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+          <!-- Filtro por estado -->
+          <select name="filter" id="filtroEstado" class="form-select form-select-sm" style="width: 180px;">
             <option value="">Todos los estados</option>
             <option value="activa" {% if filter_type == 'activa' %}selected{% endif %}>Activas</option>
             <option value="vencida" {% if filter_type == 'vencida' %}selected{% endif %}>Vencidas</option>
             <option value="porvencer" {% if filter_type == 'porvencer' %}selected{% endif %}>Por vencer</option>
           </select>
 
-          <div class="input-group input-group-sm" style="width: 250px;">
-            <input type="text" name="search" class="form-control" 
-                   placeholder="Buscar cliente..." 
-                   value="{{ search_query }}">
-            <button class="btn btn-outline-secondary" type="submit">
+          <!-- Buscador -->
+          <div class="input-group input-group-sm" style="width: 280px;">
+            <input type="text" name="search" id="buscarMembresia" class="form-control" 
+                   placeholder="Buscar por nombre, cédula..." value="{{ search_query }}">
+            <span class="input-group-text">
               <i class="bi bi-search"></i>
-            </button>
+            </span>
           </div>
 
-          {% if search_query or filter_type %}
+          {% if hay_filtros %}
           <a href="{% url 'Membresias' %}" class="btn btn-outline-danger btn-sm">
-            <i class="bi bi-x-circle"></i>
+            <i class="bi bi-x-circle me-1"></i>Limpiar
           </a>
           {% endif %}
-
-          <select name="items_per_page" class="form-select form-select-sm" style="width: 120px;" onchange="this.form.submit()">
-            <option value="10" {% if items_per_page == '10' %}selected{% endif %}>10 por página</option>
-            <option value="25" {% if items_per_page == '25' %}selected{% endif %}>25 por página</option>
-            <option value="50" {% if items_per_page == '50' %}selected{% endif %}>50 por página</option>
-          </select>
         </form>
       </div>
 
@@ -74,79 +69,45 @@
             <thead class="table-light">
               <tr>
                 <th>ID</th>
-                <th>Cédula</th>
-                <th>Cliente</th>
+                <th>Usuario</th>
                 <th>Tipo</th>
                 <th>Fecha Inicio</th>
                 <th>Fecha Fin</th>
                 <th>Estado</th>
-                <th>Precio</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-            {% for artMemb in AllMebs %}
+            {% for mem in AllMebs %}
               <tr>
-                <td>{{ artMemb.Id_membresia }}</td>
-                <td>{{ artMemb.id_usuario.Cedula }}</td>
-                <td>{{ artMemb.id_usuario.first_name }} {{ artMemb.id_usuario.last_name }}</td>
-                
-                <!-- ✅ MOSTRAR TIPO DE MEMBRESÍA -->
+                <td><strong>#{{ mem.Id_membresia }}</strong></td>
+                <td>{{ mem.id_usuario.first_name }} {{ mem.id_usuario.last_name }}</td>
                 <td>
-                  <span class="badge bg-info">
-                    {{ artMemb.For_Id_tipo_membresia.Nombre }}
-                  </span>
-                  <br>
-                  <small class="text-muted">{{ artMemb.For_Id_tipo_membresia.get_Duracion_meses_display }}</small>
+                  <span class="badge bg-primary">{{ mem.For_Id_tipo_membresia.Nombre }}</span>
                 </td>
-                
-                <td>{{ artMemb.Fecha_inicio|date:"d/m/Y" }}</td>
-                <td>{{ artMemb.Fecha_fin|date:"d/m/Y" }}</td>
+                <td>{{ mem.Fecha_inicio|date:"d/m/Y" }}</td>
+                <td>{{ mem.Fecha_fin|date:"d/m/Y" }}</td>
                 <td>
-                  {% now "Y-m-d" as today %}
-                  {% if artMemb.Estado == 'Activo' and artMemb.Fecha_fin|date:"Y-m-d" >= today %}
-                    <span class="badge bg-success">Activa</span>
-                  {% elif artMemb.Fecha_fin|date:"Y-m-d" < today %}
-                    <span class="badge bg-danger">Vencida</span>
+                  {% if mem.Estado == 'Activo' %}
+                    <span class="badge bg-success">Activo</span>
                   {% else %}
-                    <span class="badge bg-secondary">{{ artMemb.Estado }}</span>
+                    <span class="badge bg-danger">Inactivo</span>
                   {% endif %}
                 </td>
-                
-                <!-- MOSTRAR PRECIO DEL TIPO -->
-                <td class="fw-bold text-success">
-                  {{ artMemb.For_Id_tipo_membresia.Precio|currency_cop }}
-                </td>
-                
                 <td>
-                  <a href="{% url 'membresias_detail' artMemb.Id_membresia %}" 
-                      class="btn btn-sm btn-info me-1" title="Ver Detalles">
+                  <a href="{% url 'membresias_detail' mem.Id_membresia %}" class="btn btn-info btn-sm">
                     <i class="bi bi-eye-fill"></i>
                   </a>
-                  {% if perms.Membresias.change_membresia %}
-                  <a href="{% url 'membresias_edit' artMemb.Id_membresia %}" 
-                      class="btn btn-sm btn-warning" title="Editar">
+                  <a href="{% url 'membresias_edit' mem.Id_membresia %}" class="btn btn-warning btn-sm">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
-                  {% endif %}
                 </td>
               </tr>
             {% empty %}
               <tr>
-                <td colspan="9" class="text-center text-muted py-4">
-                  <i class="bi bi-inbox display-1"></i>
-                  <p class="mt-2">
-                    {% if search_query or filter_type %}
-                      No se encontraron membresías que coincidan con los criterios.
-                    {% else %}
-                      No hay membresías registradas.
-                    {% endif %}
-                  </p>
-                  {% if search_query or filter_type %}
-                  <a href="{% url 'Membresias' %}" class="btn btn-sm btn-outline-primary">
-                    <i class="bi bi-arrow-clockwise me-1"></i>Limpiar filtros
-                  </a>
-                  {% endif %}
+                <td colspan="7" class="text-center py-4">
+                  <i class="bi bi-inbox fs-1 text-muted"></i>
+                  <p class="text-muted mt-2 mb-0">No se encontraron membresías</p>
                 </td>
               </tr>
             {% endfor %}
@@ -161,91 +122,85 @@
         <ul class="pagination pagination-sm mb-0">
           {% if AllMebs.has_previous %}
             <li class="page-item">
-              <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">«</a>
+              <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}">&laquo;&laquo;</a>
             </li>
             <li class="page-item">
-              <a class="page-link" href="?page={{ AllMebs.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">‹</a>
+              <a class="page-link" href="?page={{ AllMebs.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}">&laquo;</a>
             </li>
           {% endif %}
 
           {% for num in AllMebs.paginator.page_range %}
             {% if AllMebs.number == num %}
-              <li class="page-item active">
-                <span class="page-link">{{ num }}</span>
-              </li>
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
             {% elif num > AllMebs.number|add:'-3' and num < AllMebs.number|add:'3' %}
               <li class="page-item">
-                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">
-                  {{ num }}
-                </a>
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}">{{ num }}</a>
               </li>
             {% endif %}
           {% endfor %}
 
           {% if AllMebs.has_next %}
             <li class="page-item">
-              <a class="page-link" href="?page={{ AllMebs.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">›</a>
+              <a class="page-link" href="?page={{ AllMebs.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}">&raquo;</a>
             </li>
             <li class="page-item">
-              <a class="page-link" href="?page={{ AllMebs.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">»</a>
+              <a class="page-link" href="?page={{ AllMebs.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_type %}&filter={{ filter_type }}{% endif %}">&raquo;&raquo;</a>
             </li>
           {% endif %}
         </ul>
+        {% else %}
+        <div></div>
         {% endif %}
 
         <div class="flex-grow-1 text-center">
           <span class="text-muted small">
-            Mostrando {{ AllMebs.start_index }}–{{ AllMebs.end_index }} de {{ total_items }} registros
-            {% if search_query or filter_type %}
-              (filtrados)
-            {% endif %}
+            Mostrando {{ start_index }}–{{ end_index }} de {{ total_items }} registros
           </span>
         </div>
-
-        <div class="dropdown">
-          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            Exportar
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
-          </ul>
-        </div>
+        
+        <div></div>
       </div>
     </div>
   </div>
 </div>
 
-<style>
-  @media (max-width: 768px) {
-    .card-header {
-      flex-direction: column !important;
-      align-items: stretch !important;
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputBuscar = document.getElementById('buscarMembresia');
+    const selectFiltro = document.getElementById('filtroEstado');
+    const formFiltros = document.getElementById('formFiltros');
+    
+    let debounceTimer;
+
+    // Buscador en tiempo real
+    if (inputBuscar) {
+        inputBuscar.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                formFiltros.submit();
+            }, 400);
+        });
+        
+        inputBuscar.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(debounceTimer);
+                formFiltros.submit();
+            }
+        });
+        
+        if (inputBuscar.value.length > 0) {
+            inputBuscar.focus();
+            inputBuscar.setSelectionRange(inputBuscar.value.length, inputBuscar.value.length);
+        }
     }
 
-    .card-header form {
-      width: 100% !important;
-      flex-direction: column !important;
+    // Filtro automático
+    if (selectFiltro) {
+        selectFiltro.addEventListener('change', function() {
+            formFiltros.submit();
+        });
     }
-
-    .card-header select,
-    .card-header .input-group {
-      width: 100% !important;
-    }
-
-    .table-responsive {
-      overflow-x: auto !important;
-    }
-
-    table th, table td {
-      white-space: nowrap;
-    }
-
-    .card-footer {
-      flex-direction: column !important;
-      gap: 0.75rem !important;
-    }
-  }
-</style>
-
+});
+</script>
 {% endblock %}

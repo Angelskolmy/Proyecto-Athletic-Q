@@ -9,17 +9,15 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
 @login_required(login_url='login')
-
 @transaction.atomic
 def ListarCategorias(request):
     if not request.user.has_perm('Categorias.view_categoria'):
         messages.warning(request, "No tienes permiso para acceder a esta sección.")
-        return redirect('Perfil')  # URL de perfil
+        return redirect('Perfil')
     
-    # Obtener parámetros de búsqueda y paginación
-    search_query = request.GET.get('search', '')
+    # Obtener parámetro de búsqueda
+    search_query = request.GET.get('search', '').strip()
     page_number = request.GET.get('page', 1)
-    items_per_page = request.GET.get('items_per_page', 10)
 
     # Filtrar categorías
     categorias = categoria.objects.all().order_by('Id_categoria')
@@ -30,8 +28,8 @@ def ListarCategorias(request):
             Q(Estado__icontains=search_query)
         )
 
-    # Crear paginador
-    paginator = Paginator(categorias, items_per_page)
+    # Crear paginador - 15 registros por página
+    paginator = Paginator(categorias, 15)
     page_obj = paginator.get_page(page_number)
 
     # Calcular rango de resultados mostrados
@@ -44,10 +42,10 @@ def ListarCategorias(request):
         'start_index': start_index,
         'end_index': end_index,
         'search_query': search_query,
-        'items_per_page': items_per_page
     }
 
     return render(request, "templates_categoria/categorias.html", context)
+
 
 @transaction.atomic
 def CrearCategoria(request):
@@ -56,44 +54,37 @@ def CrearCategoria(request):
         if form.is_valid():
             try:
                 form.save()
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Categoría creada exitosamente',
-                    'redirect': '/Categorias/'
-                })
+                messages.success(request, 'Categoría creada exitosamente.')
+                return redirect('Categorias')
             except Exception as e:
-                return JsonResponse({
-                    'success': False,
-                    'message': f'Error al crear la categoría: {str(e)}'
-                }, status=400)
+                messages.error(request, f'Error al crear la categoría: {str(e)}')
     else:
         form = CrearCategoriaForm()
 
     return render(request, 'templates_categoria/crear_categorias.html', {'form': form})
 
+
 @transaction.atomic
-def EditarCategoria(request, id):
-    categoria_obj = get_object_or_404(categoria, Id_categoria=id)
+def EditarCategoria(request, Id_categoria):
+    categoria_obj = get_object_or_404(categoria, Id_categoria=Id_categoria)
+    
+    # Contar productos asociados
+    from Productos.models import producto
+    productos_count = producto.objects.filter(Catego_Id=categoria_obj).count()
     
     if request.method == 'POST':
         form = EditarCategoriaForm(request.POST, instance=categoria_obj)
         if form.is_valid():
-            try:
-                form.save()
-                return JsonResponse({
-                    'success': True,
-                    'message': 'Categoría actualizada exitosamente',
-                    'redirect': '/Categorias/'
-                })
-            except Exception as e:
-                return JsonResponse({
-                    'success': False,
-                    'message': f'Error al actualizar la categoría: {str(e)}'
-                }, status=400)
+            form.save()
+            messages.success(request, 'Categoría actualizada correctamente.')
+            return redirect('Categorias')
     else:
         form = EditarCategoriaForm(instance=categoria_obj)
-
-    return render(request, 'templates_categoria/editar_categorias.html', {
+    
+    context = {
+        'form': form,
         'categoria': categoria_obj,
-        'form': form
-    })
+        'productos_count': productos_count,
+    }
+    
+    return render(request, 'templates_categoria/editar_categorias.html', context)

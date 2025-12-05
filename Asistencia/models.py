@@ -1,15 +1,23 @@
 from django.db import models
+from django.utils import timezone
 from Empleados.models import User_Empleados
 
-class asistencia(models.Model): 
+class Asistencia(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    id_usuario = models.ForeignKey(
+        User_Empleados,
+        on_delete=models.CASCADE,
+        related_name="asistencias",
+        db_column="id_usuario",
+    )
+    rol = models.CharField(max_length=50, default="", blank=True)
+    fecha_entrada = models.DateTimeField(default=timezone.now)
+    fecha_salida = models.DateTimeField(null=True, blank=True)
+    estado = models.CharField(max_length=30, default="", blank=True)
 
-    Id_asistencia= models.AutoField(primary_key=True, db_column='Id_asistencia')  
-    Fecha_Hora= models.DateTimeField(auto_now_add=True, db_column='Fecha_Hora') 
-    id_usuario= models.ForeignKey(User_Empleados, on_delete=models.CASCADE, db_column='id_usuario') 
+    class Meta:
+        db_table = "asistencia"
+        ordering = ["-fecha_entrada"]
 
-    class Meta: 
-        db_table='asistencia'
-        managed= False 
-        
-    def __str__(self):
-        return f"Id_asistencia{self.Id_asistencia} - Fecha_Hora{self.Fecha_Hora} - id_usuario{self.id_usuario}"
+    def _str_(self):
+        return f"{self.id_usuario} | {self.fecha_entrada} -> {self.fecha_salida or '—'}"

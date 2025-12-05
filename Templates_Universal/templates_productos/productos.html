@@ -85,7 +85,7 @@ Productos
                 <td>{{ Infor_Prod.Id_producto }}</td>
                 <td>
                   {% if Infor_Prod.prod_imagen %}
-                  <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded" style="width: 45px; height: 45px; object-fit: cover;">
+                  <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded-circle" style="width: 45px; height: 45px; object-fit: cover;">
                   {% else %}
                   <div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
                     <i class="bi bi-image text-muted"></i>

@@ -13,6 +13,7 @@ from Empleados.models import User_Empleados
 from Tipo_membresia.models import TipoMembresia
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.decorators import login_required
+from Historial.models import Historial_usuario
 
 @login_required(login_url='login')
 @permission_required('Membresias.view_membresia', login_url='login')
@@ -21,25 +22,22 @@ def ListarMembresias(request):
     search_query = request.GET.get('search', '').strip()
     filter_type = request.GET.get('filter', '')
     page_number = request.GET.get('page', 1)
-    items_per_page = int(request.GET.get('items_per_page', 10))
 
-    #  USAR select_related PARA OPTIMIZAR
     membresias = Membresia.objects.select_related(
         'id_usuario', 
         'For_Id_tipo_membresia'
     ).all().order_by('-Id_membresia')
     
+    # Búsqueda
     if search_query:
-        search_filters = Q(id_usuario__first_name__icontains=search_query) | \
-                        Q(id_usuario__last_name__icontains=search_query) | \
-                        Q(id_usuario__email__icontains=search_query)
-        
-        if search_query.isdigit():
-            search_filters |= Q(id_usuario__Cedula=int(search_query))
-            search_filters |= Q(Id_membresia=int(search_query))
-            
-        membresias = membresias.filter(search_filters)
+        membresias = membresias.filter(
+            Q(id_usuario__first_name__icontains=search_query) |
+            Q(id_usuario__last_name__icontains=search_query) |
+            Q(id_usuario__Cedula__icontains=search_query) |
+            Q(For_Id_tipo_membresia__Nombre__icontains=search_query)
+        )
 
+    # Filtros por estado
     if filter_type:
         today = timezone.now().date()
         if filter_type == 'activa':
@@ -47,18 +45,32 @@ def ListarMembresias(request):
         elif filter_type == 'vencida':
             membresias = membresias.filter(Fecha_fin__lt=today)
         elif filter_type == 'porvencer':
-            next_week = today + timedelta(days=7)
-            membresias = membresias.filter(Estado='Activo', Fecha_fin__lte=next_week, Fecha_fin__gte=today)
+            fecha_limite = today + timedelta(days=7)
+            membresias = membresias.filter(
+                Estado='Activo',
+                Fecha_fin__gte=today,
+                Fecha_fin__lte=fecha_limite
+            )
 
-    paginator = Paginator(membresias, items_per_page)
+    # Paginación - 15 registros fijos
+    paginator = Paginator(membresias, 15)
     page_obj = paginator.get_page(page_number)
+
+    # Calcular rango
+    start_index = (page_obj.number - 1) * paginator.per_page + 1
+    end_index = min(start_index + paginator.per_page - 1, paginator.count)
+
+    # Verificar si hay filtros
+    hay_filtros = any([search_query, filter_type])
 
     context = {
         'AllMebs': page_obj,
         'total_items': paginator.count,
+        'start_index': start_index,
+        'end_index': end_index,
         'search_query': search_query,
         'filter_type': filter_type,
-        'items_per_page': items_per_page,
+        'hay_filtros': hay_filtros,
     }
 
     return render(request, "templates_membresias/membresias.html", context)
@@ -88,6 +100,22 @@ def CrearMembresia(request):
                 membresia.Fecha_fin = fecha_inicio_date + relativedelta(months=duracion_meses)
 
                 membresia.save()
+                
+                histuser5 = request.user
+                histMod5 = 'membresías'
+                histMovs5 = 'ingresar'
+                histFech5 = timezone.now().date()             
+                histNomb5 = membresia.For_Id_tipo_membresia.Nombre
+                histId5 = membresia.Id_membresia
+
+                Historial_usuario.objects.create(
+                    id_usuario= histuser5,
+                    TIpo_Movimiento= histMovs5,
+                    Modulo= histMod5,
+                    Nombre_Objeto= histNomb5,
+                    Id_Objeto= histId5,
+                    Fecha_y_hora= histFech5,
+                )   
                 
                 messages.success(
                     request, 
@@ -124,6 +152,22 @@ def EditarMembresia(request, id):
                 membresia_actualizada.Fecha_fin = membresia.Fecha_fin
                 
                 membresia_actualizada.save()
+                
+                histuser6 = request.user
+                histMod6 = 'membresías'
+                histMovs6 = 'editar'
+                histFech6 = timezone.now().date()             
+                histNomb6 = membresia.For_Id_tipo_membresia.Nombre
+                histId6 = membresia.Id_membresia
+
+                Historial_usuario.objects.create(
+                    id_usuario= histuser6,
+                    TIpo_Movimiento= histMovs6,
+                    Modulo= histMod6,
+                    Nombre_Objeto= histNomb6,
+                    Id_Objeto= histId6,
+                    Fecha_y_hora= histFech6,
+                )
                 
                 messages.success(request, 'Membresía actualizada exitosamente')
                 return redirect('Membresias')

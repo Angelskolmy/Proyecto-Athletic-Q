@@ -32,9 +32,9 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'core',
+    'Rutinas',
     'Historial_ventas', 
-    'Historial',
-    'Pago_Membresia',     
+    'Historial',   
     'Membresias',
     'Tipo_membresia',
     'Detalle_venta',

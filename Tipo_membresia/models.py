@@ -44,5 +44,5 @@ class TipoMembresia(models.Model):
         verbose_name = 'Tipo de Membresía'
         verbose_name_plural = 'Tipos de Membresías'
     
-    def str(self):
-        return f" Id_tipo_membresia{self.Id_tipo_membresia} - Nombre:{self.Nombre} - Duracion:{self.Duracion_meses} meses - Precio:{self.Precio} - Estado:{self.Estado} - tipo_membresia_img{self.tipo_membresia_img}"
+    def __str__(self):
+        return f"{self.Nombre} - {self.Duracion_meses} mes(es)"

@@ -122,6 +122,21 @@
   box-shadow: 0 4px 8px rgba(180, 83, 9, 0.4);
 }
 
+/* Ver Detalle - Azul Oscuro */
+.btn-detalle {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 2px 4px rgba(30, 58, 138, 0.3);
+    transition: all 0.3s ease;
+}
+
+.btn-detalle:hover {
+    background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(30, 58, 138, 0.4);
+}
+
 /* Huella Registrada - Verde Oscuro */
 .btn-huella-registrada {
   background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;

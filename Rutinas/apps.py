@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class PagoMembresiaConfig(AppConfig):
+class RutinasConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'Pago_Membresia'
+    name = 'Rutinas'

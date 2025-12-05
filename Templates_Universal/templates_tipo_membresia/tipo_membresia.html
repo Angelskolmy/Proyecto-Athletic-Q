@@ -8,7 +8,6 @@
 {% block title %}Tipos de Membresía{% endblock %}
 
 {% block content %}
-<!--begin::App Content Header-->
 <div class="app-content-header">
   <div class="container-fluid">
     <div class="row align-items-center">
@@ -20,32 +19,49 @@
       <div class="col-sm-4 text-end">
         <ol class="breadcrumb float-sm-end mb-0">
           <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Tipos de Membresía</li>
+          <li class="breadcrumb-item active">Tipos de Membresía</li>
         </ol>
       </div>
     </div>
   </div>
 </div>
-<!--end::App Content Header-->
 
 <div class="app-content">
   <div class="container-fluid">
     <div class="card shadow-sm border-0">
       
-      <!-- Header -->
+      <!-- Header con filtros automáticos -->
       <div class="card-header d-flex align-items-center justify-content-between flex-wrap gap-2">
         <a href="{% url 'CrearTipoMembresia' %}" class="btn btn-crear">
-          <i class="bi bi-plus-circle me-1"></i> Agregar Tipo de Membresía
+          <i class="bi bi-plus-circle me-1"></i> Agregar Tipo
         </a>
 
-        <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+        <form method="GET" id="formFiltros" class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+          <!-- Filtro por duración -->
+          <select name="duracion" id="filtroDuracion" class="form-select form-select-sm" style="width: 160px;">
+            <option value="">Todas las duraciones</option>
+            <option value="1" {% if filter_duracion == '1' %}selected{% endif %}>1 Mes</option>
+            <option value="3" {% if filter_duracion == '3' %}selected{% endif %}>3 Meses</option>
+            <option value="6" {% if filter_duracion == '6' %}selected{% endif %}>6 Meses</option>
+            <option value="12" {% if filter_duracion == '12' %}selected{% endif %}>12 Meses</option>
+            <option value="24" {% if filter_duracion == '24' %}selected{% endif %}>24 Meses</option>
+          </select>
+
+          <!-- Buscador -->
           <div class="input-group input-group-sm" style="width: 250px;">
-            <input type="text" id="buscarTipo" class="form-control" placeholder="Buscar tipo...">
-            <button class="btn btn-outline-secondary" type="button">
+            <input type="text" name="search" id="buscarTipo" class="form-control" 
+                   placeholder="Buscar tipo..." value="{{ search_query }}">
+            <span class="input-group-text">
               <i class="bi bi-search"></i>
-            </button>
+            </span>
           </div>
-        </div>
+
+          {% if hay_filtros %}
+          <a href="{% url 'TiposMembresia' %}" class="btn btn-outline-danger btn-sm">
+            <i class="bi bi-x-circle me-1"></i>Limpiar
+          </a>
+          {% endif %}
+        </form>
       </div>
 
       <!-- Tabla -->
@@ -55,11 +71,9 @@
             <thead class="table-light">
               <tr>
                 <th>ID</th>
-                <th>Imagen</th>
                 <th>Nombre</th>
                 <th>Duración</th>
                 <th>Precio</th>
-                <th>Precio/Mes</th>
                 <th>Estado</th>
                 <th>Acciones</th>
               </tr>
@@ -67,64 +81,32 @@
             <tbody>
             {% for tipo in TiposMembresia %}
               <tr>
-                <td>{{ tipo.Id_tipo_membresia }}</td>
-                
-                <!-- Imagen -->
+                <td><strong>#{{ tipo.Id_tipo_membresia }}</strong></td>
+                <td>{{ tipo.Nombre }}</td>
                 <td>
-                  {% if tipo.tipo_membresia_img %}
-                    <img src="{{ tipo.tipo_membresia_img.url }}" alt="Tipo" 
-                        class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                  <span class="badge badge-duracion-{{ tipo.Duracion_meses }}">
+                    {{ tipo.Duracion_meses }} mes{% if tipo.Duracion_meses > 1 %}es{% endif %}
+                  </span>
+                </td>
+                <td><strong>${{ tipo.Precio|floatformat:0 }}</strong></td>
+                <td>
+                  {% if tipo.Estado == 'Activo' %}
+                    <span class="badge text-bg-success">Activo</span>
                   {% else %}
-                    <img src="{% static 'img/default-membership.png' %}" alt="Sin imagen" 
-                        class="rounded-circle" style="width: 40px; height: 40px; object-fit: cover;">
+                    <span class="badge text-bg-danger">Inactivo</span>
                   {% endif %}
                 </td>
-                
-                <!-- Nombre -->
-                <td class="fw-semibold">{{ tipo.Nombre }}</td>
-                
-                <!-- Duración con color según meses -->
                 <td>
-                  <span class="badge 
-                    {% if tipo.Duracion_meses == 1 %}badge-duracion-1
-                    {% elif tipo.Duracion_meses == 3 %}badge-duracion-3
-                    {% elif tipo.Duracion_meses == 6 %}badge-duracion-6
-                    {% elif tipo.Duracion_meses == 12 %}badge-duracion-12
-                    {% elif tipo.Duracion_meses == 24 %}badge-duracion-24
-                    {% else %}text-bg-primary{% endif %}">
-                    {{ tipo.get_Duracion_meses_display }}
-                  </span>
-                </td>
-                
-                <!-- Precio -->
-                <td class="fw-bold text-success">{{ tipo.Precio|currency_cop }}</td>
-                
-                <!-- Precio/Mes -->
-                <td class="text-muted">
-                  {% widthratio tipo.Precio tipo.Duracion_meses 1 %}/mes
-                </td>
-                
-                <!-- Estado -->
-                <td>
-                  <span class="badge {% if tipo.Estado == 'Activo' %}text-bg-success{% else %}text-bg-danger{% endif %}">
-                    {{ tipo.Estado }}
-                  </span>
-                </td>
-                
-                <!-- Acciones -->
-                <td>
-                  <a href="{% url 'EditarTipoMembresia' tipo.Id_tipo_membresia %}" 
-                    class="btn btn-sm btn-warning me-1" 
-                    title="Editar">
+                  <a href="{% url 'EditarTipoMembresia' tipo.Id_tipo_membresia %}" class="btn btn-warning btn-sm">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
                 </td>
               </tr>
             {% empty %}
               <tr>
-                <td colspan="8" class="text-center text-muted py-4">
-                  <i class="bi bi-inbox display-1"></i>
-                  <p class="mt-2">No hay tipos de membresía registrados.</p>
+                <td colspan="6" class="text-center py-4">
+                  <i class="bi bi-inbox fs-1 text-muted"></i>
+                  <p class="text-muted mt-2 mb-0">No se encontraron tipos de membresía</p>
                 </td>
               </tr>
             {% endfor %}
@@ -135,75 +117,89 @@
 
       <!-- Footer con paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
+        {% if TiposMembresia.paginator.num_pages > 1 %}
         <ul class="pagination pagination-sm mb-0">
-          <li class="page-item"><a class="page-link" href="#">«</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">»</a></li>
+          {% if TiposMembresia.has_previous %}
+            <li class="page-item">
+              <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_duracion %}&duracion={{ filter_duracion }}{% endif %}">&laquo;&laquo;</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ TiposMembresia.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_duracion %}&duracion={{ filter_duracion }}{% endif %}">&laquo;</a>
+            </li>
+          {% endif %}
+
+          {% for num in TiposMembresia.paginator.page_range %}
+            {% if TiposMembresia.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+            {% elif num > TiposMembresia.number|add:'-3' and num < TiposMembresia.number|add:'3' %}
+              <li class="page-item">
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_duracion %}&duracion={{ filter_duracion }}{% endif %}">{{ num }}</a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if TiposMembresia.has_next %}
+            <li class="page-item">
+              <a class="page-link" href="?page={{ TiposMembresia.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_duracion %}&duracion={{ filter_duracion }}{% endif %}">&raquo;</a>
+            </li>
+            <li class="page-item">
+              <a class="page-link" href="?page={{ TiposMembresia.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_duracion %}&duracion={{ filter_duracion }}{% endif %}">&raquo;&raquo;</a>
+            </li>
+          {% endif %}
         </ul>
+        {% else %}
+        <div></div>
+        {% endif %}
 
         <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando tipos de membresía</span>
+          <span class="text-muted small">
+            Mostrando {{ start_index }}–{{ end_index }} de {{ total_items }} registros
+          </span>
         </div>
-
-        <div class="dropdown">
-          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-            Exportar
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end shadow-sm">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
-          </ul>
-        </div>
+        
+        <div></div>
       </div>
     </div>
   </div>
 </div>
 
-<style>
-  @media (max-width: 768px) {
-    .card-header {
-      flex-direction: column !important;
-      align-items: stretch !important;
-      gap: 0.75rem !important;
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const inputBuscar = document.getElementById('buscarTipo');
+    const selectFiltro = document.getElementById('filtroDuracion');
+    const formFiltros = document.getElementById('formFiltros');
+    
+    let debounceTimer;
+
+    // Buscador en tiempo real
+    if (inputBuscar) {
+        inputBuscar.addEventListener('input', function() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                formFiltros.submit();
+            }, 400);
+        });
+        
+        inputBuscar.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                clearTimeout(debounceTimer);
+                formFiltros.submit();
+            }
+        });
+        
+        if (inputBuscar.value.length > 0) {
+            inputBuscar.focus();
+            inputBuscar.setSelectionRange(inputBuscar.value.length, inputBuscar.value.length);
+        }
     }
 
-    .card-header .d-flex {
-      flex-direction: column !important;
-      width: 100% !important;
-      gap: 0.5rem !important;
+    // Filtro automático
+    if (selectFiltro) {
+        selectFiltro.addEventListener('change', function() {
+            formFiltros.submit();
+        });
     }
-
-    .card-header .input-group,
-    .card-header a.btn {
-      width: 100% !important;
-    }
-
-    .table-responsive {
-      overflow-x: auto !important;
-    }
-
-    table th, table td {
-      white-space: nowrap;
-    }
-
-    .card-footer {
-      flex-direction: column !important;
-      align-items: center !important;
-      text-align: center;
-      gap: 0.75rem;
-    }
-
-    .card-footer ul.pagination {
-      justify-content: center;
-    }
-
-    .card-footer .dropdown {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-    }
-  }
-</style>
-
+});
+</script>
 {% endblock %}

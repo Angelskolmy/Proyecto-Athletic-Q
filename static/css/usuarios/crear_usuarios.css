@@ -6,67 +6,74 @@
   --rojo-1: #8B0000;
   --rojo-2: #740000;
   --gris-oscuro: #2c2c2c;
-  --gris-medio: #6c757d;
+  --gris-medio: #42484b;
+  --beige-claro: #faf8f5;
 }
 
 /* ================================
-    RESPONSIVE
+    CARDS
    ================================ */
 
-@media (max-width: 768px) {
-  /* Header apilado en móviles */
-  .card-header {
-    flex-direction: column !important;
-    align-items: stretch !important;
-  }
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
 
-  .card-header .btn {
-    width: 100% !important;
-  }
+.card-header {
+    background: linear-gradient(135deg, #dddddd 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 1.25rem;
+}
 
-  .card-header .d-flex.ms-auto {
-    width: 100% !important;
-    flex-direction: column !important;
-    align-items: stretch !important;
-    gap: 0.5rem !important;
-  }
+.card-header h6 {
+    color: var(--gris-oscuro);
+    font-weight: 600;
+    font-size: 0.95rem;
+}
 
-  .card-header select,
-  .card-header .input-group {
-    width: 100% !important;
-  }
+.card-body {
+    background: var(--beige-claro);
+    padding: 1.5rem;
+}
 
-  /* Tabla con scroll horizontal */
-  .table-responsive {
-    overflow-x: auto !important;
-  }
+.card-botones {
+  background: #f8f9fa !important;
+  border: none !important;
+}
 
-  table th,
-  table td {
-    white-space: nowrap;
-  }
+/* ================================
+    PREVIEW DE IMAGEN
+   ================================ */
 
-  /* Footer apilado */
-  .card-footer {
-    flex-direction: column !important;
-    align-items: center !important;
-    text-align: center;
-    gap: 0.75rem;
-  }
-
-  .card-footer ul.pagination {
-    justify-content: center;
-  }
-
-  .card-footer .dropdown {
-    width: 100%;
+.preview-container {
     display: flex;
+    align-items: center;
     justify-content: center;
-  }
+}
 
-  .card-footer .dropdown .btn {
-    width: auto;
-  }
+.preview-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed #adb5bd;
+}
+
+.preview-placeholder i {
+    font-size: 4rem;
+    color: #adb5bd;
+}
+
+.preview-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
 }
 
 /* ================================
@@ -75,106 +82,168 @@
 
 .form-select:focus,
 .form-control:focus,
-.form-check-input:focus,
 input[type="text"]:focus,
 input[type="email"]:focus,
 input[type="password"]:focus,
 input[type="number"]:focus,
-input[type="date"]:focus,
 input[type="file"]:focus,
 textarea:focus {
-  border-color: var(--rojo-1) !important;
-  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
-  outline: none !important;
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+    outline: none !important;
+}
+
+/* ================================
+    LABELS
+   ================================ */
+
+.form-label {
+    color: #495057;
+    font-size: 0.9rem;
+    margin-bottom: 0.4rem;
+}
+
+.form-label .text-danger {
+    color: var(--rojo-1) !important;
 }
 
 /* ================================
     BOTONES
    ================================ */
 
-/* Botón Guardar - Rojo Oscuro */
 .btn-guardar {
-  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
-  border: none !important;
-  color: #fff !important;
-  box-shadow: 0 2px 4px rgba(6, 95, 70, 0.3);
-  transition: all 0.3s ease;
+    background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    padding: 0.4rem 1.2rem;
 }
 
 .btn-guardar:hover {
-  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(6, 95, 70, 0.4);
+    background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
 }
 
-/* Botón Cancelar - Gris */
 .btn-cancelar {
-  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
-  border: none !important;
-  color: #fff !important;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+    padding: 0.4rem 1.2rem;
 }
 
 .btn-cancelar:hover {
-  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+    background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* Card de botones alineados a la derecha */
+.card .card-body.d-flex.justify-content-between {
+    justify-content: flex-end !important;
 }
 
 /* ================================
-    ESTILOS DEL MODAL
+    ALERTAS
    ================================ */
 
-.modal-header {
-  background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%);
-  color: white;
+.alert-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-left: 4px solid var(--rojo-1);
+    border-radius: 8px;
 }
 
-.modal-content {
-  border-radius: 0.5rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+/* ================================
+    INPUT GROUP (Contraseña)
+   ================================ */
+
+.input-group .form-control {
+    border-right: none;
 }
 
-/* Barra de progreso */
-.progress {
-  height: 8px;
-  border-radius: 4px;
-  overflow: hidden;
-  background-color: #e9ecef;
+.input-group .btn-outline-secondary {
+    border-left: none;
+    border-color: #ced4da;
+    background: #fff;
 }
 
-.progress-bar {
-  background: linear-gradient(90deg, var(--rojo-1) 0%, var(--rojo-2) 100%);
-  transition: width 0.4s ease;
+.input-group .btn-outline-secondary:hover {
+    background: #f8f9fa;
+    border-color: #ced4da;
+    color: var(--rojo-1);
 }
 
-/* Botón de leer huella */
-#btnLeerHuella {
-  background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%);
-  border: none;
-  transition: all 0.3s ease;
+.input-group .btn-outline-secondary:focus {
+    box-shadow: none;
+    border-color: var(--rojo-1);
 }
 
-#btnLeerHuella:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(139, 0, 0, 0.4);
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 991px) {
+    .col-lg-4 {
+        margin-bottom: 1.5rem;
+    }
 }
 
-/* Icono de huella */
-.modal-body i.bi-fingerprint {
-  font-size: 4rem;
-  color: var(--rojo-1);
-  animation: pulse 2s infinite;
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .preview-placeholder,
+    .preview-image {
+        width: 120px;
+        height: 120px;
+    }
+
+    .preview-placeholder i {
+        font-size: 3rem;
+    }
+
+    .card .card-body .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .card .card-body .d-flex .btn {
+        width: 100%;
+    }
 }
 
-@keyframes pulse {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 1;
-  }
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.4s ease;
+}
+
+/* Hover en cards */
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Hover suave en inputs */
+.form-control:hover:not(:focus):not(:disabled),
+.form-select:hover:not(:focus):not(:disabled) {
+    border-color: #adb5bd;
+    transition: border-color 0.2s ease;
 }

@@ -1,0 +1,37 @@
+/* Contenedor blanco tipo tarjeta para las gráficas */
+.chart-container {
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    margin-bottom: 20px;
+}
+
+/* Título de cada tarjeta */
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #343a40;
+    border-bottom: 1px solid #e9ecef;
+    padding-bottom: 6px;
+}
+
+/* Cuerpo de gráficos grandes (Ingresos y Membresías) */
+.chart-body-lg {
+    position: relative;
+    height: 360px; /* un poco más alto para que se vea grande aunque haya pocos datos */
+}
+
+/* Cuerpo del doughnut si quisieras otra altura (no la usamos ahora, pero por si acaso) */
+.chart-body-sm {
+    position: relative;
+    height: 260px;
+}
+
+/* Asegurar que el canvas ocupa todo el espacio del contenedor */
+.chart-body-lg canvas,
+.chart-body-sm canvas {
+    width: 100% !important;
+    height: 100% !important;
+}

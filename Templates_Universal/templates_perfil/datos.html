@@ -2,191 +2,276 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mi Perfil | Gimnasio</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil | Gimnasio</title>
 
-  <!-- Bootstrap -->
-  <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
-  <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
-  <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
-  <link rel="stylesheet" href="{% static 'css/cliente.css' %}">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
+    <link rel="stylesheet" href="{% static 'css/perfil/cliente.css' %}">
 </head>
 
-<body class="bg-light">
-  <!-- Header simple -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-danger shadow-sm">
-    <div class="container">
-      <a class="navbar-brand fw-bold text-white p-0" href="#">
-        <img src="{% static 'img/image2.png' %}" alt="Logotipo"   width="50px" class="brand-image opacity-15 shadow">  Mi Gimnasio
-      </a>
-      <div class="ms-auto d-flex align-items-center">
-        <a href="#" class="nav-link text-white me-3">
-          <i class="bi bi-bell-fill"></i>
-        </a>
-        <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">
-          <i class="bi bi-box-arrow-right me-1"></i>Salir
-        </a>
-      </div>
-    </div>
-  </nav>
-  
-  <!-- alerta de permisos -->
-  {% if messages %}
-    {% for message in messages %}
-      <script>
-          alert("{{ message }}");
-      </script>
-    {% endfor %}
-  {% endif %}
-
-  <!-- Contenido principal -->
-  <div class="container py-5">
-    <div class="row justify-content-center">
-      <div class="col-lg-8">
-        <div class="card shadow-sm border-0 rounded-4">
-          <div class="card-body">
-            <div class="d-flex align-items-center mb-4">
-              <img src="{{ request.user.empleados_img.url }}" alt="Avatar" class="rounded-circle me-3" width="80" height="80">
-              <div>
-                <h4 class="mb-0 fw-bold">{{ request.user.first_name }} {{ request.user.last_name }}</h4>
-                <p class="text-muted mb-0">Cliente activo</p>
-              </div>
-              <div class="ms-auto">
-                <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalVerificar">
-                  <i class="bi bi-pencil-square me-1"></i>Editar datos
-                </button>
-              </div>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-cliente">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img src="{% static 'img/logo2.png' %}" alt="Logo" height="40">
+                <span>Athletic-Q</span>
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-white d-none d-md-inline">
+                    <i class="bi bi-person-circle me-1"></i>
+                    {{ usuario.first_name }}
+                </span>
+                <a href="{% url 'logout' %}" class="btn btn-outline-light btn-sm">
+                    <i class="bi bi-box-arrow-right me-1"></i>Salir
+                </a>
             </div>
+        </div>
+    </nav>
 
-            <hr>
-
-            <!-- Datos personales -->
-            <h5 class="fw-semibold mb-3"><i class="bi bi-person-lines-fill me-2"></i>Información personal</h5>
-            <div class="row mb-4">
-              <div class="col-md-6">
-                <p><strong>Correo:</strong> {{ request.user.email }}</p>
-                <p><strong>Teléfono:</strong> +57 300 123 4567</p>
-              </div>
-              <div class="col-md-6">
-                <p><strong>Dirección:</strong> Calle 45 #23 - 10</p>
-                <p><strong>Fecha de registro:</strong> {{ request.user.date_joined }}</p>
-              </div>
-            </div>
-
-            <hr>
-
-            <!-- Información de membresía -->
-            {% if membresias %}
-              <h5 class="fw-semibold mb-3"><i class="bi bi-card-checklist me-2"></i>Mi membresía</h5>
-              <div class="row mb-4">
-                <div class="col-md-6">
-                  <p><strong>Tipo:</strong> {{ membresias.For_Id_tipo_membresia.Nombre }}</p>
-                  <p><strong>Duración:</strong> 6 meses</p>
+    <div class="container py-4">
+        <div class="row">
+            
+            <!-- COLUMNA IZQUIERDA: Perfil y Membresía -->
+            <div class="col-lg-4 mb-4">
+                
+                <!-- Card Perfil -->
+                <div class="card card-perfil mb-4">
+                    <div class="card-body text-center">
+                        <div class="avatar-container mb-3">
+                            {% if usuario.empleados_img %}
+                                <img src="{{ usuario.empleados_img.url }}" alt="Foto" class="avatar-img">
+                            {% else %}
+                                <div class="avatar-placeholder">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        
+                        <h4 class="mb-1">{{ usuario.first_name }} {{ usuario.last_name }}</h4>
+                        <p class="text-muted mb-3">
+                            <i class="bi bi-envelope me-1"></i>{{ usuario.email }}
+                        </p>
+                        
+                        <div class="d-flex justify-content-center gap-2">
+                            <button class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#modalCambiarPassword">
+                                <i class="bi bi-key me-1"></i>Cambiar Contraseña
+                            </button>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                  <p><strong>Fecha de inicio:</strong> {{ membresias.Fecha_inicio|date:"d M Y" }}</p>
-                  <p><strong>Fecha de expiración:</strong> {{ membresias.Fecha_fin|date:"d M Y" }}</p>
+
+                <!-- Card Membresía -->
+                <div class="card card-membresia">
+                    <div class="card-header">
+                        <h6 class="mb-0">
+                            <i class="bi bi-card-checklist me-2"></i>Mi Membresía
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        {% if membresia %}
+                            <div class="membresia-info">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="membresia-tipo">{{ membresia.For_Id_tipo_membresia.Nombre }}</span>
+                                    <span class="badge badge-activo">Activa</span>
+                                </div>
+                                
+                                <div class="membresia-fechas mb-3">
+                                    <div class="fecha-item">
+                                        <i class="bi bi-calendar-check text-success"></i>
+                                        <div>
+                                            <small class="text-muted">Inicio</small>
+                                            <p class="mb-0">{{ membresia.Fecha_inicio|date:"d/m/Y" }}</p>
+                                        </div>
+                                    </div>
+                                    <div class="fecha-item">
+                                        <i class="bi bi-calendar-x text-danger"></i>
+                                        <div>
+                                            <small class="text-muted">Vence</small>
+                                            <p class="mb-0">{{ membresia.Fecha_fin|date:"d/m/Y" }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Progreso -->
+                                <div class="progreso-container">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <small>Progreso</small>
+                                        <small>{{ progreso }}%</small>
+                                    </div>
+                                    <div class="progress">
+                                        <div class="progress-bar 
+                                            {% if progreso < 50 %}bg-success
+                                            {% elif progreso < 80 %}bg-warning
+                                            {% else %}bg-danger{% endif %}" 
+                                            style="width: {{ progreso }}%">
+                                        </div>
+                                    </div>
+                                    <small class="text-muted mt-1 d-block">
+                                        <i class="bi bi-clock me-1"></i>{{ dias_restantes }} días restantes
+                                    </small>
+                                </div>
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4">
+                                <i class="bi bi-exclamation-circle display-4 text-muted"></i>
+                                <p class="text-muted mt-2">No tienes membresía activa</p>
+                                <small class="text-muted">Contacta a recepción para activar una</small>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
-              </div>
-
-              <div class="text-center">
-                <span class="badge bg-success p-2 px-3 fs-6">Activa</span>
-              </div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===========================
-       MODAL 1: VERIFICAR CONTRASEÑA
-  ============================ -->
-  <div class="modal fade" id="modalVerificar" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title"><i class="bi bi-shield-lock-fill me-2"></i>Verificar identidad</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <div class="modal-body">
-          <p class="text-muted mb-3">Por seguridad, ingresa tu contraseña antes de editar tus datos personales.</p>
-          <div class="mb-3">
-            <label for="passwordInput" class="form-label">Contraseña</label>
-            <input type="password" class="form-control" id="passwordInput" placeholder="••••••••">
-          </div>
-          <div class="alert alert-danger d-none" id="errorMsg">Contraseña incorrecta. Intenta de nuevo.</div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" onclick="verificarContrasena()">Verificar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===========================
-       MODAL 2: EDITAR DATOS
-  ============================ -->
-  <div class="modal fade" id="modalEditarDatos" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-      <div class="modal-content border-0 shadow">
-        <div class="modal-header bg-danger text-white">
-          <h5 class="modal-title"><i class="bi bi-pencil-square me-2"></i>Editar mis datos</h5>
-          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-        </div>
-        <form>
-          <div class="modal-body">
-            <div class="row g-3">
-              <div class="col-md-6">
-                <label class="form-label">Nombre</label>
-                <input type="text" class="form-control" value="Juan">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Apellido</label>
-                <input type="text" class="form-control" value="Pérez">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Correo</label>
-                <input type="email" class="form-control" value="juanperez@email.com">
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Teléfono</label>
-                <input type="text" class="form-control" value="+57 300 123 4567">
-              </div>
-              <div class="col-12">
-                <label class="form-label">Dirección</label>
-                <input type="text" class="form-control" value="Calle 45 #23 - 10">
-              </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-            <button type="submit" class="btn btn-danger">Guardar cambios</button>
-          </div>
-        </form>
-      </div>
+
+            <!-- COLUMNA DERECHA: Rutinas -->
+            <div class="col-lg-8">
+                
+                <!-- Header Rutinas -->
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="mb-0">
+                        <i class="bi bi-lightning-charge me-2 text-danger"></i>Rutinas de Entrenamiento
+                    </h4>
+                    
+                    <!-- Filtros -->
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-dark btn-sm active" onclick="filtrarRutinas('todas')">
+                            Todas
+                        </button>
+                        <button type="button" class="btn btn-outline-dark btn-sm" onclick="filtrarRutinas('Principiante')">
+                            Principiante
+                        </button>
+                        <button type="button" class="btn btn-outline-dark btn-sm" onclick="filtrarRutinas('Intermedio')">
+                            Intermedio
+                        </button>
+                        <button type="button" class="btn btn-outline-dark btn-sm" onclick="filtrarRutinas('Avanzado')">
+                            Avanzado
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Grid de Rutinas -->
+                <div class="row" id="rutinas-container">
+                    {% for rutina in rutinas %}
+                    <div class="col-md-6 col-lg-4 mb-4 rutina-card" data-nivel="{{ rutina.Nivel }}" data-categoria="{{ rutina.Categoria }}">
+                        <div class="card card-rutina h-100">
+                            <div class="card-img-container">
+                                {% if rutina.rutina_img %}
+                                    <img src="{{ rutina.rutina_img.url }}" alt="{{ rutina.Nombre }}" class="card-img-top">
+                                {% else %}
+                                    <div class="card-img-placeholder">
+                                        <i class="bi bi-activity"></i>
+                                    </div>
+                                {% endif %}
+                                <span class="badge badge-nivel badge-{{ rutina.Nivel|lower }}">
+                                    {{ rutina.Nivel }}
+                                </span>
+                            </div>
+                            <div class="card-body">
+                                <span class="badge badge-categoria mb-2">{{ rutina.Categoria }}</span>
+                                <h6 class="card-title">{{ rutina.Nombre }}</h6>
+                                <p class="card-text text-muted small">
+                                    {{ rutina.Descripcion|truncatechars:80 }}
+                                </p>
+                                <div class="rutina-stats d-flex justify-content-between text-muted small">
+                                    <span><i class="bi bi-clock me-1"></i>{{ rutina.Duracion_minutos }} min</span>
+                                    {% if rutina.Calorias_estimadas %}
+                                    <span><i class="bi bi-fire me-1"></i>{{ rutina.Calorias_estimadas }} kcal</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="card-footer bg-transparent">
+                                <a href="{% url 'detalle_rutina' rutina.Id_rutina %}" class="btn btn-danger btn-sm w-100">
+                                    <i class="bi bi-play-circle me-1"></i>Ver Rutina
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12">
+                        <div class="text-center py-5">
+                            <i class="bi bi-emoji-frown display-1 text-muted"></i>
+                            <p class="text-muted mt-3">No hay rutinas disponibles por el momento</p>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <!-- Scripts -->
-  <script src="{% static 'bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js' %}"></script>
-  <script>
-    // Simulación simple de verificación de contraseña
-    function verificarContrasena() {
-      const password = document.getElementById('passwordInput').value;
-      const errorMsg = document.getElementById('errorMsg');
+    <!-- Modal Cambiar Contraseña -->
+    <div class="modal fade" id="modalCambiarPassword" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title">
+                        <i class="bi bi-key me-2"></i>Cambiar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="POST" action="{% url 'cambiar_password_cliente' %}">
+                    {% csrf_token %}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label">Contraseña Actual</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                                <input type="password" name="password_actual" class="form-control" required>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Nueva Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" name="password_nueva" class="form-control" 
+                                       minlength="8" required>
+                            </div>
+                            <small class="text-muted">Mínimo 8 caracteres</small>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Confirmar Nueva Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                <input type="password" name="password_confirmar" class="form-control" 
+                                       minlength="8" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-check-circle me-1"></i>Guardar Cambios
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-      if (password === '1234') { // simulación de contraseña correcta
-        errorMsg.classList.add('d-none');
-        const modalVerificar = bootstrap.Modal.getInstance(document.getElementById('modalVerificar'));
-        modalVerificar.hide();
-        new bootstrap.Modal(document.getElementById('modalEditarDatos')).show();
-      } else {
-        errorMsg.classList.remove('d-none');
-      }
-    }
-  </script>
+    <!-- Scripts -->
+    <script src="{% static 'bootstrap-5.3.3/dist/js/bootstrap.bundle.min.js' %}"></script>
+    <script>
+        // Filtrar rutinas por nivel
+        function filtrarRutinas(nivel) {
+            const cards = document.querySelectorAll('.rutina-card');
+            const btns = document.querySelectorAll('.btn-group .btn');
+            
+            // Actualizar botones activos
+            btns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            cards.forEach(card => {
+                if (nivel === 'todas' || card.dataset.nivel === nivel) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 </body>
 </html>

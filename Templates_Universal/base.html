@@ -14,27 +14,14 @@
     <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
     <link rel="stylesheet" href="{% static 'overlayscrollbars-2.10.1/styles/overlayscrollbars.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
+    <link rel="stylesheet" href="{% static 'sweetalert2/sweetalert2.min.css' %}">
     <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}"> 
     <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
-    <link rel="stylesheet" href="{% static 'css/style-huella.css' %}">
     <link rel="stylesheet" href="{% static 'css/theme.css' %}">
     
     {% block extra_css %}{% endblock %}
-    
     <script src="{% static 'chart.js-4.4.0/chart.umd.js' %}"></script>
   </head>
-
-  {% if messages %}
-  <div class="container-fluid mt-3">
-      {% for message in messages %}
-      <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-      </div>
-      {% endfor %}
-  </div>
-  {% endif %}
-
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded sidebar-collapse">
     <div class="app-wrapper">
       <nav class="app-header navbar navbar-expand bg-body">
@@ -181,17 +168,30 @@
       <main class="app-main">
         {% block content %} {% endblock %}
       </main>
-      <footer class="app-footer">
-        <div class="float-end d-none d-sm-inline">Hola </div>
-        <font> Derechos de autor </strong> Todos los derechos reservados. </font>
-      </footer>
     <div class="sidebar-overlay"></div></div>
+
+    <script src="{% static 'sweetalert2/sweetalert2.min.js' %}"></script>
+
+    {% if messages %}
+    <script>
+      var djangoMessages = [
+        {% for message in messages %}
+        { tags: '{{ message.tags }}', message: '{{ message|escapejs }}' }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ];
+    </script>
+    {% endif %}
+
+    <!-- Scripts -->
+    <script src="{% static 'js/alertas/alertas.js' %}"></script>
     <script src="{% static 'jquery-3.6.0/jquery.min.js' %}"></script>
     <script src="{% static 'popperjs-2.11.8/dist/umd/popper.min.js' %}"></script>
     <script src="{% static 'bootstrap-5.3.3/dist/js/bootstrap.min.js' %}"></script>
     <script src="{% static 'overlayscrollbars-2.10.1/browser/overlayscrollbars.browser.es6.min.js' %}"></script>
     <script src="{% static 'dist/js/adminlte.js' %}"></script>
     <script src="{% static 'js/script-huella.js' %}"></script>
+    
+    {% block extra_js %}{% endblock %}
 
     <script>
       const SELECTOR_SIDEBAR_WRAPPER = '.sidebar-wrapper';

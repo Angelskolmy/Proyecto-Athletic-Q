@@ -1,140 +1,241 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/asistencias/asistencias.css' %}">
+{% endblock %}
+
 {% block title %}Historial de Asistencias{% endblock %}
 
 {% block content %}
 <!--begin::Encabezado-->
 <div class="app-content-header">
-  <div class="container-fluid">
-    <div class="row">
-      <div class="col-sm-8">
-        <h3 class="mb-0"><i class="bi bi-person-check-fill me-1"></i> Historial de Asistencias</h3>
-      </div>
-      <div class="col-sm-4">
-        <ol class="breadcrumb float-sm-end">
-          <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-          <li class="breadcrumb-item active" aria-current="page">Asistencias</li>
-        </ol>
-      </div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0"><i class="bi bi-person-check-fill me-1"></i> Historial de Asistencias</h3>
+            </div>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Asistencias</li>
+                </ol>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <!--end::Encabezado-->
 
 <!--begin::Contenido-->
 <div class="app-content">
-  <div class="container-fluid">
+    <div class="container-fluid">
 
-    <!-- Tarjeta principal -->
-    <div class="card shadow-sm">
+        <!-- Tarjeta principal -->
+        <div class="card shadow-sm">
 
-      <!-- Filtros -->
-      <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
-        <div class="d-flex flex-wrap align-items-center gap-2">
-          <!-- Nombre -->
-          <div class="input-group input-group-sm" style="width: 180px;">
-            <span class="input-group-text bg-light"><i class="bi bi-person"></i></span>
-            <input type="text" class="form-control" placeholder="Nombre...">
-          </div>
+            <!-- Filtros -->
+            <div class="card-header">
+                <form method="GET" action="{% url 'Asistencias' %}" id="formFiltros">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        
+                        <!-- Buscador por nombre (tiempo real) -->
+                        <div class="input-group input-group-sm" style="width: 220px;">
+                            <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                            <input type="text" name="nombre" id="buscarNombre" class="form-control" 
+                                   placeholder="Buscar por nombre..." value="{{ nombre_query }}">
+                        </div>
 
-          <!-- Tipo de usuario -->
-          <select class="form-select form-select-sm" style="width: 150px;">
-            <option selected disabled>Tipo...</option>
-            <option value="cliente">Cliente</option>
-            <option value="empleado">Empleado</option>
-          </select>
+                        <!-- Tipo de usuario (cambio automático) -->
+                        <select name="tipo" id="filtroTipo" class="form-select form-select-sm" style="width: 160px;">
+                            <option value="">Todos los roles</option>
+                            <option value="empleado" {% if tipo_usuario == 'empleado' %}selected{% endif %}>Empleado</option>
+                            <option value="cliente" {% if tipo_usuario == 'cliente' %}selected{% endif %}>Cliente</option>
+                        </select>
 
-          <!-- Fecha inicio -->
-          <div class="input-group input-group-sm" style="width: 160px;">
-            <span class="input-group-text bg-light"><i class="bi bi-calendar"></i></span>
-            <input type="date" class="form-control">
-          </div>
+                        <!-- Separador visual -->
+                        <span class="text-muted">|</span>
 
-          <!-- Fecha fin -->
-          <div class="input-group input-group-sm" style="width: 160px;">
-            <span class="input-group-text bg-light"><i class="bi bi-calendar-check"></i></span>
-            <input type="date" class="form-control">
-          </div>
+                        <!-- Fecha Entrada (Desde) -->
+                        <div class="input-group input-group-sm" style="width: 175px;">
+                            <span class="input-group-text bg-light" title="Fecha Desde">
+                                <i class="bi bi-calendar-event text-success"></i>
+                            </span>
+                            <input type="date" name="fecha_entrada" id="fechaEntrada" class="form-control" 
+                                value="{{ fecha_entrada }}" title="Desde esta fecha">
+                        </div>
 
-          <!-- Botones -->
-          <button class="btn btn-sm btn-primary btn-search">
-            <i class="bi bi-search me-1"></i> Buscar
-          </button>
-          <button class="btn btn-sm btn-outline-secondary">
-            <i class="bi bi-arrow-repeat me-1"></i> Limpiar
-          </button>
+                        <!-- Fecha Salida (Hasta) -->
+                        <div class="input-group input-group-sm" style="width: 175px;">
+                            <span class="input-group-text bg-light" title="Fecha Hasta">
+                                <i class="bi bi-calendar-check text-danger"></i>
+                            </span>
+                            <input type="date" name="fecha_salida" id="fechaSalida" class="form-control" 
+                                value="{{ fecha_salida }}" title="Hasta esta fecha">
+                        </div>
+
+                        <!-- Botón Buscar por Fechas -->
+                        <button type="submit" class="btn btn-sm btn-filtrar-fecha" id="btnFiltrarFecha">
+                            <i class="bi bi-calendar-check me-1"></i> Filtrar
+                        </button>
+                        
+                        <!-- Botón Limpiar (solo visible si hay filtros) -->
+                        {% if hay_filtros %}
+                        <a href="{% url 'Asistencias' %}" class="btn btn-sm btn-outline-danger">
+                            <i class="bi bi-x-circle me-1"></i> Limpiar
+                        </a>
+                        {% endif %}
+                    </div>
+                </form>
+            </div>
+
+            <!-- Tabla -->
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle text-center mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Rol</th>
+                                <th>Entrada</th>
+                                <th>Salida</th>
+                                <th>Horas</th>
+                                <th>Cumplió Horario</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaAsistencias">
+                            {% for asistencia in Asistencias %}
+                            <tr class="asistencia-row">
+                                <!-- ID -->
+                                <td class="text-muted">{{ asistencia.id }}</td>
+                                
+                                <!-- Usuario con foto -->
+                                <td>
+                                    <div class="d-flex align-items-center justify-content-center">
+                                        {% if asistencia.id_usuario.empleados_img and asistencia.id_usuario.empleados_img.name %}
+                                            <img src="{{ asistencia.id_usuario.empleados_img.url }}" 
+                                                 alt="Foto" class="rounded-circle me-2" 
+                                                 style="width: 35px; height: 35px; object-fit: cover;">
+                                        {% else %}
+                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-2" 
+                                                 style="width: 35px; height: 35px;">
+                                                <i class="bi bi-person text-white"></i>
+                                            </div>
+                                        {% endif %}
+                                        <span>{{ asistencia.id_usuario.first_name }} {{ asistencia.id_usuario.last_name }}</span>
+                                    </div>
+                                </td>
+                                
+                                <!-- Rol -->
+                                <td>{{ asistencia.rol|default:"—" }}</td>
+                                
+                                <!-- Entrada -->
+                                <td>{{ asistencia.fecha_entrada|date:"d/m/Y H:i" }}</td>
+                                
+                                <!-- Salida -->
+                                <td>
+                                    {% if asistencia.fecha_salida %}
+                                        {{ asistencia.fecha_salida|date:"d/m/Y H:i" }}
+                                    {% else %}
+                                        <span class="text-muted">Pendiente</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <!-- Horas trabajadas -->
+                                <td>
+                                    {% if asistencia.horas_trabajadas %}
+                                        {{ asistencia.horas_trabajadas }}h
+                                    {% else %}
+                                        <span class="text-muted">—</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <!-- Cumplió Horario -->
+                                <td>
+                                    {% if asistencia.cumplio_horario == True %}
+                                        <i class="bi bi-check-circle-fill text-success"></i> Sí
+                                    {% elif asistencia.cumplio_horario == False %}
+                                        <i class="bi bi-x-circle-fill text-danger"></i> No
+                                    {% else %}
+                                        <span class="text-muted">Sin salida</span>
+                                    {% endif %}
+                                </td>
+                                
+                                <!-- Estado -->
+                                <td>{{ asistencia.estado|default:"—" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr id="sinResultados">
+                                <td colspan="8" class="text-center py-4">
+                                    <i class="bi bi-inbox fs-1 text-muted"></i>
+                                    <p class="text-muted mt-2">No se encontraron asistencias</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Paginación -->
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                {% if Asistencias.paginator.num_pages > 1 %}
+                <ul class="pagination pagination-sm mb-0">
+                    {% if Asistencias.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">«</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ Asistencias.previous_page_number }}{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">‹</a>
+                    </li>
+                    {% endif %}
+
+                    {% for num in Asistencias.paginator.page_range %}
+                        {% if Asistencias.number == num %}
+                            <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                        {% elif num > Asistencias.number|add:'-3' and num < Asistencias.number|add:'3' %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ num }}{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">{{ num }}</a>
+                            </li>
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if Asistencias.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ Asistencias.next_page_number }}{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">›</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ Asistencias.paginator.num_pages }}{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">»</a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% else %}
+                <div></div>
+                {% endif %}
+
+                <div class="flex-grow-1 text-center">
+                    <span class="text-muted small" id="contadorResultados">
+                        Mostrando {{ Asistencias.start_index }}-{{ Asistencias.end_index }} de {{ total_items }} registros
+                    </span>
+                </div>
+
+                <div class="dropdown">
+                    <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-download me-1"></i>Exportar
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
-
-      <!-- Tabla -->
-      <div class="card-body p-0">
-        <div class="table-responsive">
-          <table class="table table-hover align-middle text-center mb-0">
-            <thead class="table-light">
-              <tr>
-                <th>ID</th>
-                <th>Usuario</th>
-                <th>Tipo</th>
-                <th>Entrada</th>
-                <th>Salida</th>
-                <th>Estado (solo empleados)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>001</td>
-                <td>Juan Pérez</td>
-                <td>Cliente</td>
-                <td>2025-10-10 08:35 AM</td>
-                <td>2025-10-10 10:42 AM</td>
-                <td>—</td>
-              </tr>
-              <tr>
-                <td>002</td>
-                <td>Laura Gómez</td>
-                <td>Empleado</td>
-                <td>2025-10-10 08:59 AM</td>
-                <td>2025-10-10 05:06 PM</td>
-                <td><span class="badge text-bg-success">Presente</span></td>
-              </tr>
-              <tr>
-                <td>003</td>
-                <td>Andrés Silva</td>
-                <td>Empleado</td>
-                <td>2025-10-10 09:17 AM</td>
-                <td>2025-10-10 04:55 PM</td>
-                <td><span class="badge text-bg-warning">Tarde</span></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Paginación -->
-      <div class="card-footer d-flex justify-content-between align-items-center">
-        <ul class="pagination pagination-sm mb-0">
-          <li class="page-item"><a class="page-link" href="#">«</a></li>
-          <li class="page-item active"><a class="page-link" href="#">1</a></li>
-          <li class="page-item"><a class="page-link" href="#">2</a></li>
-          <li class="page-item"><a class="page-link" href="#">3</a></li>
-          <li class="page-item"><a class="page-link" href="#">»</a></li>
-        </ul>
-
-        <div class="flex-grow-1 text-center">
-          <span class="text-muted small">Mostrando 1–10 de 120 registros</span>
-        </div>
-
-        <div class="dropdown">
-          <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Exportar
-          </button>
-          <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
-          </ul>
-        </div>
-      </div>
     </div>
-  </div>
 </div>
 <!--end::Contenido-->
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/asistencias/asistencias.js' %}"></script>
 {% endblock %}
