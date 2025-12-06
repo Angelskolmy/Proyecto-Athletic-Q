@@ -1,15 +1,17 @@
 {% extends 'base.html' %}
+
+{% block title %}
+Ingreso Productos
+{% endblock %}  
+
 {% load static %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/productos/crear_productos.css' %}">
 {% endblock %}
 
-{% block title %}
-Crear Producto
-{% endblock %}
-
 {% block content %}
+
 <!--begin::App Content Header-->
 <div class="app-content-header">
     <div class="container-fluid">
@@ -40,7 +42,7 @@ Crear Producto
                 </h5>
             </div>
 
-            <form method="POST" enctype="multipart/form-data" id="formulario">
+            <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 
                 <div class="card-body">
@@ -195,6 +197,7 @@ Crear Producto
 // Previsualización de imagen
 document.addEventListener('DOMContentLoaded', function() {
     const inputImagen = document.querySelector('input[name="prod_imagen"]');
+    
     if (inputImagen) {
         inputImagen.addEventListener('change', function(e) {
             const file = e.target.files[0];
@@ -223,32 +226,5 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
-
-const numeros = document.querySelectorAll('.numero');
-numeros.forEach(input => {
-    // Bloquear teclas no permitidas
-    input.addEventListener('keydown', (e) => {
-        // Caracteres bloqueados: - + e E . ,
-        if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
-            e.preventDefault();
-        }
-    });
-
-    // Si pegan texto, limpiar caracteres no válidos
-    input.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const texto = e.clipboardData.getData('text');
-        const soloNumeros = texto.replace(/[^0-9]/g, '');
-        input.value = soloNumeros;
-    });
-
-    // Validar que no sea negativo
-    input.addEventListener('input', () => {
-        if (input.value < 0) {
-            input.value = 0;
-        }
-    });
-});
 </script>
-
 {% endblock %}

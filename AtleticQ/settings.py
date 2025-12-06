@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'Empleados',
     'Productos', 
     'Categorias',
+    'Salidas_Entradas',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

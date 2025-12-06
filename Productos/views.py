@@ -11,7 +11,9 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment  
 from django.http import HttpResponse
 from django.utils import timezone 
-from urllib.parse import urlencode
+from urllib.parse import urlencode 
+from Detalle_venta.models import Detalle_Venta
+from django.contrib import messages 
 
 @login_required(login_url='login') 
 @permission_required('Productos.view_producto', login_url='login') 
@@ -74,32 +76,40 @@ def IngresaProductos(request):
     return render (request,'templates_productos/crear_productos.html', Clave)
 
 
-def EliminarProducto(request, Id_producto):   
+def EliminarProducto(request, Id_producto):    
 
-    Shigaraki= producto.objects.get(Id_producto=Id_producto) 
-   
-    ListNombre_Objeto2= Shigaraki.Nombre
-    ListId_Objeto2= Shigaraki.Id_producto
+    Prueba= Detalle_Venta.objects.filter(Id_producto=Id_producto)
 
-    Shigaraki.delete()  
-    #------------------------
-    UserLIst2= request.user 
-    ListMdoulo2="productos" 
-    ListTIpo_Movimiento2="eliminar"  
-    PreviaFecha=timezone.now()
-    ListFehca= PreviaFecha.date() 
+    if Prueba.exists():
+        messages.error(request, 'El producto tiene ventas asosiadas no se puede borrar')  
+        return redirect ('Producto')   
+    
+    else:   
 
-    Historial_usuario.objects.create( 
+        Shigaraki= producto.objects.get(Id_producto=Id_producto) 
+    
+        ListNombre_Objeto2= Shigaraki.Nombre
+        ListId_Objeto2= Shigaraki.Id_producto
 
-        id_usuario= UserLIst2,
-        TIpo_Movimiento= ListTIpo_Movimiento2,
-        Modulo= ListMdoulo2, 
-        Nombre_Objeto=ListNombre_Objeto2 ,
-        Id_Objeto= ListId_Objeto2, 
-        Fecha_y_hora= ListFehca,
-    )
-    #------------------------
-    return redirect ('Producto') 
+        Shigaraki.delete()  
+        #------------------------
+        UserLIst2= request.user 
+        ListMdoulo2="productos" 
+        ListTIpo_Movimiento2="eliminar"  
+        PreviaFecha=timezone.now()
+        ListFehca= PreviaFecha.date() 
+
+        Historial_usuario.objects.create( 
+
+            id_usuario= UserLIst2,
+            TIpo_Movimiento= ListTIpo_Movimiento2,
+            Modulo= ListMdoulo2, 
+            Nombre_Objeto=ListNombre_Objeto2 ,
+            Id_Objeto= ListId_Objeto2, 
+            Fecha_y_hora= ListFehca,
+        )
+        return redirect ('Producto')  
+
 
 
 def DetalleProducto (request, Id_producto): 
@@ -107,7 +117,7 @@ def DetalleProducto (request, Id_producto):
     consulta= " SELECT producto.*, categoria.nombre FROM producto join categoria on producto.Catego_Id = categoria.Id_categoria WHERE Id_producto= %s"
     EspecProd= producto.objects.raw(consulta, [Id_producto]) 
     ListEspec= { 'DetalleP' : EspecProd} 
-    return render (request, 'templates_productos/detalle_producto.html' ,ListEspec)
+    return render (request, 'templates_productos/detalle_productos.html' ,ListEspec)
 
 
 def Editar_Producto (request, Id_producto): 
@@ -173,7 +183,7 @@ def busqueda_producto (request):
 
     Conversor= list(BusqPrd) 
     regulador= Paginator(Conversor,20) 
-    Page_number= request.GET.get('page')
+    Page_number= request.GET.get('page') 
     page_objt= regulador.get_page(Page_number)
      
     params = {k: v for k, v in request.GET.items() if k != 'page' and v != ''}

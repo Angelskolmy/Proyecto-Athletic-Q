@@ -7,13 +7,16 @@ from django.contrib import messages
 from django.utils import timezone
 from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
+
+from django.contrib.auth.decorators import permission_required
+from django.contrib.auth.decorators import login_required
+
 from .models import Membresia
 from .forms import MembresiaForm
 from Empleados.models import User_Empleados
 from Tipo_membresia.models import TipoMembresia
-from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.decorators import login_required
 from Historial.models import Historial_usuario
+
 
 @login_required(login_url='login')
 @permission_required('Membresias.view_membresia', login_url='login')
@@ -132,6 +135,7 @@ def CrearMembresia(request):
         form = MembresiaForm()
 
     return render(request, 'templates_membresias/crear_membresias.html', {'form': form})
+
 
 @login_required(login_url='login')
 @permission_required('Membresias.change_membresia', login_url='Membresias')

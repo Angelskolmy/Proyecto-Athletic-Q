@@ -1,14 +1,19 @@
 {% extends 'base.html' %}
-{% load static %}
+
+{% block title %}
+Ingreso Productos
+{% endblock %} 
+
+{% load static currency_filters %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/productos/editar_productos.css' %}">
+<link rel="stylesheet" href="{% static 'css/productos/detalle_producto.css' %}">
 {% endblock %}
 
-{% block title %}Editar Producto{% endblock %}
 
 {% block content %}
-<!--begin::App Content Header-->
+
+    <!--begin::App Content Header-->
 <div class="app-content-header">
     <div class="container-fluid">
         <div class="row">
@@ -237,31 +242,6 @@ document.addEventListener('DOMContentLoaded', function() {
             reader.readAsDataURL(file);
         });
     }
-});
-const numeros = document.querySelectorAll('.numero');
-numeros.forEach(input => {
-    // Bloquear teclas no permitidas
-    input.addEventListener('keydown', (e) => {
-        // Caracteres bloqueados: - + e E . ,
-        if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
-            e.preventDefault();
-        }
-    });
-
-    // Si pegan texto, limpiar caracteres no válidos
-    input.addEventListener('paste', (e) => {
-        e.preventDefault();
-        const texto = e.clipboardData.getData('text');
-        const soloNumeros = texto.replace(/[^0-9]/g, '');
-        input.value = soloNumeros;
-    });
-
-    // Validar que no sea negativo
-    input.addEventListener('input', () => {
-        if (input.value < 0) {
-            input.value = 0;
-        }
-    });
 });
 </script>
 

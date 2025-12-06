@@ -15,7 +15,8 @@ urlpatterns = [
     path('', include("Historial_ventas.urls")),
     path('', include("Membresias.urls")),
     path('', include('Tipo_membresia.urls')),
-    path('', include("Ventas.urls"))
+    path('', include("Ventas.urls")),
+    path('', include("Salidas_Entradas.urls")),
 ]
 handler403 = 'Core_session.views.error_403_view'
 

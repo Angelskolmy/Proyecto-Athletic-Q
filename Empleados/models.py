@@ -16,8 +16,6 @@ class User_Gym(models.Model):
 
 
 class User_Empleados(AbstractUser):
-    # Campos extra respecto a AbstractUser
-
     Eps = models.CharField(
         max_length=50,
         null=True,
@@ -52,7 +50,6 @@ class User_Empleados(AbstractUser):
         db_column='empleados_img'
     )
 
-    # Mejor CharField que BinaryField para una dirección
     Direccion = models.CharField(
         max_length=100,
         null=True,
@@ -60,7 +57,6 @@ class User_Empleados(AbstractUser):
         db_column='Direccion'
     )
 
-    # Mejor CharField que IntegerField para teléfonos (pueden tener +, -, espacios)
     Celular = models.CharField(
         max_length=20,
         null=True,
