@@ -14,7 +14,7 @@
     <div class="row">
       <div class="col-sm-8">
         <h3 class="mb-0">
-          <i class="bi bi-cart-plus me-2"></i> Crear Nueva Venta
+          <i class="bi bi-cart-plus me-2"></i>Nueva Venta
         </h3>
       </div>
       <div class="col-sm-4">
@@ -35,6 +35,9 @@
     <form method="POST" action="{% url 'procesar_venta' %}" id="formVenta">
       {% csrf_token %}
       
+      <!-- Campo oculto del vendedor -->
+      <input type="hidden" name="empleado_id" value="{{ empleado.id }}">
+      
       <div class="row">
         
         <!-- Productos -->
@@ -50,67 +53,54 @@
               <!-- Buscador y filtro -->
               <div class="row mb-3">
                 <div class="col-md-8">
-                  <input type="text" id="buscar" class="form-control" placeholder="Buscar producto...">
+                  <input type="text" class="form-control" id="buscarProducto" placeholder="Buscar producto..." onkeyup="filtrar()">
                 </div>
                 <div class="col-md-4">
-                  <select id="filtro" class="form-select">
+                  <select class="form-select" id="filtroCategoria" onchange="filtrar()">
                     <option value="">Todas las categorías</option>
                     {% for cat in categorias %}
-                    <option value="{{ cat.Id_categoria }}">{{ cat.Nombre }}</option>
+                    <option value="{{ cat.Nombre }}">{{ cat.Nombre }}</option>
                     {% endfor %}
                   </select>
                 </div>
               </div>
 
               <!-- Grid de productos -->
-              <div class="row g-2" id="productos" style="max-height: 750px; overflow-y: auto; min-height: 650px;">
+              <div class="row g-2" id="productos" style="max-height: 500px; overflow-y: auto;">
                 {% for prod in productos %}
-                
-                <!-- id="producto-X" y data-stock="Y" -->
-                <div class="col-lg-3 col-md-4 col-sm-6 producto-card" 
-                    id="producto-{{ prod.Id_producto }}"
-                    data-nombre="{{ prod.Nombre|lower }}" 
-                    data-categoria="{{ prod.Catego_Id.Id_categoria }}"
-                    data-stock="{{ prod.Stock }}">
-                  
-                  <div class="card h-100 {% if prod.Stock <= 0 %}opacity-50{% endif %}" style="max-height: 280px;">
-                    <div class="position-relative">
-                      {% if prod.prod_imagen %}
-                        <img src="{{ prod.prod_imagen.url }}" class="card-img-top" alt="{{ prod.Nombre }}" style="height: 120px; object-fit: cover;">
-                      {% else %}
-                        <div class="d-flex align-items-center justify-content-center bg-light" style="height: 120px;">
-                          <i class="bi bi-image text-muted" style="font-size: 3rem;"></i>
-                        </div>
-                      {% endif %}
-                      
-                      <!-- Badge de stock con clase para JavaScript -->
-                      <span class="badge badge-stock position-absolute top-0 end-0 m-2 
-                            {% if prod.Stock <= 5 %}bg-danger-dark{% elif prod.Stock <= 15 %}bg-warning-dark{% else %}bg-success-dark{% endif %}">
+                <div class="col-xl-3 col-lg-4 col-md-6 producto-card {% if prod.Stock == 0 %}sin-stock{% endif %}" 
+                     id="producto-{{ prod.Id_producto }}"
+                     data-nombre="{{ prod.Nombre|lower }}"
+                     data-categoria="{{ prod.Catego_Id.Nombre }}">
+                  <div class="card h-100">
+                    {% if prod.prod_imagen %}
+                    <img src="{{ prod.prod_imagen.url }}" class="card-img-top producto-img" alt="{{ prod.Nombre }}">
+                    {% else %}
+                    <div class="card-img-top producto-img d-flex align-items-center justify-content-center bg-light" style="height: 100px;">
+                      <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body p-2 text-center">
+                      <h6 class="card-title mb-1" style="font-size: 0.85rem;">{{ prod.Nombre }}</h6>
+                      <p class="text-muted mb-1" style="font-size: 0.75rem;">{{ prod.Catego_Id.Nombre }}</p>
+                      <p class="fw-bold mb-1" style="color: #8B0000;">{{ prod.Precio_de_venta|currency_cop }}</p>
+                      <span class="badge badge-stock {% if prod.Stock > 10 %}bg-success-dark{% elif prod.Stock > 0 %}bg-warning-dark{% else %}bg-danger-dark{% endif %}">
                         {{ prod.Stock }}
                       </span>
                     </div>
-                    
-                    <div class="card-body p-2 d-flex flex-column">
-                      <h6 class="card-title mb-1 fw-bold text-truncate">{{ prod.Nombre }}</h6>
-                      <p class="card-text small text-muted mb-2">{{ prod.Catego_Id.Nombre }}</p>
-                      
-                      <div class="mt-auto">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
-                          <span class="fw-bold text-success">{{ prod.Precio_de_venta|currency_cop }}</span>
-                        </div>
-                        
-                        <button type="button" 
-                                class="btn btn-sm btn-agregar-producto w-100"
-                                {% if prod.Stock > 0 %}
-                                  onclick="agregar({{ prod.Id_producto }}, '{{ prod.Nombre|escapejs }}', {{ prod.Precio_de_venta }}, {{ prod.Stock }})"
-                                {% else %}
-                                  disabled
-                                {% endif %}>
-                          <i class="bi bi-cart-plus me-1"></i>Agregar
-                        </button>
-                      </div>
+                    <div class="card-footer bg-transparent border-0 p-2">
+                      <button type="button" class="btn btn-agregar-producto btn-sm w-100" 
+                              onclick="agregar({{ prod.Id_producto }}, '{{ prod.Nombre|escapejs }}', {{ prod.Precio_de_venta }}, {{ prod.Stock }})"
+                              {% if prod.Stock == 0 %}disabled{% endif %}>
+                        <i class="bi bi-plus-circle me-1"></i>Agregar
+                      </button>
                     </div>
                   </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center py-5">
+                  <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
+                  <p class="text-muted mt-2">No hay productos disponibles</p>
                 </div>
                 {% endfor %}
               </div>
@@ -123,47 +113,75 @@
           <div class="card shadow-sm sticky-top" style="top: 20px;">
             <div class="card-header card-header-carrito text-white">
               <h5 class="mb-0">
-                <i class="bi bi-cart-check me-2"></i>Carrito de Venta
+                <i class="bi bi-cart3 me-2"></i>Carrito de Compra
               </h5>
             </div>
 
             <div class="card-body">
+              
+              <!-- ================================
+                   DATOS DEL FORMULARIO (PRIMERO)
+                   ================================ -->
+
+              <!-- Método de Pago -->
               <div class="mb-3">
-                <label class="form-label fw-semibold">Cedula comprador</label>
-                {{ form.Cedula_Vents }}
+                <label for="metodo_pago" class="form-label">
+                  <i class="bi bi-credit-card me-1"></i>Método de Pago <span class="text-danger">*</span>
+                </label>
+                <select name="metodo_pago" id="metodo_pago" class="form-select" required>
+                  <option value="">Seleccione el método de pago...</option>
+                  <option value="Efectivo">Efectivo</option>
+                  <option value="Credito">Crédito</option>
+                  <option value="Debito">Débito</option>
+                  <option value="PSE">PSE</option>
+                  <option value="Nequi">Nequi</option>
+                </select>
               </div>
 
-              {{ form.id_usuario }}
+              <!-- Número de Transacción (solo para pagos no efectivo) -->
+              <div class="mb-3" id="div_numero_transaccion" style="display: none;">
+                <label for="Numero_Transaccion" class="form-label">
+                  <i class="bi bi-hash me-1"></i>Número de Transacción <span class="text-danger">*</span>
+                </label>
+                <input type="text" name="Numero_Transaccion" id="Numero_Transaccion" class="form-control" placeholder="Ej: 123RF4">
+              </div>
 
+              <!-- Cédula del Comprador (OPCIONAL) -->
               <div class="mb-3">
-                <label class="form-label fw-semibold">Método de Pago</label>
-                {{ form.metodo_pago }}
+                <label for="Cedula_Vents" class="form-label">
+                  <i class="bi bi-person-vcard me-1"></i>Cédula del Comprador <small class="text-muted">(opcional)</small>
+                </label>
+                <input type="number" name="Cedula_Vents" id="Cedula_Vents" class="form-control numero" placeholder="Cédula del cliente...">
+                <small class="text-muted">Si no está registrado, déjalo vacío</small>
               </div>
 
-              <!-- Numero de transaccion (puede mostrarse/ocultarse con JS) -->
-              <div class="mb-3" id="numero_transaccion" style="display: none;">
-                <label class="form-label fw-semibold">Número de Transacción</label>
-                {{ form.Numero_Transaccion }}
-              </div>
               <hr>
 
-              <!-- Lista de productos -->
-              <div id="carrito" class="mb-3" style="max-height: 400px; overflow-y: auto;">
-                <!-- Se llena dinámicamente con JS -->
+              <!-- ================================
+                   PRODUCTOS DEL CARRITO (DESPUÉS)
+                   ================================ -->
+
+              <!-- Lista de productos en carrito -->
+              <h6 class="mb-2"><i class="bi bi-bag me-1"></i>Productos</h6>
+              <div id="carrito" class="mb-3" style="max-height: 250px; overflow-y: auto;">
+                <div class="carrito-vacio text-center py-4">
+                  <i class="bi bi-cart-x"></i>
+                  <p class="text-muted mt-2 mb-0">Carrito vacío</p>
+                </div>
               </div>
 
               <!-- Total -->
               <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
-                <span class="fw-bold">TOTAL:</span>
-                <h4 class="mb-0 text-success" id="total">$0</h4>
+                <strong>Total:</strong>
+                <span id="total" class="fs-4 fw-bold" style="color: #8B0000;">$0</span>
               </div>
 
               <!-- Botones -->
               <button type="button" class="btn btn-secondary w-100 mb-2" onclick="limpiar()">
-                <i class="bi bi-trash"></i> Vaciar Carrito
+                <i class="bi bi-trash me-1"></i>Vaciar Carrito
               </button>
-              <button type="submit" class="btn btn-procesar-venta w-100">
-                <i class="bi bi-check-circle"></i> Procesar Venta
+              <button type="submit" class="btn btn-procesar-venta w-100" onclick="return validarVenta(event)">
+                <i class="bi bi-check-circle me-1"></i>Procesar Venta
               </button>
             </div>
           </div>
@@ -175,104 +193,46 @@
 </div>
 
 <script>
+  // Mostrar/ocultar número de transacción según método de pago
   document.getElementById('metodo_pago').addEventListener('change', function() {
-    var numeroTransaccionDiv = document.getElementById('numero_transaccion');
-    if (this.value === 'Efectivo' || this.value === 'Nada') {
+    var numeroTransaccionDiv = document.getElementById('div_numero_transaccion');
+    var inputTransaccion = document.getElementById('Numero_Transaccion');
+    
+    if (this.value === 'Efectivo' || this.value === '') {
       numeroTransaccionDiv.style.display = 'none';
-      numeroTransaccionDiv.querySelector('input').required = false;
+      inputTransaccion.required = false;
+      inputTransaccion.value = '';
     } else {
       numeroTransaccionDiv.style.display = 'block';
-      numeroTransaccionDiv.querySelector('input').required = true;
+      inputTransaccion.required = true;
     }
   });
 
-      // Validación de números
-    const numeros = document.querySelectorAll('.numero');
-    const formulario = document.getElementById('formVenta');
-
-    // Función para validar cédula
-    function validarCedula(input) {
-        const errorDiv = input.parentNode.querySelector('.error-cedula');
-        
-        if (input.value.length > 0 && input.value.length !== 10) {
-            input.classList.add('is-invalid');
-            input.classList.remove('is-valid');
-            
-            if (!errorDiv) {
-                const nuevoError = document.createElement('div');
-                nuevoError.className = 'error-cedula text-danger small mt-1';
-                nuevoError.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>La cédula debe tener 10 dígitos';
-                input.parentNode.appendChild(nuevoError);
-            }
-            return false;
-        } else if (input.value.length === 10) {
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-            if (errorDiv) errorDiv.remove();
-            return true;
-        } else {
-            // Campo vacío
-            input.classList.remove('is-invalid', 'is-valid');
-            if (errorDiv) errorDiv.remove();
-            return false;
-        }
-    }
-
-    numeros.forEach(input => {
-        // Bloquear caracteres no permitidos
-        input.addEventListener('keydown', (e) => {
-            if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
-                e.preventDefault();
-            }
-        });
-
-        // Limpiar al pegar
-        input.addEventListener('paste', (e) => {
-            e.preventDefault();
-            const texto = e.clipboardData.getData('text');
-            const soloNumeros = texto.replace(/[^0-9]/g, '').slice(0, 10);
-            input.value = soloNumeros;
-            validarCedula(input);
-        });
-
-        // Limitar a 10 dígitos y validar mientras escribe
-        input.addEventListener('input', () => {
-            if (input.value < 0) input.value = 0;
-            if (input.value.length > 10) input.value = input.value.slice(0, 10);
-            
-            // Validar si ya tiene 10 dígitos (mostrar válido)
-            if (input.value.length === 10) {
-                validarCedula(input);
-            }
-        });
-
-        // Validar al salir del campo
-        input.addEventListener('blur', () => {
-            validarCedula(input);
-        });
+  // Validación de números (solo para cédula)
+  const numeros = document.querySelectorAll('.numero');
+  
+  numeros.forEach(input => {
+    // Bloquear caracteres no permitidos
+    input.addEventListener('keydown', (e) => {
+      if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
+        e.preventDefault();
+      }
     });
 
-    // Validar antes de enviar el formulario
-    if (formulario) {
-        formulario.addEventListener('submit', (e) => {
-            let hayErrores = false;
-            
-            numeros.forEach(input => {
-                if (!validarCedula(input)) {
-                    hayErrores = true;
-                }
-            });
+    // Limpiar al pegar
+    input.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const texto = e.clipboardData.getData('text');
+      const soloNumeros = texto.replace(/[^0-9]/g, '').slice(0, 10);
+      input.value = soloNumeros;
+    });
 
-            if (hayErrores) {
-                e.preventDefault();
-                const primerError = document.querySelector('.is-invalid');
-                if (primerError) {
-                    primerError.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    primerError.focus();
-                }
-            }
-        });
-    }
+    // Limitar a 10 dígitos
+    input.addEventListener('input', () => {
+      if (input.value < 0) input.value = 0;
+      if (input.value.length > 10) input.value = input.value.slice(0, 10);
+    });
+  });
 </script>
 
 <script src="{% static 'js/ventas/ventas.js' %}"></script>

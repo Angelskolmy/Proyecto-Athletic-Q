@@ -83,7 +83,7 @@
                 <td><strong>#{{ mem.Id_membresia }}</strong></td>
                 <td>{{ mem.id_usuario.first_name }} {{ mem.id_usuario.last_name }}</td>
                 <td>
-                  <span class="badge bg-primary">{{ mem.For_Id_tipo_membresia.Nombre }}</span>
+                  {{ mem.For_Id_tipo_membresia.Nombre }}
                 </td>
                 <td>{{ mem.Fecha_inicio|date:"d/m/Y" }}</td>
                 <td>{{ mem.Fecha_fin|date:"d/m/Y" }}</td>

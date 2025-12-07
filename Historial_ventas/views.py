@@ -3,8 +3,37 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator
 from django.db.models import Q, Sum, Count
 from decimal import Decimal
-from datetime import datetime
+from datetime import datetime, time
+from django.utils import timezone
 from .models import Historial_Ventas
+
+
+def _parse_date(value: str):
+    """Convierte 'YYYY-MM-DD' en date, o None si viene vacío/mal."""
+    if not value:
+        return None
+    try:
+        return datetime.strptime(value, "%Y-%m-%d").date()
+    except ValueError:
+        return None
+
+
+def _day_bounds(date_obj):
+    """
+    Devuelve (inicio_de_día, fin_de_día) como datetimes *aware* si hay timezone.
+    """
+    if not date_obj:
+        return None, None
+
+    start = datetime.combine(date_obj, time.min)
+    end = datetime.combine(date_obj, time.max)
+
+    # Si usas USE_TZ = True, hacemos los datetimes aware
+    if timezone.is_naive(start):
+        start = timezone.make_aware(start)
+        end = timezone.make_aware(end)
+
+    return start, end
 
 
 @login_required(login_url='login')
@@ -13,8 +42,11 @@ def ListarHistorialVentas(request):
     # Obtener parámetros de filtros
     search_query = request.GET.get('search', '').strip()
     filter_metodo = request.GET.get('metodo', '').strip()
-    filter_fecha = request.GET.get('fecha', '').strip()
+    filter_fecha_str = request.GET.get('fecha', '').strip()
     page_number = request.GET.get('page', 1)
+
+    # Parsear fecha
+    filter_fecha = _parse_date(filter_fecha_str)
 
     # Query base con relaciones
     historial = Historial_Ventas.objects.select_related(
@@ -36,13 +68,13 @@ def ListarHistorialVentas(request):
     if filter_metodo:
         historial = historial.filter(metodo_pago__iexact=filter_metodo)
 
-    # Filtro por fecha
+    # ============================
+    # FILTRO POR FECHA
+    # ============================
     if filter_fecha:
-        try:
-            fecha_obj = datetime.strptime(filter_fecha, '%Y-%m-%d').date()
-            historial = historial.filter(fecha_venta__date=fecha_obj)
-        except ValueError:
-            pass
+        start, end = _day_bounds(filter_fecha)
+        if start and end:
+            historial = historial.filter(fecha_venta__range=(start, end))
 
     # Calcular estadísticas (sobre los resultados filtrados)
     stats = historial.aggregate(
@@ -58,7 +90,7 @@ def ListarHistorialVentas(request):
     page_obj = paginator.get_page(page_number)
 
     # Verificar si hay filtros activos
-    hay_filtros = any([search_query, filter_metodo, filter_fecha])
+    hay_filtros = any([search_query, filter_metodo, filter_fecha_str])
 
     context = {
         'AllHV': page_obj,
@@ -67,7 +99,7 @@ def ListarHistorialVentas(request):
         'total_recaudado': total_recaudado,
         'search_query': search_query,
         'filter_metodo': filter_metodo,
-        'filter_fecha': filter_fecha,
+        'filter_fecha': filter_fecha_str,
         'hay_filtros': hay_filtros,
     }
 

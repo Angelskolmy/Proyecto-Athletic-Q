@@ -1,5 +1,5 @@
-from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class User_Gym(models.Model):
@@ -11,7 +11,7 @@ class User_Gym(models.Model):
             ("usuariogym", "Puede acceder a la vista usuariogym"),
         ]
 
-    def __str__(self):
+    def _str_(self):
         return "Permisos de usuario de gimnasio"
 
 
@@ -65,12 +65,12 @@ class User_Empleados(AbstractUser):
     )
 
     class Meta:
-        managed = True
+        managed = False
         db_table = 'Empleados_user_empleados'
         verbose_name = "Empleado"
         verbose_name_plural = "Empleados"
 
-    def __str__(self):
+    def _str_(self):
         nombre = f"{self.first_name} {self.last_name}".strip()
         if nombre:
             return f"{self.username} - {nombre}"

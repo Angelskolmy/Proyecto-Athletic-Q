@@ -3,8 +3,11 @@
     --rojo-oscuro: #6d0000;
     --negro: #1a1a1a;
     --gris-oscuro: #2d2d2d;
+    --gris-medio: #6c757d;
     --gris-claro: #f5f5f5;
+    --beige-claro: #faf8f5;
     --blanco: #ffffff;
+    --estado-activo: #047857;
 }
 
 body {
@@ -13,10 +16,10 @@ body {
 }
 
 /* ================================
-   NAVBAR
+   NAVBAR - ROJO
    ================================ */
 .navbar-cliente {
-    background: linear-gradient(135deg, var(--negro) 0%, var(--gris-oscuro) 100%);
+    background: linear-gradient(135deg, var(--rojo-principal) 0%, var(--rojo-oscuro) 100%);
     padding: 1rem 0;
 }
 
@@ -34,59 +37,142 @@ body {
 }
 
 /* ================================
-   CARDS
+   CARDS BASE
    ================================ */
 .card {
     border: none;
     border-radius: 15px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
     overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 8px 25px rgba(0,0,0,0.12);
 }
 
 /* ================================
-   CARD PERFIL
+   CARD HEADER GRIS BEIGE
    ================================ */
-.card-perfil {
-    background: linear-gradient(135deg, var(--negro) 0%, var(--gris-oscuro) 100%);
-    color: var(--blanco);
+.card-header-gris {
+    background: linear-gradient(135deg, #dddddd 0%, #e9ecef 100%) !important;
+    border-bottom: 2px solid #dee2e6 !important;
+    padding: 1rem 1.25rem;
 }
 
+.card-header-gris h6 {
+    color: var(--gris-oscuro) !important;
+    font-weight: 600;
+    margin: 0;
+}
+
+/* ================================
+   CARD PERFIL - BEIGE CLARO
+   ================================ */
+.card-perfil-beige {
+    background: var(--beige-claro);
+}
+
+.card-perfil-beige .card-body {
+    padding: 2rem 1.5rem;
+}
+
+/* Avatar SIN BORDE */
 .avatar-container {
     position: relative;
     display: inline-block;
 }
 
-.avatar-img {
+.avatar-img-clean {
     width: 120px;
     height: 120px;
     border-radius: 50%;
     object-fit: cover;
-    border: 4px solid var(--rojo-principal);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-.avatar-placeholder {
+.avatar-placeholder-clean {
     width: 120px;
     height: 120px;
     border-radius: 50%;
-    background: var(--gris-oscuro);
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 4px solid var(--rojo-principal);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
 }
 
-.avatar-placeholder i {
+.avatar-placeholder-clean i {
     font-size: 3rem;
-    color: var(--gris-claro);
+    color: #adb5bd;
+}
+
+.perfil-nombre-dark {
+    color: var(--negro);
+    font-weight: 700;
+}
+
+/* Info items LIGHT */
+.perfil-info-grid-light {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.perfil-info-item-light {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 1rem;
+    background: var(--blanco);
+    border-radius: 8px;
+    font-size: 0.9rem;
+    border: 1px solid #e9ecef;
+}
+
+.perfil-info-item-light i {
+    color: var(--rojo-principal);
+    font-size: 1rem;
+}
+
+.perfil-info-item-light span {
+    color: var(--gris-oscuro);
 }
 
 /* ================================
-   CARD MEMBRESÍA
+   CARD QR
    ================================ */
-.card-membresia .card-header {
-    background: var(--rojo-principal);
-    color: var(--blanco);
-    border: none;
+.card-qr .card-body {
+    background: var(--beige-claro);
+}
+
+.qr-container {
+    background: var(--blanco);
+    padding: 1rem;
+    border-radius: 12px;
+    display: inline-block;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    border: 2px solid #e9ecef;
+}
+
+.qr-image {
+    max-width: 150px;
+    height: auto;
+}
+
+/* ================================
+   CARD MEMBRESÍA - LIGHT
+   ================================ */
+.card-membresia-light .card-body {
+    background: var(--beige-claro);
+}
+
+.membresia-tipo-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .membresia-tipo {
@@ -96,10 +182,11 @@ body {
 }
 
 .badge-activo {
-    background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+    background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%);
     color: var(--blanco);
     padding: 0.5rem 1rem;
     border-radius: 20px;
+    font-size: 0.8rem;
 }
 
 .membresia-fechas {
@@ -113,157 +200,286 @@ body {
     align-items: center;
     gap: 0.75rem;
     padding: 0.75rem;
-    background: var(--gris-claro);
+    background: var(--blanco);
     border-radius: 10px;
+    border: 1px solid #e9ecef;
 }
 
 .fecha-item i {
     font-size: 1.25rem;
 }
 
+.progreso-container {
+    padding: 1rem;
+    background: var(--blanco);
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
 .progreso-container .progress {
-    height: 8px;
-    border-radius: 4px;
+    height: 10px;
+    border-radius: 5px;
     background: #e9ecef;
 }
 
+.progreso-container .progress-bar {
+    background: linear-gradient(135deg, var(--rojo-principal) 0%, var(--rojo-oscuro) 100%);
+}
+
 /* ================================
-   CARDS DE RUTINAS
+   CARD RUTINAS HEADER
    ================================ */
-.card-rutina {
+.card-rutinas-header {
+    background: var(--beige-claro);
+}
+
+.card-rutinas-header h5 {
+    color: var(--negro);
+    font-weight: 700;
+}
+
+/* Botones de filtro */
+.btn-filter-nivel {
+    border: 2px solid var(--rojo-principal);
+    color: var(--rojo-principal);
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.btn-filter-nivel:hover,
+.btn-filter-nivel.active {
+    background: var(--rojo-principal);
+    border-color: var(--rojo-principal);
+    color: var(--blanco);
+}
+
+/* ================================
+   CARDS DE RUTINAS - MINI (4 columnas)
+   ================================ */
+.card-rutina-mini {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
+    background: var(--beige-claro);
 }
 
-.card-rutina:hover {
+.card-rutina-mini:hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.12);
 }
 
-.card-img-container {
-    position: relative;
-    height: 150px;
+/* Imagen pequeña */
+.card-img-container-mini {
+    height: 100px;
     overflow: hidden;
-    background: var(--gris-claro);
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
 }
 
-.card-img-container img {
+.card-img-container-mini img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
 }
 
-.card-img-placeholder {
+.card-rutina-mini:hover .card-img-container-mini img {
+    transform: scale(1.05);
+}
+
+.card-img-placeholder-mini {
     width: 100%;
     height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--negro) 100%);
 }
 
-.card-img-placeholder i {
-    font-size: 3rem;
+.card-img-placeholder-mini i {
+    font-size: 2rem;
+    color: #adb5bd;
+}
+
+/* Body compacto */
+.card-title-mini {
+    font-weight: 700;
+    color: var(--negro);
+    font-size: 0.85rem;
+    line-height: 1.2;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* Stats mini */
+.rutina-stats-mini {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+}
+
+.rutina-stats-mini span {
+    color: var(--gris-medio);
+}
+
+.rutina-stats-mini i {
+    color: var(--rojo-principal);
+    margin-right: 2px;
+}
+
+/* Badge nivel mini (sin badge, solo texto coloreado) */
+.badge-nivel-mini {
+    font-size: 0.65rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 10px;
+}
+
+.badge-nivel-mini.badge-principiante {
+    background: rgba(4, 120, 87, 0.15);
+    color: #047857;
+}
+
+.badge-nivel-mini.badge-intermedio {
+    background: rgba(180, 83, 9, 0.15);
+    color: #b45309;
+}
+
+.badge-nivel-mini.badge-avanzado {
+    background: rgba(139, 0, 0, 0.15);
     color: var(--rojo-principal);
 }
 
-/* Badges de Nivel */
-.badge-nivel {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.badge-principiante {
-    background: linear-gradient(135deg, #047857 0%, #065f46 100%);
-    color: var(--blanco);
-}
-
-.badge-intermedio {
-    background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
-    color: var(--blanco);
-}
-
-.badge-avanzado {
-    background: linear-gradient(135deg, var(--rojo-principal) 0%, var(--rojo-oscuro) 100%);
-    color: var(--blanco);
-}
-
-/* Badge Categoría */
-.badge-categoria {
-    background: var(--negro);
-    color: var(--blanco);
-    font-size: 0.7rem;
-    padding: 0.3rem 0.6rem;
-    border-radius: 4px;
-}
-
-.card-title {
-    font-weight: 700;
-    color: var(--negro);
-    margin-bottom: 0.5rem;
-}
-
-.rutina-stats {
-    border-top: 1px solid #eee;
-    padding-top: 0.75rem;
-    margin-top: 0.75rem;
-}
-
 /* ================================
-   BOTONES
+   BOTÓN VER RUTINA - GRIS OSCURO
    ================================ */
-.btn-danger {
-    background: linear-gradient(135deg, var(--rojo-principal) 0%, var(--rojo-oscuro) 100%);
+.btn-ver-rutina {
+    background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
     border: none;
+    color: var(--blanco);
+    transition: all 0.3s ease;
+    font-size: 0.75rem;
 }
 
-.btn-danger:hover {
-    background: linear-gradient(135deg, var(--rojo-oscuro) 0%, #5a0000 100%);
+.btn-ver-rutina:hover {
+    background: linear-gradient(135deg, #374151 0%, #1f2937 100%);
     transform: translateY(-2px);
-}
-
-.btn-outline-danger {
-    border-color: var(--rojo-principal);
+    box-shadow: 0 4px 12px rgba(55, 65, 81, 0.3);
     color: var(--blanco);
-}
-
-.btn-outline-danger:hover {
-    background: var(--rojo-principal);
-    color: var(--blanco);
-}
-
-.btn-group .btn.active {
-    background: var(--negro);
-    color: var(--blanco);
-    border-color: var(--negro);
 }
 
 /* ================================
-    MODAL
+   MODAL HEADER ROJO
    ================================ */
-.modal-header.bg-danger {
+.modal-header-rojo {
     background: linear-gradient(135deg, var(--rojo-principal) 0%, var(--rojo-oscuro) 100%) !important;
 }
 
 /* ================================
-    RESPONSIVE
+   RESPONSIVE
    ================================ */
-@media (max-width: 768px) {
+@media (max-width: 1199px) {
+    .col-xl-3 {
+        flex: 0 0 33.333%;
+        max-width: 33.333%;
+    }
+}
+
+@media (max-width: 991px) {
+    .membresia-fechas {
+        flex-direction: column;
+    }
+    
+    .card-rutinas-header .card-body {
+        flex-direction: column;
+        align-items: stretch !important;
+    }
+    
     .btn-group {
+        width: 100%;
         flex-wrap: wrap;
     }
     
     .btn-group .btn {
-        flex: 1 1 auto;
-        margin-bottom: 0.25rem;
+        flex: 1;
+        min-width: 70px;
     }
     
-    .membresia-fechas {
-        flex-direction: column;
+    .col-xl-3 {
+        flex: 0 0 50%;
+        max-width: 50%;
     }
 }
+
+@media (max-width: 768px) {
+    .navbar-cliente .d-flex {
+        gap: 0.5rem !important;
+    }
+    
+    .navbar-cliente .btn {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.8rem;
+    }
+    
+    .avatar-img-clean,
+    .avatar-placeholder-clean {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .avatar-placeholder-clean i {
+        font-size: 2.5rem;
+    }
+    
+    .qr-image {
+        max-width: 120px;
+    }
+    
+    .card-img-container-mini {
+        height: 80px;
+    }
+}
+
+@media (max-width: 576px) {
+    .perfil-info-item-light {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+    }
+    
+    .btn-filter-nivel {
+        font-size: 0.7rem;
+        padding: 0.3rem 0.5rem;
+    }
+    
+    .col-md-6 {
+        flex: 0 0 50%;
+        max-width: 50%;
+    }
+}
+
+/* ================================
+   ANIMACIONES
+   ================================ */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.4s ease;
+}
+
+.rutina-card:nth-child(1) { animation-delay: 0.05s; }
+.rutina-card:nth-child(2) { animation-delay: 0.1s; }
+.rutina-card:nth-child(3) { animation-delay: 0.15s; }
+.rutina-card:nth-child(4) { animation-delay: 0.2s; }
+.rutina-card:nth-child(5) { animation-delay: 0.25s; }
+.rutina-card:nth-child(6) { animation-delay: 0.3s; }
+.rutina-card:nth-child(7) { animation-delay: 0.35s; }
+.rutina-card:nth-child(8) { animation-delay: 0.4s; }

@@ -1,3 +1,176 @@
+/* ================================
+    CARDS DE ESTADÍSTICAS - DASHBOARD
+   ================================ */
+
+/* Card Usuarios Activos - Azul Oscuro */
+.small-box.bg-primary {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(30, 58, 138, 0.3);
+    transition: all 0.3s ease;
+}
+
+.small-box.bg-primary:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(30, 58, 138, 0.4);
+}
+
+/* Card Membresías por Vencer - Amarillo/Naranja Oscuro */
+.small-box.bg-warning {
+    background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(180, 83, 9, 0.3);
+    transition: all 0.3s ease;
+}
+
+.small-box.bg-warning:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(180, 83, 9, 0.4);
+}
+
+/* Card Asistencias del Mes - Verde Oscuro */
+.small-box.bg-success {
+    background: linear-gradient(135deg, #047857 0%, #065f46 100%) !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(4, 120, 87, 0.3);
+    transition: all 0.3s ease;
+}
+
+.small-box.bg-success:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(4, 120, 87, 0.4);
+}
+
+/* Card Stock Bajo - Rojo Oscuro */
+.small-box.bg-danger {
+    background: linear-gradient(135deg, #8B0000 0%, #740000 100%) !important;
+    border: none;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.3);
+    transition: all 0.3s ease;
+}
+
+.small-box.bg-danger:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(139, 0, 0, 0.4);
+}
+
+/* Texto e iconos en cards */
+.small-box .inner h3,
+.small-box .inner p,
+.small-box .icon i,
+.small-box .small-box-footer {
+    color: #ffffff !important;
+}
+
+.small-box .small-box-footer {
+    background: rgba(0, 0, 0, 0.15) !important;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.small-box .small-box-footer:hover {
+    background: rgba(0, 0, 0, 0.25) !important;
+}
+
+/* ================================
+    CONTENEDOR DE GRÁFICAS
+   ================================ */
+
+.chart-container {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 18px 20px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.08);
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+}
+
+.chart-container:hover {
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.12);
+}
+
+/* Título de cada tarjeta */
+.chart-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #2c2c2c;
+    border-bottom: 2px solid #8B0000;
+    padding-bottom: 8px;
+}
+
+/* Cuerpo de gráficos grandes */
+.chart-body-lg {
+    position: relative;
+    height: 360px;
+}
+
+/* Cuerpo del doughnut */
+.chart-body-sm {
+    position: relative;
+    height: 260px;
+}
+
+/* Asegurar que el canvas ocupa todo el espacio */
+.chart-body-lg canvas,
+.chart-body-sm canvas {
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.small-box {
+    animation: fadeInUp 0.4s ease;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.small-box:nth-child(1) { animation-delay: 0.1s; }
+.small-box:nth-child(2) { animation-delay: 0.15s; }
+.small-box:nth-child(3) { animation-delay: 0.2s; }
+.small-box:nth-child(4) { animation-delay: 0.25s; }
+
+.chart-container {
+    animation: fadeInUp 0.4s ease;
+    animation-delay: 0.3s;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+    .small-box .inner h3 {
+        font-size: 1.5rem;
+    }
+    
+    .small-box .icon i {
+        font-size: 3rem;
+    }
+    
+    .chart-body-lg {
+        height: 280px;
+    }
+    
+    .chart-body-sm {
+        height: 200px;
+    }
+}
+
+
 /* Contenedor blanco tipo tarjeta para las gráficas */
 .chart-container {
     background: #ffffff;

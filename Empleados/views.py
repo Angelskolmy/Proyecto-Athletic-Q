@@ -1,6 +1,10 @@
 import json
 import requests
+import qrcode
+import base64
 
+from io import BytesIO
+from base64 import b64encode
 from datetime import date, time, timedelta, datetime
 from django.views.decorators.csrf import csrf_exempt
 from django.utils import timezone
@@ -20,6 +24,7 @@ from .models import User_Empleados
 from Core_session.models import HuellaCaptura
 from Asistencia.models import Asistencia
 from Membresias.models import Membresia
+from Rutinas.models import Rutina
 
 
 @permission_required("Empleados.view_user_empleados", raise_exception=True)
@@ -389,31 +394,48 @@ def validar_huella(request):
         "salida": reg.fecha_salida,
     })
 
-@login_required(login_url='login')
+@login_required(login_url="login")
 def MiPerfil(request):
     """Vista de perfil para administradores y empleados"""
     usuario = request.user
-    
-    # Obtener membresías si tiene
-    membresias = Membresia.objects.filter(id_usuario=usuario).order_by('-Fecha_inicio')
-    
-    # Obtener el grupo/rol del usuario
-    grupos = usuario.groups.all()
-    
-    context = {
-        'usuario': usuario,
-        'membresias': membresias,
-        'grupos': grupos,
-    }
-    return render(request, 'templates_perfil/mi_perfil.html', context)
 
-#@permission_required('Empleados.view_suariogym', login_url='home') este permiso puede hacer todo el view si ese usuario tiene ese permiso
+    qr_image = generar_qr_asistencia(
+        request,
+        usuario_id=usuario.id,
+        usuario_nombre=usuario.first_name or usuario.username
+    )
+
+    membresias = Membresia.objects.filter(id_usuario=usuario).order_by("-Fecha_inicio")
+    grupos = usuario.groups.all()
+    tiene_huella = HuellaCaptura.objects.filter(id_usuario=usuario).exists()
+
+    context = {
+        "usuario": usuario,
+        "membresias": membresias,
+        'qr_image': qr_image,
+        "grupos": grupos,
+        "tiene_huella": tiene_huella,
+    }
+    return render(request, "templates_perfil/mi_perfil.html",context)
+
+# @permission_required('Empleados.view_suariogym', login_url='home') este permiso puede hacer todo el view si ese usuario tiene ese permiso
 @permission_required('Empleados.usariogym', raise_exception=True)
 def UsersGym(request): 
     """Vista principal del cliente/usuario del gimnasio"""
     usuario = request.user
-    
-    # Obtener membresía activa del usuario
+
+    # --------- LÓGICA DE QR (versión 1) ----------
+    user = usuario
+    membresia = Membresia.objects.filter(id_usuario=user).first()
+
+    qr_image = generar_qr_asistencia(
+        request,
+        usuario_id=user.id,
+        usuario_nombre=user.first_name or user.username
+    )
+    # --------------------------------------------
+
+    # Obtener membresía activa del usuario (versión 2)
     membresia_activa = Membresia.objects.filter(
         id_usuario=usuario,
         Estado='Activo'
@@ -445,15 +467,126 @@ def UsersGym(request):
     
     context = {
         'usuario': usuario,
-        'membresia': membresia_activa,
+        'membresia': membresia_activa,          # membresía activa (versión 2)
         'dias_restantes': dias_restantes,
         'progreso': round(progreso, 1),
         'rutinas': rutinas,
         'rutinas_por_categoria': rutinas_por_categoria,
+
+        # claves de la versión 1 para no romper nada:
+        'membresias': membresia,                # la primera que encontraba, sin filtrar por Estado
+        'qr_image': qr_image,
     }
     
     return render(request, 'templates_perfil/datos.html', context)
 
+def generar_qr_asistencia(request, usuario_id, usuario_nombre):
+    # URL ABSOLUTA 
+    url_qr = request.build_absolute_uri(
+        reverse('validar_qr', args=[usuario_id])  # sin namespace si no lo usas
+    )
+
+    qr = qrcode.QRCode(version=1, box_size=10, border=4)
+    qr.add_data(url_qr)
+    qr.make(fit=True)
+    img = qr.make_image(fill='black', back_color='white')
+
+    buffer = BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+
+    qr_image_base64 = base64.b64encode(buffer.getvalue()).decode('utf-8')
+    return qr_image_base64
+
+def validar_qr(request, usuario_id):
+    usuario = get_object_or_404(User_Empleados, id=usuario_id)
+
+    return render(
+        request,
+        "templates_perfil/validar_qr.html",
+        {"usuario":usuario}
+    )
+
+@csrf_exempt
+def registrar_asistencia_ajax(request):
+    if request.method != "POST":
+        return JsonResponse({"mensaje": "Solo POST"}, status=405)
+
+    try:
+        data = json.loads(request.body or "{}")
+    except json.JSONDecodeError:
+        return JsonResponse({"mensaje": "JSON inválido"}, status=400)
+
+    raw = data.get("dato_qr")
+    if not raw:
+        return JsonResponse({"mensaje": "ID no recibido"}, status=400)
+
+    # Si viene una URL, tomar el último segmento
+    if isinstance(raw, str) and "/" in raw:
+        raw = raw.strip("/").split("/")[-1]
+
+    try:
+        usuario_id = int(raw)
+    except (TypeError, ValueError):
+        return JsonResponse({"mensaje": "ID inválido"}, status=400)
+
+    usuario = get_object_or_404(User_Empleados, id=usuario_id)
+    hoy = timezone.localdate()
+    ahora = timezone.now()
+    hora_local = timezone.localtime(ahora).time()
+
+    # Ventana horaria permitida: 5:00 - 22:00 (10 p.m.)
+    if not (time(1, 0) <= hora_local < time(22, 0)):
+        return JsonResponse({"ok": False, "mensaje": "Registro fuera de horario (5:00 a 22:00)."})
+
+    # Último registro abierto del usuario
+    reg = Asistencia.objects.filter(
+        id_usuario=usuario,
+        fecha_salida__isnull=True
+    ).order_by('-fecha_entrada').first()
+
+    # Si tiene un registro sin salida de días anteriores, cerrarlo como pendiente
+    if reg and reg.fecha_entrada.date() < hoy:
+        cierre_prev = datetime.combine(reg.fecha_entrada.date(), time(22, 0))
+        if timezone.is_naive(cierre_prev):
+            cierre_prev = timezone.make_aware(cierre_prev, timezone.get_current_timezone())
+        reg.fecha_salida = cierre_prev
+        reg.estado = "Pendiente"
+        reg.save(update_fields=["fecha_salida", "estado"])
+        reg = None
+
+    # Evita duplicar si acaba de marcar hace pocos segundos
+    if reg and (ahora - reg.fecha_entrada) < timedelta(seconds=30):
+        mensaje_asistencia = "Marca ya registrada hace segundos"
+    else:
+        if reg and reg.fecha_entrada.date() == hoy:
+            # cerrar salida
+            reg.fecha_salida = ahora
+            reg.estado = "Salida"
+            reg.save(update_fields=["fecha_salida", "estado"])
+            mensaje_asistencia = "Salida registrada"
+        else:
+            # crear nueva entrada
+            reg = Asistencia.objects.create(
+                id_usuario=usuario,
+                rol=(usuario.groups.first().name if usuario.groups.exists() else ""),
+                fecha_entrada=ahora,
+                fecha_salida=None,
+                estado="Entrada"
+            )
+            mensaje_asistencia = "Entrada registrada"
+
+    nombre = f"{usuario.first_name} {usuario.last_name}".strip() or usuario.username or f"ID {usuario.id}"
+    mensaje_full = f"Asistencia validada. La asistencia del usuario {nombre} ha sido registrada correctamente."
+
+    return JsonResponse({
+        "ok": True,
+        "usuario": nombre,
+        "asistencia": mensaje_asistencia,
+        "mensaje": mensaje_full,
+        "entrada": reg.fecha_entrada,
+        "salida": reg.fecha_salida,
+    })
 
 @login_required(login_url='login')
 def CambiarPasswordCliente(request):

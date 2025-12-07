@@ -46,7 +46,7 @@
             </div>
             <div class="flex-grow-1 ms-4">
               <h6 class="text-light mb-2 text-uppercase" style="font-size: 0.85rem; letter-spacing: 1px;">Total Recaudado</h6>
-              <h3 class="mb-0 fw-bold text-white">{{ total_monto|currency_cop }}</h3>
+              <h3 class="mb-0 fw-bold text-white">{{ total_recaudado|currency_cop }}</h3>
               <small class="text-light opacity-75">Todas las ventas registradas</small>
             </div>
           </div>
@@ -94,16 +94,13 @@
 
           <!-- Filtro por Fecha -->
           <input type="date" name="fecha" id="filtroFecha" class="form-control form-control-sm" 
-                style="width: 170px;" value="{{ filter_fecha }}">
+                 style="width: 160px;" value="{{ filter_fecha }}">
 
           <!-- Buscador -->
           <div class="input-group input-group-sm" style="width: 250px;">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
             <input type="text" name="search" id="buscarVenta" class="form-control" 
-                  placeholder="Buscar empleado, ID..." 
-                  value="{{ search_query }}">
-            <button class="btn btn-outline-secondary" type="submit">
-              <i class="bi bi-search"></i>
-            </button>
+                   placeholder="Buscar..." value="{{ search_query }}">
           </div>
 
           <!-- Botón limpiar -->
@@ -122,7 +119,8 @@
             <thead class="table-light">
               <tr>
                 <th style="width: 8%;">ID Venta</th>
-                <th style="width: 8%;">Cedula</th>
+                <th style="width: 8%;">Cedula Cliente</th>
+                <th style="width: 8%;">Cedula Empleado</th>
                 <th style="width: 12%;">Empleado</th>
                 <th style="width: 18%;">Fecha y Hora</th>
                 <th style="width: 15%;">Método de Pago</th>
@@ -139,7 +137,7 @@
                     #{{ historial.id_venta.Id_venta }}
                 </td>
                 
-                <!-- Cédula del Vendedor -->
+                <!-- Cédula del Comprador -->
                 <td>
                   {% if hv.id_usuario.Cedula %}
                     <span class="text-muted">{{ hv.id_usuario.Cedula }}</span>
@@ -148,7 +146,7 @@
                   {% endif %}
                 </td>
 
-                <!-- Cédula del Vendedor 2 -->
+                <!-- Cédula del Vendedor -->
                 <td>
                   {% if historial.id_usuario.Cedula %}
                     <span class="text-muted">{{ historial.id_usuario.Cedula }}</span>
@@ -217,52 +215,67 @@
 
       <!-- Footer con Paginación -->
       <div class="card-footer d-flex justify-content-between align-items-center">
+        
+        <!-- Paginación -->
         {% if AllHV.paginator.num_pages > 1 %}
         <ul class="pagination pagination-sm mb-0">
+          <!-- Botón Anterior -->
           {% if AllHV.has_previous %}
-            <li class="page-item">
-              <a class="page-link" href="?page=1{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">«</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="?page={{ AllHV.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">‹</a>
-            </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ AllHV.previous_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}">
+              &laquo;
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&laquo;</span>
+          </li>
           {% endif %}
 
+          <!-- Números de página -->
           {% for num in AllHV.paginator.page_range %}
-            {% if AllHV.number == num %}
+            {% if num == AllHV.number %}
               <li class="page-item active">
                 <span class="page-link">{{ num }}</span>
               </li>
             {% elif num > AllHV.number|add:'-3' and num < AllHV.number|add:'3' %}
               <li class="page-item">
-                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">
+                <a class="page-link" href="?page={{ num }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}">
                   {{ num }}
                 </a>
               </li>
             {% endif %}
           {% endfor %}
 
+          <!-- Botón Siguiente -->
           {% if AllHV.has_next %}
-            <li class="page-item">
-              <a class="page-link" href="?page={{ AllHV.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">›</a>
-            </li>
-            <li class="page-item">
-              <a class="page-link" href="?page={{ AllHV.paginator.num_pages }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}{% if items_per_page %}&items_per_page={{ items_per_page }}{% endif %}">»</a>
-            </li>
+          <li class="page-item">
+            <a class="page-link" href="?page={{ AllHV.next_page_number }}{% if search_query %}&search={{ search_query }}{% endif %}{% if filter_metodo %}&metodo={{ filter_metodo }}{% endif %}{% if filter_fecha %}&fecha={{ filter_fecha }}{% endif %}">
+              &raquo;
+            </a>
+          </li>
+          {% else %}
+          <li class="page-item disabled">
+            <span class="page-link">&raquo;</span>
+          </li>
           {% endif %}
         </ul>
+        {% else %}
+        <div></div>
         {% endif %}
 
+        <!-- Contador de registros -->
         <div class="flex-grow-1 text-center">
           <span class="text-muted small">
-            Mostrando {{ AllHV.start_index }}–{{ AllHV.end_index }} de {{ total_items }} registros
-            {% if search_query or filter_metodo or filter_fecha %}
-              (filtrados)
-            {% endif %}
+            Mostrando {{ AllHV.start_index }}-{{ AllHV.end_index }} de {{ total_items }} registros
           </span>
         </div>
+
+        <div></div>
       </div>
     </div>
   </div>
 </div>
+
+<script src="{% static 'js/ventas/historial_ventas.js' %}"></script>
 {% endblock %}

@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // EVENTOS
     // ========================================
 
-    // Buscador - con debounce
+    // Buscador - con debounce (búsqueda automática al escribir)
     if (inputBuscar) {
         inputBuscar.addEventListener('input', enviarConDebounce);
         

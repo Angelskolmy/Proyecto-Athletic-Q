@@ -12,7 +12,7 @@ from urllib.parse import urlencode
 
 
 @login_required(login_url='login')
-@permission_required('Salidas_Entradas.Salidas_Entradas', login_url='login')
+@permission_required('Salidas_Entradas.view_salidas_entradas', login_url='home')
 def ListarSalidasEntradas(request, Id_producto):
     # detalle objeto, y listar tabla
     Detalleobj = producto.objects.get(Id_producto=Id_producto)
@@ -37,7 +37,8 @@ def ListarSalidasEntradas(request, Id_producto):
 
     return render(request, 'templates_salidas_entradas/salida_entrada.html', Aquelarre)
 
-
+@login_required(login_url='login')
+@permission_required('Salidas_Entradas.add_salidas_entradas', login_url='home')
 def CrearSalidasEntradas(request, Id_producto):
     ListProd = producto.objects.get(Id_producto=Id_producto)
 
@@ -88,7 +89,8 @@ def CrearSalidasEntradas(request, Id_producto):
 
     return render(request, 'templates_salidas_entradas/ingresar_salida_entrada.html', cifrer)
 
-
+@login_required(login_url='login')
+@permission_required('Salidas_Entradas.view_salidas_entradas', login_url='home')
 def BuscadorSalidasEntradas(request):
     Fecha = request.GET.get('Fecha')
     Id_producto = request.GET.get('Id_producto')

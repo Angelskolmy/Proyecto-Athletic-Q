@@ -165,7 +165,7 @@ def busqueda_producto (request):
     Prodnombre_filter= request.GET.get('Prodnombre_filter', '').strip()  
     AllCategos2= categoria.objects.all() 
 
-    if not any([catego_filter, Prodnombre_filter]): 
+    if not Prodnombre_filter and catego_filter is None: 
 
         return redirect('Producto')
 

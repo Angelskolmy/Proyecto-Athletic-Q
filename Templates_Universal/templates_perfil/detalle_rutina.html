@@ -11,8 +11,20 @@
     <link rel="stylesheet" href="{% static 'css/perfil/cliente.css' %}">
     
     <style>
+        :root {
+            --rojo-principal: #8B0000;
+            --rojo-oscuro: #6d0000;
+            --negro: #1a1a1a;
+            --gris-oscuro: #2d2d2d;
+            --gris-medio: #6c757d;
+            --gris-claro: #f5f5f5;
+            --beige-claro: #faf8f5;
+            --blanco: #ffffff;
+            --estado-activo: #047857;
+        }
+
         .rutina-header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            background: linear-gradient(135deg, var(--rojo-principal) 0%, var(--rojo-oscuro) 100%);
             color: white;
             padding: 2rem 0;
         }
@@ -166,13 +178,6 @@
                 </div>
             </div>
             {% endfor %}
-        </div>
-
-        <!-- Botón Volver -->
-        <div class="text-center mt-4">
-            <a href="{% url 'Perfil' %}" class="btn btn-danger btn-lg">
-                <i class="bi bi-arrow-left me-2"></i>Volver a Rutinas
-            </a>
         </div>
     </div>
 

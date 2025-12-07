@@ -1,8 +1,17 @@
 from django.db import models
 
 class TipoMembresia(models.Model):
-    Id_tipo_membresia = models.AutoField(primary_key=True, db_column='Id_tipo_membresia')
-    Nombre = models.CharField(max_length=100, db_column='Nombre', unique=True)
+    Id_tipo_membresia = models.AutoField(
+        primary_key=True,
+        db_column='Id_tipo_membresia'
+    )
+
+    Nombre = models.CharField(
+        max_length=100,
+        db_column='Nombre',
+        unique=True
+    )
+
     DURACION_CHOICES = [
         (1, '1 Mes'),
         (3, '3 Meses'),
@@ -15,11 +24,13 @@ class TipoMembresia(models.Model):
         default=1,
         db_column='Duracion_meses'
     )
+
     Precio = models.DecimalField(
-        max_digits=10, 
-        decimal_places=2, 
+        max_digits=10,
+        decimal_places=2,
         db_column='Precio'
     )
+
     ESTADO_CHOICES = [
         ('Activo', 'Activo'),
         ('Inactivo', 'Inactivo'),
@@ -30,6 +41,7 @@ class TipoMembresia(models.Model):
         default='Activo',
         db_column='Estado'
     )
+
     tipo_membresia_img = models.ImageField(
         upload_to='tipos_membresia/',
         max_length=100,
@@ -37,12 +49,16 @@ class TipoMembresia(models.Model):
         null=True,
         db_column='tipo_membresia_img'
     )
-    
+
     class Meta:
         db_table = 'tipo_membresia'
         managed = False
         verbose_name = 'Tipo de Membresía'
         verbose_name_plural = 'Tipos de Membresías'
-    
-    def __str__(self):
-        return f"{self.Nombre} - {self.Duracion_meses} mes(es)"
+
+    def _str_(self):
+        return (
+            f"Id_tipo_membresia {self.Id_tipo_membresia} - Nombre {self.Nombre} - "
+            f"Duracion {self.Duracion_meses} meses - Precio {self.Precio} - "
+            f"Estado {self.Estado} - tipo_membresia_img {self.tipo_membresia_img}"
+        )

@@ -3,18 +3,18 @@ from django.http import JsonResponse
 from django.db import transaction
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.utils import timezone
 from .models import categoria
 from .forms import CrearCategoriaForm, EditarCategoriaForm
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from Historial.models import Historial_usuario
+
 
 @login_required(login_url='login')
+@permission_required('Categorias.view_categoria', login_url='Perfil')
 @transaction.atomic
 def ListarCategorias(request):
-    if not request.user.has_perm('Categorias.view_categoria'):
-        messages.warning(request, "No tienes permiso para acceder a esta sección.")
-        return redirect('Perfil')
-    
     # Obtener parámetro de búsqueda
     search_query = request.GET.get('search', '').strip()
     page_number = request.GET.get('page', 1)
@@ -47,13 +47,41 @@ def ListarCategorias(request):
     return render(request, "templates_categoria/categorias.html", context)
 
 
+@login_required(login_url='login')
+@permission_required('Categorias.add_categoria', login_url='Categorias')
 @transaction.atomic
 def CrearCategoria(request):
     if request.method == 'POST':
         form = CrearCategoriaForm(request.POST)
         if form.is_valid():
             try:
-                form.save()
+                nueva_categoria = form.save()
+                
+                # ================================
+                # HISTORIAL DE MOVIMIENTOS - CREAR
+                # ================================
+                histVend = request.user
+                histMod = 'categorías'
+                histMovs = 'ingresar'
+                histFech = timezone.now().date()
+                histNomb = nueva_categoria.Nombre[:50]
+                histId = nueva_categoria.Id_categoria
+
+                try:
+                    hu = Historial_usuario.objects.create(
+                        id_usuario=histVend,
+                        TIpo_Movimiento=histMovs,
+                        Modulo=histMod,
+                        Nombre_Objeto=histNomb,
+                        Id_Objeto=histId,
+                        Fecha_y_hora=histFech,
+                    )
+                    print("DEBUG: Historial_usuario created Id_historial =", getattr(hu, 'Id_historial', None))
+                except Exception as exc:
+                    import traceback
+                    traceback.print_exc()
+                    messages.warning(request, f'No se pudo registrar en historial de movimientos: {exc}')
+
                 messages.success(request, 'Categoría creada exitosamente.')
                 return redirect('Categorias')
             except Exception as e:
@@ -64,6 +92,8 @@ def CrearCategoria(request):
     return render(request, 'templates_categoria/crear_categorias.html', {'form': form})
 
 
+@login_required(login_url='login')
+@permission_required('Categorias.change_categoria', login_url='Categorias')
 @transaction.atomic
 def EditarCategoria(request, Id_categoria):
     categoria_obj = get_object_or_404(categoria, Id_categoria=Id_categoria)
@@ -75,7 +105,33 @@ def EditarCategoria(request, Id_categoria):
     if request.method == 'POST':
         form = EditarCategoriaForm(request.POST, instance=categoria_obj)
         if form.is_valid():
-            form.save()
+            categoria_editada = form.save()
+            
+            # ================================
+            # HISTORIAL DE MOVIMIENTOS - EDITAR
+            # ================================
+            histVend = request.user
+            histMod = 'categorías'
+            histMovs = 'editar'
+            histFech = timezone.now().date()
+            histNomb = categoria_editada.Nombre[:50]
+            histId = categoria_editada.Id_categoria
+
+            try:
+                hu = Historial_usuario.objects.create(
+                    id_usuario=histVend,
+                    TIpo_Movimiento=histMovs,
+                    Modulo=histMod,
+                    Nombre_Objeto=histNomb,
+                    Id_Objeto=histId,
+                    Fecha_y_hora=histFech,
+                )
+                print("DEBUG: Historial_usuario created Id_historial =", getattr(hu, 'Id_historial', None))
+            except Exception as exc:
+                import traceback
+                traceback.print_exc()
+                messages.warning(request, f'No se pudo registrar en historial de movimientos: {exc}')
+
             messages.success(request, 'Categoría actualizada correctamente.')
             return redirect('Categorias')
     else:

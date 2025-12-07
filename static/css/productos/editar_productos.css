@@ -1,50 +1,39 @@
-/* ================================
-    PALETA DE COLORES EDITAR PRODUCTO
-   ================================ */
-
 :root {
     --rojo-1: #8B0000;
     --rojo-2: #740000;
-    --negro: #1a1a1a;
     --gris-oscuro: #2c2c2c;
     --gris-medio: #42484b;
-    --gris-claro: #e9ecef;
-    --beige-claro: #faf8f0;
-    --blanco: #ffffff;
-    --verde-oscuro: #047857;
-    --amarillo-oscuro: #b45309;
+    --beige-claro: #faf8f5;
+    --estado-activo: #047857;
+    --estado-inactivo: #b91c1c;
 }
 
 /* ================================
-    CARD
+    CARDS
    ================================ */
 
 .card {
     border: none;
-    border-radius: 15px;
+    border-radius: 12px;
     overflow: hidden;
 }
 
 .card-header {
-    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%) !important;
+    background: linear-gradient(135deg, #dddddd 0%, #e9ecef 100%);
     border-bottom: 2px solid #dee2e6;
-    padding: 1rem 1.5rem;
+    padding: 1rem 1.25rem;
 }
 
-.card-header h5 {
+.card-header h6 {
     color: var(--gris-oscuro);
     font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
 }
 
 .card-body {
-    background-color: var(--blanco);
-    padding: 2rem;
-}
-
-.card-footer {
-    background-color: #f8f9fa;
-    border-top: 1px solid #dee2e6;
-    padding: 1rem 1.5rem;
+    background: var(--beige-claro);
+    padding: 1.5rem;
 }
 
 /* ================================
@@ -53,53 +42,28 @@
 
 .badge-id {
     background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
-    color: var(--blanco);
+    color: #fff;
     padding: 8px 14px;
     font-size: 0.9rem;
     border-radius: 8px;
 }
 
 /* ================================
-    TÍTULOS DE SECCIONES
+    BADGES DE ESTADO
    ================================ */
 
-h6.text-primary {
-    color: var(--rojo-1) !important;
-    font-weight: 600;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--rojo-1);
-    margin-bottom: 1rem;
+.badge-estado-activo {
+    background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
 }
 
-/* ================================
-    IMAGEN ACTUAL
-   ================================ */
-
-.imagen-actual {
-    max-height: 200px;
-    object-fit: cover;
-    border: 3px solid var(--gris-claro);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.imagen-actual:hover {
-    transform: scale(1.05);
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-}
-
-/* ================================
-    FOCUS DE INPUTS
-   ================================ */
-
-.form-select:focus,
-.form-control:focus,
-input[type="text"]:focus,
-input[type="number"]:focus,
-input[type="file"]:focus,
-textarea:focus {
-    border-color: var(--rojo-1) !important;
-    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
-    outline: none !important;
+.badge-estado-inactivo {
+    background: linear-gradient(135deg, var(--estado-inactivo) 0%, #991b1b 100%) !important;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
 }
 
 /* ================================
@@ -114,62 +78,83 @@ textarea:focus {
 }
 
 /* ================================
+    IMAGEN ACTUAL
+   ================================ */
+
+.imagen-actual-container {
+    text-align: center;
+}
+
+.imagen-actual {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.imagen-actual:hover {
+    transform: scale(1.05);
+}
+
+.preview-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed #adb5bd;
+    margin: 0 auto;
+}
+
+.preview-placeholder i {
+    font-size: 3rem;
+    color: #adb5bd;
+}
+
+/* ================================
     LABELS
    ================================ */
 
-.form-label.fw-semibold {
+.form-label {
     color: #495057;
-    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
 }
 
-.text-danger {
+.form-label .text-danger {
     color: var(--rojo-1) !important;
-    font-weight: 600;
 }
 
 /* ================================
-    MENSAJES DE AYUDA
+    FOCUS DE INPUTS
    ================================ */
 
-.form-text.text-muted {
-    font-size: 0.875rem;
-    color: #6c757d !important;
-    display: block;
-    margin-top: 0.25rem;
-}
-
-.form-text.text-muted i {
-    color: var(--rojo-1);
-}
-
-/* ================================
-    ALERTAS
-   ================================ */
-
-.alert-warning {
-    background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-    border: 1px solid #ffc107;
-    border-left: 4px solid #d97706;
-    border-radius: 10px;
-}
-
-.alert-warning .alert-heading {
-    color: #856404;
-    font-weight: 600;
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+    outline: none !important;
 }
 
 /* ================================
     BOTONES
    ================================ */
 
-/* Botón Actualizar - Rojo Oscuro */
 .btn-actualizar {
     background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
     border: none !important;
     color: #fff !important;
     box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
     transition: all 0.3s ease;
-    padding: 0.5rem 1.25rem;
+    padding: 0.4rem 1.2rem;
 }
 
 .btn-actualizar:hover {
@@ -178,53 +163,17 @@ textarea:focus {
     box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
 }
 
-/* Botón Cancelar - Gris */
 .btn-cancelar {
     background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
     border: none !important;
     color: #fff !important;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
-    padding: 0.5rem 1.25rem;
+    padding: 0.4rem 1.2rem;
 }
 
 .btn-cancelar:hover {
-    background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+    background: linear-gradient(135deg, var(--gris-oscuro) 0%, #1a1a1a 100%) !important;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
-}
-
-/* ================================
-    PREVISUALIZACIÓN DE IMAGEN
-   ================================ */
-
-#preview-container {
-    margin-top: 1rem;
-    padding: 1rem;
-    background-color: #f8f9fa;
-    border-radius: 0.5rem;
-    border: 1px dashed #dee2e6;
-}
-
-#preview-img {
-    transition: all 0.3s ease;
-    max-width: 100%;
-}
-
-#preview-img:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* ================================
-    VALIDACIÓN DE ERRORES
-   ================================ */
-
-.text-danger.small {
-    font-size: 0.875rem;
-    color: var(--rojo-1) !important;
-    display: block;
-    margin-top: 0.25rem;
 }
 
 /* ================================
@@ -237,91 +186,17 @@ textarea.form-control {
 }
 
 /* ================================
-    ANIMACIONES
-   ================================ */
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.card {
-    animation: fadeInUp 0.4s ease;
-}
-
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.05);
-    }
-}
-
-.btn-actualizar:active {
-    animation: pulse 0.3s ease;
-}
-
-/* Hover suave en inputs */
-.form-control:hover:not(:disabled),
-.form-select:hover:not(:disabled) {
-    border-color: var(--gris-medio);
-    transition: border-color 0.2s ease;
-}
-
-/* ================================
     RESPONSIVE
    ================================ */
 
 @media (max-width: 768px) {
-    .card-header {
-        flex-direction: column !important;
-        align-items: flex-start !important;
-        gap: 0.5rem;
-    }
-
     .card-body {
-        padding: 1.5rem;
+        padding: 1rem;
     }
-
-    .card-footer {
-        text-align: center !important;
-        flex-direction: column !important;
-    }
-
-    .card-footer .btn {
-        width: 100%;
-        margin-bottom: 0.5rem;
-    }
-
-    .card-footer .btn:last-child {
-        margin-bottom: 0;
-    }
-
-    .card-footer .me-2 {
-        margin-right: 0 !important;
-    }
-
-    .row .col-md-6 {
-        margin-bottom: 1rem;
-    }
-
-    h6.text-primary {
-        font-size: 0.95rem;
-    }
-
-    .input-group-text {
-        min-width: 40px;
-        justify-content: center;
-    }
-
-    .imagen-actual {
-        max-height: 150px;
+    
+    .imagen-actual,
+    .preview-placeholder {
+        width: 120px;
+        height: 120px;
     }
 }

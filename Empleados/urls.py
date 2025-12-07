@@ -28,4 +28,10 @@ urlpatterns = [
     
     # validar huella
     path("Empleados/validar-huella/", views.validar_huella, name="validar_huella"),
+    
+    #escanear qr
+    path('validar/<int:usuario_id>/', views.validar_qr, name='validar_qr'),
+
+    #registrar qr
+    path('registrar/', views.registrar_asistencia_ajax, name='registrar_asistencia_ajax'),
 ]

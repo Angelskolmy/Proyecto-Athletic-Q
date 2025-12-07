@@ -127,6 +127,10 @@ Productos
                     <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}" class="btn btn-sm btn-info" title="Detalle">
                       <i class="bi bi-eye-fill"></i>
                     </a>
+
+                    <a href="{% url 'EstSal' Infor_Prod.Id_producto %}" class="btn btn-movimientos btn-sm" title="Entradas/Salidas">
+                      <i class="bi bi-arrow-left-right"></i>
+                    </a>
                   </div>
                 </td>
                 {% endif %}
@@ -175,10 +179,12 @@ Productos
                   <a href="{% url 'EditProd' ichi.Id_producto %}" class="btn btn-sm btn-warning" title="Editar">
                     <i class="bi bi-pencil-fill"></i>
                   </a>
-                </td>
-                <td>
                   <a href="{% url 'SpecProd' ichi.Id_producto %}" class="btn btn-sm btn-info" title="Detalle">
                     <i class="bi bi-eye-fill"></i>
+                  </a>
+                  <a href="{% url 'EstSal' ichi.Id_producto %}" class="btn btn-movimientos btn-sm" title="Entradas/Salidas">
+
+                    <i class="bi bi-arrow-left-right"></i>
                   </a>
                 </td>
               </tr>

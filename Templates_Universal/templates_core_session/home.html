@@ -20,7 +20,6 @@
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="#">Inicio</a></li>
                     </ol>
                 </div>
             </div>
@@ -43,10 +42,10 @@
                             <p>Usuarios Activos</p>
                         </div>
                         <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M6.25 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM3.25 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122z"></path>
+                            <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/>
                         </svg>
-                        <a href="{% url 'Empleados' %}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                            Ver usuarios <i class="bi bi-link-45deg"></i>
+                        <a href="{% url 'Empleados' %}" class="small-box-footer">
+                            Ver más <i class="bi bi-arrow-right-circle"></i>
                         </a>
                     </div>
                 </div>
@@ -59,26 +58,26 @@
                             <p>Membresías por Vencer</p>
                         </div>
                         <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M6.75 2.25A.75.75 0 017.5 3v1.5h9V3A.75.75 0 0118 3v1.5h.75a3 3 0 013 3v11.25a3 3 0 01-3 3H5.25a3 3 0 01-3-3V7.5a3 3 0 013-3H6V3a.75.75 0 01.75-.75z"></path>
+                            <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/>
                         </svg>
-                        <a href="{% url 'Membresias' %}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                            Revisar vencimientos <i class="bi bi-link-45deg"></i>
+                        <a href="{% url 'Membresias' %}" class="small-box-footer">
+                            Ver más <i class="bi bi-arrow-right-circle"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Card 3: Asistencias del Mes -->
+                <!-- Card 3: Total Productos -->
                 <div class="col-lg-3 col-6">
                     <div class="small-box bg-success text-light">
                         <div class="inner">
-                            <h3>{{ asistencias_mes }}</h3>
-                            <p>Asistencias del Mes</p>
+                            <h3>{{ total_productos }}</h3>
+                            <p>Productos Activos</p>
                         </div>
                         <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" d="M7.5 6a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM3.751 20.105a8.25 8.25 0 0116.498 0 .75.75 0 01-.437.695A18.683 18.683 0 0112 22.5c-2.786 0-5.433-.608-7.812-1.7a.75.75 0 01-.437-.695z"></path>
+                            <path d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"/>
                         </svg>
-                        <a href="{% url 'Asistencias' %}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                            Ver asistencias <i class="bi bi-link-45deg"></i>
+                        <a href="{% url 'Producto' %}" class="small-box-footer">
+                            Ver más <i class="bi bi-arrow-right-circle"></i>
                         </a>
                     </div>
                 </div>
@@ -91,10 +90,10 @@
                             <p>Productos Stock Bajo</p>
                         </div>
                         <svg class="small-box-icon" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M3.375 4.5C2.339 4.5 1.5 5.34 1.5 6.375V13.5h12V6.375c0-1.036-.84-1.875-1.875-1.875h-8.25zM13.5 15h-12v2.625c0 1.035.84 1.875 1.875 1.875h.375a3 3 0 116 0h3a.75.75 0 00.75-.75V15z"></path>
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
                         </svg>
-                        <a href="{% url 'Producto' %}" class="small-box-footer link-light link-underline-opacity-0 link-underline-opacity-50-hover">
-                            Ir a inventario <i class="bi bi-link-45deg"></i>
+                        <a href="{% url 'Producto' %}" class="small-box-footer">
+                            Ver más <i class="bi bi-arrow-right-circle"></i>
                         </a>
                     </div>
                 </div>
@@ -103,15 +102,16 @@
 
             <!-- Gráficos -->
             <div class="row mt-4">
-                <!-- Gráfico 1: Asistencias últimos 7 días (Barras) -->
+                <!-- Gráfico 1: Productos por Categoría (Barras) -->
                 <div class="col-lg-8 mb-3">
                     <div class="chart-container">
-                        <div class="chart-title">
-                            <i class="bi bi-bar-chart-fill me-2 text-success"></i>Asistencias - Últimos 7 Días
-                            <span id="total-asistencias" class="float-end text-success fw-bold"></span>
-                        </div>
+                        <h5 class="chart-title">
+                            <i class="bi bi-bar-chart-fill me-2"></i>
+                            Productos por Categoría
+                            <span id="totalProductos" class="badge bg-success ms-2">0</span>
+                        </h5>
                         <div class="chart-body-lg">
-                            <canvas id="asistenciasChart"></canvas>
+                            <canvas id="productosChart"></canvas>
                         </div>
                     </div>
                 </div>
@@ -119,10 +119,10 @@
                 <!-- Gráfico 2: Tipos de Membresía (Doughnut) -->
                 <div class="col-lg-4 mb-3">
                     <div class="chart-container">
-                        <div class="chart-title">
-                            <i class="bi bi-pie-chart-fill me-2 text-primary"></i>Membresías Activas
-                            <span id="total-membresias" class="float-end text-primary fw-bold"></span>
-                        </div>
+                        <h5 class="chart-title">
+                            <i class="bi bi-pie-chart-fill me-2"></i>
+                            Membresías Activas
+                        </h5>
                         <div class="chart-body-lg">
                             <canvas id="membresiasChart"></canvas>
                         </div>
@@ -137,50 +137,37 @@
     <script>
         (() => {
             // Paleta de colores
-            const palette = ['#b11226', '#247d4c', '#f5bc02', '#138fa7', '#6c757d', '#8c4dff', '#ff7f50'];
+            const palette = ['#8B0000', '#047857', '#d97706', '#1e3a8a', '#6c757d', '#8c4dff', '#ff7f50', '#2dd4bf', '#f43f5e'];
             
             // Contextos de gráficos
-            const asistenciasCtx = document.getElementById('asistenciasChart').getContext('2d');
+            const productosCtx = document.getElementById('productosChart').getContext('2d');
             const membresiasCtx = document.getElementById('membresiasChart').getContext('2d');
 
-            let asistenciasChart = null;
+            let productosChart = null;
             let membresiasChart = null;
 
-            // Cargar gráfico de asistencias (BARRAS)
-            async function fetchAsistencias() {
+            // Cargar gráfico de productos por categoría (BARRAS)
+            async function fetchProductos() {
                 try {
-                    const res = await fetch(`{% url 'home_chart' 'asistencias' %}`);
+                    const res = await fetch(`{% url 'home_chart' 'productos' %}`);
                     const data = await res.json();
 
                     // Actualizar total
-                    document.getElementById('total-asistencias').textContent = data.total || 0;
+                    document.getElementById('totalProductos').textContent = data.total || 0;
 
-                    // Destruir gráfico anterior si existe
-                    if (asistenciasChart) {
-                        asistenciasChart.destroy();
-                    }
+                    if (productosChart) productosChart.destroy();
 
-                    // Crear nuevo gráfico de BARRAS
-                    asistenciasChart = new Chart(asistenciasCtx, {
+                    productosChart = new Chart(productosCtx, {
                         type: 'bar',
                         data: {
                             labels: data.labels,
                             datasets: [{
-                                label: 'Asistencias',
+                                label: 'Productos',
                                 data: data.data,
-                                backgroundColor: [
-                                    'rgba(36, 125, 76, 0.8)',
-                                    'rgba(36, 125, 76, 0.7)',
-                                    'rgba(36, 125, 76, 0.6)',
-                                    'rgba(36, 125, 76, 0.7)',
-                                    'rgba(36, 125, 76, 0.8)',
-                                    'rgba(36, 125, 76, 0.9)',
-                                    'rgba(36, 125, 76, 1)'
-                                ],
-                                borderColor: '#247d4c',
-                                borderWidth: 2,
-                                borderRadius: 8,
-                                borderSkipped: false,
+                                backgroundColor: palette,
+                                borderColor: palette.map(c => c),
+                                borderWidth: 1,
+                                borderRadius: 6,
                             }]
                         },
                         options: {
@@ -192,14 +179,14 @@
                                     backgroundColor: 'rgba(0,0,0,0.8)',
                                     padding: 12,
                                     callbacks: {
-                                        label: (ctx) => `${ctx.parsed.y} asistencias`
+                                        label: (ctx) => `${ctx.parsed.y} productos`
                                     }
                                 }
                             },
                             scales: {
                                 y: {
                                     beginAtZero: true,
-                                    ticks: {
+                                    ticks: { 
                                         stepSize: 1,
                                         callback: (v) => Number.isInteger(v) ? v : null
                                     },
@@ -212,7 +199,7 @@
                         }
                     });
                 } catch (error) {
-                    console.error('Error cargando asistencias:', error);
+                    console.error('Error cargando productos:', error);
                 }
             }
 
@@ -222,26 +209,8 @@
                     const res = await fetch(`{% url 'home_chart' 'membresias' %}`);
                     const data = await res.json();
 
-                    // Actualizar total
-                    document.getElementById('total-membresias').textContent = data.total || 0;
+                    if (membresiasChart) membresiasChart.destroy();
 
-                    // Destruir gráfico anterior si existe
-                    if (membresiasChart) {
-                        membresiasChart.destroy();
-                    }
-
-                    // Si no hay datos, mostrar mensaje
-                    if (data.labels.length === 0) {
-                        membresiasCtx.canvas.parentNode.innerHTML = `
-                            <div class="text-center text-muted py-5">
-                                <i class="bi bi-pie-chart display-4 opacity-25"></i>
-                                <p class="mt-2">No hay membresías activas</p>
-                            </div>
-                        `;
-                        return;
-                    }
-
-                    // Crear nuevo gráfico
                     membresiasChart = new Chart(membresiasCtx, {
                         type: 'doughnut',
                         data: {
@@ -249,23 +218,21 @@
                             datasets: [{
                                 data: data.data,
                                 backgroundColor: palette,
-                                borderWidth: 3,
+                                borderWidth: 2,
                                 borderColor: '#fff',
-                                hoverOffset: 15
+                                hoverOffset: 10
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            cutout: '65%',
+                            cutout: '60%',
                             plugins: {
                                 legend: {
-                                    display: true,
                                     position: 'bottom',
-                                    labels: {
+                                    labels: { 
                                         padding: 15,
-                                        usePointStyle: true,
-                                        pointStyle: 'circle'
+                                        usePointStyle: true
                                     }
                                 },
                                 tooltip: {
@@ -288,7 +255,7 @@
             }
 
             // Cargar todos los gráficos al iniciar
-            fetchAsistencias();
+            fetchProductos();
             fetchMembresias();
         })();
     </script>

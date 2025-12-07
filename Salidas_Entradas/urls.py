@@ -6,6 +6,6 @@ urlpatterns = [
 
     path('EstSal/<int:Id_producto>/', views.ListarSalidasEntradas, name='EstSal'), 
     path('IngEstSal/<int:Id_producto>/', views.CrearSalidasEntradas, name='IngEstSal'), 
-    path('BUsqENsal/', views.BuscadorSalidasEntradas, name='BUsqENsal')
+    path('BUsqENsal/', views.BuscadorSalidasEntradas, name='BUsqENsal'),
     
 ]  

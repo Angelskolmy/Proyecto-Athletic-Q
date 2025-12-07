@@ -33,8 +33,8 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'core',
     'Rutinas',
-    'Historial_ventas', 
-    'Historial',   
+    'Historial_ventas',
+    'Historial',
     'Membresias',
     'Tipo_membresia',
     'Detalle_venta',
@@ -42,7 +42,7 @@ INSTALLED_APPS = [
     'Ventas',
     'Asistencia',
     'Empleados',
-    'Productos', 
+    'Productos',
     'Categorias',
     'Salidas_Entradas',
     'django.contrib.admin',
@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
 ]
 
-AUTH_USER_MODEL= "Empleados.User_Empleados"
+AUTH_USER_MODEL = "Empleados.User_Empleados"
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -71,24 +71,25 @@ ROOT_URLCONF = 'AtleticQ.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "Templates_Universal" ],
+        'DIRS': [BASE_DIR / "Templates_Universal"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth', 
+                'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
     },
 ]
 
-STATICFILES_DIRS=[
-    BASE_DIR / "static",
-]
+STATIC_URL = 'static/'
+STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
-MEDIA_ROOT= BASE_DIR/ 'Media'
-MEDIA_URL= '/Media/'
+# Configuración para archivos multimedia
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 WSGI_APPLICATION = 'AtleticQ.wsgi.application'
 
@@ -99,17 +100,16 @@ WSGI_APPLICATION = 'AtleticQ.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'bzqcdu8ho9bjgp4wnhiw', 
-        'USER': 'ufucxi869cybbrmb', 
-        'PASSWORD': 'Emg6rQtdEBMiinS5QF6A',
-        'HOST': 'bzqcdu8ho9bjgp4wnhiw-mysql.services.clever-cloud.com', 
+        'NAME': 'be55fd4oajuzfte8da76', 
+        'USER': 'uqedngok91965z98', 
+        'PASSWORD': 'xGNTmTws8lNF0DosrIvq',
+        'HOST': 'be55fd4oajuzfte8da76-mysql.services.clever-cloud.com', 
         'PORT': '3306', 
         'OPTIONS':{
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
         }
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -129,27 +129,24 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# validacion de contraseñas (anula la lista anterior si quieres sin validaciones)
+AUTH_PASSWORD_VALIDATORS = []
+
 
 # Internationalization
 # https://docs.djangoproject.com/en/5.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
+LANGUAGE_CODE = 'es-CO'  # Español de Colombia
+TIME_ZONE = 'America/Bogota'
 USE_I18N = True
-
+USE_L10N = True  # Activar formato localizado
 USE_TZ = True
+USE_THOUSAND_SEPARATOR = True  # Separador de miles
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [BASE_DIR / "static"]
-
-STATIC_ROOT = BASE_DIR /"staticfiles"
+# Formato de números
+THOUSAND_SEPARATOR = '.'  # Punto para miles (ej: 1.000)
+DECIMAL_SEPARATOR = ','   # Coma para decimales (ej: 1.000,50)
+NUMBER_GROUPING = 3       # Agrupar cada 3 dígitos
 
 
 # Default primary key field type
@@ -164,21 +161,6 @@ LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/home/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-# Configuración para archivos multimedia
-MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
-
-# Localización
-LANGUAGE_CODE = 'es-CO'  # Español de Colombia
-TIME_ZONE = 'America/Bogota'
-USE_I18N = True
-USE_L10N = True  # Activar formato localizado
-USE_THOUSAND_SEPARATOR = True  # Separador de miles
-
-# Formato de números
-THOUSAND_SEPARATOR = '.'  # Punto para miles (ej: 1.000)
-DECIMAL_SEPARATOR = ','   # Coma para decimales (ej: 1.000,50)
-NUMBER_GROUPING = 3       # Agrupar cada 3 dígitos
 
 # configuracion para enviar email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -187,6 +169,3 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'smorales.joan@gmail.com'
 EMAIL_HOST_PASSWORD = 'hymz onmg kkgi vmzt'
-
-# validacion de contraseñas
-AUTH_PASSWORD_VALIDATORS = []

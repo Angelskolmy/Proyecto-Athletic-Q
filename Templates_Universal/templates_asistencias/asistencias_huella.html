@@ -31,6 +31,9 @@
       <img src="{% static 'img/logo.png' %}" alt="Logo" style="height:36px;" class="me-2">
       <span>Gimnasio | Validación</span>
     </a>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalQr">
+      Validar asistencia (Escanear QR)
+    </button>
   </div>
 </nav>
 
@@ -44,19 +47,47 @@
 </div>
 
 <!-- Modal reutilizable -->
-<div class="modal fade" id="modalMsg" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content" style="background:#1f1f1f; color:#f1f3f7; border:1px solid #2ecc71;">
-      <div class="modal-body text-center">
-        <i id="modal-icon" class="bi bi-check-circle-fill text-success" style="font-size:48px;"></i>
-        <h4 class="mt-3" id="modal-title"></h4>
-        <p class="mb-0" id="modal-sub"></p>
+  <div class="modal fade" id="modalMsg" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background:radial-gradient(circle at 20% 20%, #0f1f3a, #0c1528); color:#f1f3f7; border:1px solid rgba(63,131,248,0.5); box-shadow:0 20px 60px rgba(0,0,0,0.4);">
+        <div class="modal-body text-center p-4">
+          <div id="modal-icon" class="mb-3 text-success" style="font-size:56px;">
+            <i class="bi bi-check-circle-fill"></i>
+          </div>
+          <h4 class="mb-1" id="modal-title"></h4>
+          <p class="mb-2" id="modal-sub"></p>
+          <div id="modal-extra" class="mt-3 text-start" style="font-size:0.95rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px;">
+            <div class="d-flex align-items-center justify-content-between mb-1">
+              <span class="text-muted">Estado</span>
+              <span id="modal-estado" class="badge rounded-pill bg-success-subtle text-success fw-semibold">-</span>
+            </div>
+            <div class="small"><strong>Entrada:</strong> <span id="modal-entrada">-</span></div>
+            <div class="small"><strong>Salida:</strong> <span id="modal-salida">-</span></div>
+          </div>
+          <button class="btn btn-primary w-100 mt-3" data-bs-dismiss="modal">Aceptar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Modal QR -->
+<div class="modal fade" id="modalQr" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="background:#1f1f1f; color:#f1f3f7; border:1px solid #3f83f8;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title">Escanear código QR</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="qr-reader" style="width: 100%; min-height: 320px;"></div>
+        <div id="qr-status" class="mt-3 text-info"></div>
       </div>
     </div>
   </div>
 </div>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
   <script>
     const CAPTURE_URL = "http://localhost:5000/capture";
     const VALIDAR_URL = "/Empleados/validar-huella/";
@@ -65,6 +96,10 @@
     const resultado = document.getElementById("resultado");
     const modalEl = document.getElementById("modalMsg");
     const modal = new bootstrap.Modal(modalEl, { backdrop: "static", keyboard: false });
+    const modalQrEl = document.getElementById("modalQr");
+    const qrStatus = document.getElementById("qr-status");
+    let qrScanner = null;
+    let qrBusy = false;
     let clearTimer = null;
     let running = true;
 
@@ -74,24 +109,46 @@
       else icono.classList.remove("activo");
     }
 
-    function showModal(titulo, sub, ok = true) {
+    function estadoClass(estadoTxt) {
+      const t = (estadoTxt || "").toLowerCase();
+      if (t.includes("salida")) return "bg-info-subtle text-info";
+      if (t.includes("pend")) return "bg-warning-subtle text-warning";
+      return "bg-success-subtle text-success";
+    }
+
+    function actionClass(titulo) {
+      const t = (titulo || "").toLowerCase();
+      if (t.includes("salida")) return "text-info";
+      if (t.includes("pend")) return "text-warning";
+      return "text-success";
+    }
+
+    function showModal(titulo, sub, ok = true, estadoTxt = "-", entrada = "-", salida = "-") {
       if (clearTimer) clearTimeout(clearTimer);
       document.getElementById("modal-title").innerText = titulo;
+      document.getElementById("modal-title").className = actionClass(titulo);
       document.getElementById("modal-sub").innerText = sub;
+      document.getElementById("modal-estado").innerText = estadoTxt || "-";
+      document.getElementById("modal-estado").className = "badge rounded-pill fw-semibold " + estadoClass(estadoTxt);
+      document.getElementById("modal-entrada").innerText = entrada || "-";
+      document.getElementById("modal-salida").innerText = salida || "-";
       const icon = document.getElementById("modal-icon");
       if (ok) {
-        icon.className = "bi bi-check-circle-fill text-success";
-        modalEl.querySelector(".modal-content").style.borderColor = "#2ecc71";
+        icon.className = "mb-3 text-success";
+        icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
+        modalEl.querySelector(".modal-content").style.borderColor = "rgba(46,204,113,0.6)";
       } else {
-        icon.className = "bi bi-x-circle-fill text-danger";
+        icon.className = "mb-3 text-danger";
+        icon.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
         modalEl.querySelector(".modal-content").style.borderColor = "#c62828";
       }
       modal.show();
-      clearTimer = setTimeout(() => modal.hide(), 10000);
+      clearTimer = setTimeout(() => modal.hide(), 8000);
     }
 
     function showFail(msg) {
-      resultado.innerText = msg || "Huella no reconocida.";
+      const texto = msg || "Huella no reconocida.";
+      resultado.innerText = texto;
       setEstado("Esperando huella...", false);
       if (clearTimer) clearTimeout(clearTimer);
       clearTimer = setTimeout(() => { resultado.innerText = ""; }, 7000);
@@ -118,16 +175,26 @@
         let valData;
         try { valData = JSON.parse(txtVal); }
         catch { throw new Error("Respuesta no es JSON al validar: " + txtVal); }
-        if (!respVal.ok || !valData.ok) throw new Error(valData.error || "Sin coincidencia");
+
+        // Si el backend responde sin ok (por horario u otra razón), muestra el mensaje y reintenta
+        if (!respVal.ok || valData.ok === false) {
+          throw new Error(valData.mensaje || valData.error || "Sin coincidencia");
+        }
 
         const nombre = valData.usuario || "Usuario";
         const msgAsis = valData.asistencia || "";
-        showModal(nombre, msgAsis, true);
+        const entrada = valData.entrada || "-";
+        const salida = valData.salida || "-";
+        const estadoTxt = msgAsis || "Registrado";
+        const titulo = msgAsis || "Asistencia registrada";
+        const sub = `Usuario: ${nombre}`;
+        showModal(titulo, sub, true, estadoTxt, entrada, salida);
         setEstado("Huella validada.", true);
         resultado.innerText = "";
       } catch (err) {
         console.error("Error en ciclo:", err);
-        showFail("Error o sin coincidencia.");
+        showFail(err?.message || "Error o sin coincidencia.");
+        setEstado("Huellero no conectado o fuera de horario.", false);
       } finally {
         setTimeout(ciclo, 1000);
       }
@@ -139,6 +206,81 @@
       if (parts.length === 2) return parts.pop().split(";").shift();
       return "";
     }
+
+    function startQrScanner() {
+      qrBusy = false;
+      qrStatus.innerText = "Apunta la cámara al código.";
+      if (!qrScanner) {
+        qrScanner = new Html5Qrcode("qr-reader");
+      }
+      qrScanner.start(
+        { facingMode: "environment" },
+        { fps: 10, qrbox: 250 },
+        onQrScanned,
+        () => {}
+      ).catch(err => {
+        qrStatus.innerText = "No se pudo iniciar la cámara: " + err;
+      });
+    }
+
+    function stopQrScanner() {
+      qrBusy = false;
+      if (qrScanner) {
+        qrScanner.stop().catch(() => {});
+        qrScanner.clear().catch(() => {});
+        qrScanner = null;
+      }
+    }
+
+    function onQrScanned(decodedText) {
+      if (qrBusy) return;
+      qrBusy = true;
+      qrStatus.innerText = "Procesando asistencia...";
+
+      fetch("{% url 'registrar_asistencia_ajax' %}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ dato_qr: decodedText })
+      })
+      .then(async r => {
+        if (!r.ok) {
+          const txt = await r.text();
+          throw new Error(txt || ("HTTP " + r.status));
+        }
+        return r.json();
+      })
+      .then(data => {
+        const mensaje = data.mensaje || data.asistencia || "Asistencia registrada";
+        qrStatus.innerText = mensaje;
+        setTimeout(() => {
+          const instance = bootstrap.Modal.getInstance(modalQrEl);
+          if (instance) instance.hide();
+          stopQrScanner();
+          qrBusy = false;
+          if (!running) { running = true; ciclo(); }
+        }, 5000);
+      })
+      .catch(err => {
+        qrStatus.innerText = "Error: " + (err.message || err);
+        qrBusy = false;
+      });
+    }
+
+    modalQrEl.addEventListener("shown.bs.modal", () => {
+      running = false;
+      startQrScanner();
+    });
+
+    modalQrEl.addEventListener("hidden.bs.modal", () => {
+      stopQrScanner();
+      setEstado("Esperando huella...", false);
+      running = true;
+      ciclo();
+      qrStatus.innerText = "";
+    });
 
     window.onload = () => {
       setEstado("Esperando huella...", false);

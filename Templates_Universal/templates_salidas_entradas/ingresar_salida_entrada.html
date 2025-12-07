@@ -1,162 +1,144 @@
 {% extends 'base.html' %} 
-
 {% load static %} 
 
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/salidas_entradas/salidas_entradas.css' %}">
+{% endblock %}
+
+{% block title %}Nueva Entrada/Salida{% endblock %}
+
 {% block content %} 
-    <div class="container-fluid py-3">
-  <div class="row">
-    <div class="col-12">
-      <div class="d-flex align-items-center justify-content-between mb-3">
-        <div>
-          <h4 class="mb-0"><i class="bi bi-arrow-repeat me-2 text-danger"></i>Crear Entrada / Salida</h4>
-          <small class="text-muted">Registre una entrada o salida para el producto</small>
-        </div>
-        <nav aria-label="breadcrumb">
-          <ol class="breadcrumb bg-transparent mb-0">
-            <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
-            <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Nueva Entrada/Salida</li>
-          </ol>
-        </nav>
-      </div>
-
-      <div class="card shadow-sm">
-        <div class="card-body p-4">
-          <form method="post" novalidate>
-            {% csrf_token %}
-
-            <div class="row gx-4">
-              <!-- Left column -->
-              <div class="col-lg-6">
-                <div class="mb-4">
-                  <div class="d-flex align-items-center justify-content-between mb-2">
-                    <h6 class="section-title mb-0"><i class="bi bi-info-circle me-2 text-primary"></i>Datos Principales</h6>
-                  </div>
-                  <div class="section-divider mb-3"></div>
-
-                  <div class="mb-3">
-                    {{ runkerno.Tipo_Cambio.label_tag }}
-                    {{ runkerno.Tipo_Cambio }}
-                    <div class="form-text">Seleccione si es entrada o salida</div>
-                  </div>
-
-                  <div class="mb-3">
-                    {{ runkerno.Precio_Afectado.label_tag }}
-                    <div class="input-group">
-                      <span class="input-group-text">$</span>
-                      {{ runkerno.Precio_Afectado }}
-                    </div>
-                    <div class="form-text">Valor que se aplicará al precio (si aplica)</div>
-                  </div>
-
-                  <div class="mb-0">
-                    {{ runkerno.Descripcion_EntSal.label_tag }}
-                    {{ runkerno.Descripcion_EntSal }}
-                    <div class="form-text mt-1">Descripción breve del movimiento</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Right column -->
-              <div class="col-lg-6">
-                <div class="mb-4">
-                  <div class="d-flex align-items-center justify-content-between mb-2">
-                    <h6 class="section-title mb-0"><i class="bi bi-box-seam me-2 text-primary"></i>Parametros de Cambio</h6>
-                  </div>
-                  <div class="section-divider mb-3"></div>
-
-                  <div class="mb-3">
-                    {{ runkerno.Cambio_precio.label_tag }}
-                    {{ runkerno.Cambio_precio }}
-                    <div class="form-text">Tipo de modificación de precio (ej: absoluto, porcentaje)</div>
-                  </div>
-
-                  <div class="mb-3">
-                    {{ runkerno.Stock_Afectado.label_tag }}
-                    <div class="input-group">
-                      <span class="input-group-text bg-white border-end-0"><i class="bi bi-box"></i></span>
-                      {{ runkerno.Stock_Afectado }}
-                      <span class="input-group-text bg-white border-start-0">unidades</span>
-                    </div>
-                    <div class="form-text">Cantidad a añadir o restar del inventario</div>
-                  </div>
-
-                  <!-- opcional: mostrar resumen / nota -->
-                  <div class="mb-0">
-                    <div class="border rounded p-2 bg-light">
-                      <small class="text-muted">Nota</small>
-                      <div class="mt-1">Asegúrese de seleccionar correctamente el tipo y la cantidad antes de guardar.</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+<div class="app-content-header">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h3 class="mb-0">
+                    <i class="bi bi-plus-circle me-2"></i>Nueva Entrada/Salida
+                </h3>
             </div>
-
-            <!-- Actions -->
-            <div class="d-flex justify-content-end gap-2 mt-4">
-              <a href="{% url 'Producto' %}" class="btn btn-outline-secondary">Cancelar</a>
-              <button type="submit" class="btn btn-danger">Guardar</button>
+            <div class="col-sm-4">
+                <ol class="breadcrumb float-sm-end">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Inicio</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'Producto' %}">Productos</a></li>
+                    <li class="breadcrumb-item active">Nuevo Movimiento</li>
+                </ol>
             </div>
-          </form>
         </div>
-      </div>
-
     </div>
-  </div>
 </div>
 
-<style>
-  .section-title {
-    color: #c82333;
-    font-weight: 700;
-    font-size: 0.95rem;
-  }
-  .section-divider {
-    height: 2px;
-    background: linear-gradient(90deg, #0d6efd, #0d6efd);
-    width: 100%;
-    margin-top: .35rem;
-    margin-bottom: 1.25rem;
-  }
-  input.form-control,
-  textarea.form-control,
-  select.form-select {
-    border-radius: .35rem;
-    height: calc(1.6em + .9rem);
-    box-shadow: none;
-  }
-  textarea.form-control { min-height: 100px; height: auto; padding-top: .6rem; padding-bottom: .6rem; }
-  .input-group .input-group-text { border-radius: .35rem; }
-  .input-group .form-control { border-left: 0; border-right: 0; }
-  .card .section-card, .card .inner-box { border: none; box-shadow: none; background: transparent; }
-  .form-text { font-size: .85rem; color: #6c757d; }
-  @media (max-width: 767.98px) { .section-divider { margin-bottom: .75rem; } }
-</style> 
+<div class="app-content">
+    <div class="container-fluid">
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div class="card shadow-sm">
+                <div class="card-header">
+                    <h6 class="mb-0">
+                        <i class="bi bi-info-circle me-2"></i>Información del Movimiento
+                    </h6>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <!-- Tipo de Cambio -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ runkerno.Tipo_Cambio.id_for_label }}" class="form-label">
+                                Tipo de Movimiento <span class="text-danger">*</span>
+                            </label>
+                            {{ runkerno.Tipo_Cambio }}
+                            {% if runkerno.Tipo_Cambio.errors %}
+                                <div class="text-danger small mt-1">{{ runkerno.Tipo_Cambio.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Cambio de Precio -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ runkerno.Cambio_precio.id_for_label }}" class="form-label">
+                                Cambio de Precio
+                            </label>
+                            {{ runkerno.Cambio_precio }}
+                            {% if runkerno.Cambio_precio.errors %}
+                                <div class="text-danger small mt-1">{{ runkerno.Cambio_precio.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Stock Afectado -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ runkerno.Stock_Afectado.id_for_label }}" class="form-label">
+                                Stock Afectado
+                            </label>
+                            {{ runkerno.Stock_Afectado }}
+                            {% if runkerno.Stock_Afectado.errors %}
+                                <div class="text-danger small mt-1">{{ runkerno.Stock_Afectado.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Precio Afectado -->
+                        <div class="col-md-6 mb-3">
+                            <label for="{{ runkerno.Precio_Afectado.id_for_label }}" class="form-label">
+                                Precio Afectado
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                {{ runkerno.Precio_Afectado }}
+                            </div>
+                            {% if runkerno.Precio_Afectado.errors %}
+                                <div class="text-danger small mt-1">{{ runkerno.Precio_Afectado.errors }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Descripción -->
+                        <div class="col-12 mb-3">
+                            <label for="{{ runkerno.Descripcion_EntSal.id_for_label }}" class="form-label">
+                                Descripción del Movimiento
+                            </label>
+                            {{ runkerno.Descripcion_EntSal }}
+                            {% if runkerno.Descripcion_EntSal.errors %}
+                                <div class="text-danger small mt-1">{{ runkerno.Descripcion_EntSal.errors }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Alerta informativa -->
+                    <div class="alert alert-info d-flex align-items-start mt-2 mb-4">
+                        <i class="bi bi-lightbulb-fill text-info fs-5 me-3 mt-1"></i>
+                        <div>
+                            <strong>Nota:</strong> Las entradas incrementan el stock y las salidas lo disminuyen. 
+                            La fecha se registra automáticamente.
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-flex justify-content-end gap-2 pt-3 border-top">
+                        <a href="{% url 'EstSal' Id_producto %}" class="btn btn-cancelar">
+                            <i class="bi bi-x-circle me-1"></i>Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-guardar">
+                            <i class="bi bi-check-circle me-1"></i>Guardar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script>
     const numeros = document.querySelectorAll('.numero');
     numeros.forEach(input => {
-        // Bloquear teclas no permitidas
         input.addEventListener('keydown', (e) => {
-            // Caracteres bloqueados: - + e E . ,
             if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
                 e.preventDefault();
             }
         });
-
-        // Si pegan texto, limpiar caracteres no válidos
         input.addEventListener('paste', (e) => {
             e.preventDefault();
             const texto = e.clipboardData.getData('text');
             const soloNumeros = texto.replace(/[^0-9]/g, '');
             input.value = soloNumeros;
         });
-
-        // Validar que no sea negativo
         input.addEventListener('input', () => {
-            if (input.value < 0) {
-                input.value = 0;
-            }
+            if (input.value < 0) input.value = 0;
         });
     });
 </script>

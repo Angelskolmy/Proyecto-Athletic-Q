@@ -71,6 +71,12 @@ def ProcesarVenta(request):
     try:
         # 1. OBTENER VENDEDOR
         empleado_id = request.POST.get('empleado_id')
+        
+        # Validar que empleado_id no esté vacío
+        if not empleado_id:
+            messages.error(request, 'Debe seleccionar un vendedor')
+            return redirect('Ventas')
+        
         empleado = get_object_or_404(User_Empleados, id=empleado_id)
         
         # 2. OBTENER MÉTODO DE PAGO
@@ -153,7 +159,7 @@ def ProcesarVenta(request):
             print("DEBUG: Historial_usuario created Id_historial =", getattr(hu, 'Id_historial', None))
         except Exception as exc:
             import traceback
-            traceback.print_exc()   # ver error real en la consola
+            traceback.print_exc()
             messages.warning(request, f' No se pudo registrar en historial de movimientos: {exc}')
 
         messages.success(request, f' Venta #{venta.Id_venta} creada - Total: ${total:,.0f}')
