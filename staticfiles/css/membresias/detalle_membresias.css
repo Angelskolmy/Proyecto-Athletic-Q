@@ -1,0 +1,256 @@
+/* ================================
+    PALETA DE COLORES DETALLE MEMBRESÍA
+   ================================ */
+
+:root {
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #42484b;
+  --estado-activo: #047857;
+  --estado-inactivo: #b91c1c;
+}
+
+/* ================================
+    BADGES DEL HEADER
+   ================================ */
+
+.card-header .badge {
+  font-size: 1rem !important;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+}
+
+.badge.bg-success {
+  background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;
+}
+
+.badge.bg-warning {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+}
+
+.badge.bg-danger {
+  background: linear-gradient(135deg, var(--estado-inactivo) 0%, #991b1b 100%) !important;
+}
+
+.badge.bg-info {
+  background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%) !important;
+  font-size: 0.875rem !important;
+}
+
+/* ================================
+    TÍTULOS DE SECCIONES
+   ================================ */
+
+h6.text-primary {
+  color: var(--rojo-1) !important;
+  font-weight: 600;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--rojo-1);
+  margin-bottom: 1rem;
+}
+
+/* ================================
+    CARDS DE INFORMACIÓN
+   ================================ */
+
+.card.shadow-sm {
+  border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card.shadow-sm:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+}
+
+.row .col-lg-6 .card {
+  margin-top: 1.5rem;
+}
+
+/* ================================
+    ICONOS Y DISPLAY
+   ================================ */
+
+.display-6 {
+  font-size: 3rem;
+}
+
+.text-success {
+  color: var(--estado-activo) !important;
+}
+
+.text-warning {
+  color: #d97706 !important;
+}
+
+.text-danger {
+  color: var(--estado-inactivo) !important;
+}
+
+/* ================================
+    ALERTAS
+   ================================ */
+
+.alert-success {
+  background-color: #d1f4e0;
+  border-left: 4px solid var(--estado-activo);
+  color: #065f46;
+}
+
+.alert-warning {
+  background-color: #fef3c7;
+  border-left: 4px solid #d97706;
+  color: #92400e;
+}
+
+.alert-danger {
+  background-color: #fee2e2;
+  border-left: 4px solid var(--estado-inactivo);
+  color: #991b1b;
+}
+
+/* ================================
+    GRÁFICO DE PROGRESO
+   ================================ */
+
+#progressChart {
+  max-width: 200px;
+  max-height: 200px;
+}
+
+#chartCenterText {
+  font-size: 2rem;
+  font-weight: bold;
+  transition: color 0.3s ease;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.chart-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  margin: 0 auto;
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+/* Botón Volver - Gris */
+.btn-secondary {
+  background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+}
+
+.btn-secondary:hover {
+  background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* Botón Editar - Amarillo */
+.btn-warning {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(180, 83, 9, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(180, 83, 9, 0.4);
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.chart-container {
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.card {
+  animation: slideInUp 0.4s ease;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 992px) {
+  .col-lg-5 {
+    min-height: 300px;
+  }
+  
+  /* Mantener separación en tablets */
+  .row .col-lg-6 .card {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  #progressChart {
+    max-width: 150px !important;
+    max-height: 150px !important;
+  }
+  
+  .chart-container {
+    width: 150px !important;
+    height: 150px !important;
+  }
+  
+  #chartCenterText {
+    font-size: 1.5rem !important;
+  }
+
+  .card-footer {
+    text-align: center !important;
+  }
+
+  .card-footer .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+
+  .card-footer .btn:last-child {
+    margin-bottom: 0;
+  }
+
+  .card-footer .me-2 {
+    margin-right: 0 !important;
+  }
+  
+  /* Reducir separación en móviles */
+  .row .col-lg-6 .card {
+    margin-top: 0.75rem;
+  }
+}

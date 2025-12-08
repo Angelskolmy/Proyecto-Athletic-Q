@@ -158,11 +158,11 @@ def vista_cambiar_contraseña(request):
 # ============================
 
 def error_403_view(request, exception=None):
-    return render(request, 'errors/403.html', status=403)
+    return render(request, 'templates_errores/403.html', status=403)
 
 
 def error_404_view(request, exception=None):
-    return render(request, 'errors/404.html', status=404)
+    return render(request, 'templates_errores/404.html', status=404)
 
 
 def logout_view(request):

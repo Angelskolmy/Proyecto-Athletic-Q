@@ -25,8 +25,13 @@ SECRET_KEY = 'django-insecure-5--1_2@nitqqlu_qsst#5!gu$3gjro#u67*5ei6gbi#k@@_+v_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = [
+    "athleticq.online",
+    "www.athleticq.online",
+    "72.61.75.128",
+    "localhost",
+    "127.0.0.1"
+]
 
 # Application definition
 
@@ -83,7 +88,7 @@ TEMPLATES = [
     },
 ]
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
@@ -100,17 +105,16 @@ WSGI_APPLICATION = 'AtleticQ.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'be55fd4oajuzfte8da76', 
-        'USER': 'uqedngok91965z98', 
-        'PASSWORD': 'xGNTmTws8lNF0DosrIvq',
-        'HOST': 'be55fd4oajuzfte8da76-mysql.services.clever-cloud.com', 
-        'PORT': '3306', 
-        'OPTIONS':{
+        'NAME': 'athleticq_db',              # nombre que creamos en el VPS
+        'USER': 'athleticq_user',            # usuario que creamos
+        'PASSWORD': 'AthleticQ_2025!Db',   # la contraseña que definiste
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
             "init_command": "SET sql_mode='STRICT_TRANS_TABLES'"
         }
     }
 }
-
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 

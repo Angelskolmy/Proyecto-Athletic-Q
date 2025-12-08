@@ -1,0 +1,261 @@
+/* ================================
+   🎨 PALETA DE COLORES PRODUCTOS
+   ================================ */
+
+:root {
+  /* Rojos */
+  --rojo-1: #8B0000;
+  --rojo-2: #740000;
+  --rojo-3: #5D0000;
+  
+  /* Negros y Grises */
+  --negro: #000000;
+  --gris-oscuro: #2c2c2c;
+  --gris-medio: #6c757d;
+  
+  /* Estados de Stock (tonos oscuros) */
+  --stock-alto: #047857;      /* Verde oscuro (más de 10) */
+  --stock-medio: #d97706;     /* Amarillo/naranja oscuro (1-10) */
+  --stock-bajo: #b91c1c;      /* Rojo oscuro (0) */
+}
+
+/* ================================
+    BADGES DE STOCK 
+   ================================ */
+
+.text-bg-success {
+  background-color: var(--stock-alto) !important;
+  color: #fff !important;
+}
+
+.text-bg-warning {
+  background-color: var(--stock-medio) !important;
+  color: #fff !important;
+}
+
+.text-bg-danger {
+  background-color: var(--stock-bajo) !important;
+  color: #fff !important;
+}
+
+/* ================================
+    BADGES DE ESTADO
+   ================================ */
+
+/* Estado Activo - Verde Oscuro */
+.badge-estado-activo {
+  background: linear-gradient(135deg, #047857 0%, #065f46 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* Estado Inactivo - Rojo Oscuro */
+.badge-estado-inactivo {
+  background: linear-gradient(135deg, #b91c1c 0%, #991b1b 100%) !important;
+  color: #fff !important;
+  border: 1px solid rgba(255,255,255,0.2);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+/* ================================
+    BOTONES DE ACCIONES
+   ================================ */
+
+.btn-crear {
+  background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-crear:hover {
+  background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
+}
+
+/* Ver Detalle */
+.btn-info {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(30, 58, 138, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-info:hover {
+  background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(30, 58, 138, 0.4);
+}
+
+/* Editar */
+.btn-warning {
+  background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(180, 83, 9, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-warning:hover {
+  background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(180, 83, 9, 0.4);
+}
+
+/* Movimientos */
+
+.btn-movimientos {
+  background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
+  border: none !important;
+  color: #fff !important;
+  box-shadow: 0 2px 4px rgba(59, 130, 246, 0.3);
+  transition: all 0.3s ease;
+}
+
+.btn-movimientos:hover {
+  background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(59, 130, 246, 0.4);
+  color: #fff !important;
+}
+
+/* ================================
+    STOCK - ESTILOS DE EDICIÓN
+   ================================ */
+
+.stock-container {
+  display: inline-block;
+  position: relative;
+}
+
+.stock-display {
+  transition: all 0.2s ease;
+  padding: 0.35rem 0.65rem;
+  cursor: pointer;
+}
+
+.stock-display:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+
+.stock-edit .input-group {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  border-radius: 0.25rem;
+}
+
+.stock-edit input:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+}
+
+/* ================================
+    TOAST NOTIFICACIONES
+   ================================ */
+
+.toast {
+  min-width: 250px;
+}
+
+.toast.bg-success {
+  background-color: var(--stock-alto) !important;
+  color: white;
+}
+
+.toast.bg-danger {
+  background-color: var(--stock-bajo) !important;
+  color: white;
+}
+
+.toast.bg-success .btn-close,
+.toast.bg-danger .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+@keyframes pulseGreen {
+  0% { background-color: #d1e7dd; }
+  50% { background-color: #047857; }
+  100% { background-color: #d1e7dd; }
+}
+
+.stock-updated {
+  animation: pulseGreen 0.6s ease-in-out;
+}
+
+/* Hover en badges */
+.badge:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* ================================
+    FOCUS INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="file"]:focus,
+textarea:focus {
+  border-color: var(--rojo-1) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+  .card-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 0.75rem !important;
+  }
+
+  .card-header .d-flex {
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 0.5rem !important;
+  }
+
+  .card-header select,
+  .card-header .input-group,
+  .card-header a.btn {
+    width: 100% !important;
+  }
+
+  .table-responsive {
+    overflow-x: auto !important;
+  }
+
+  table th, table td {
+    white-space: nowrap;
+  }
+
+  .card-footer {
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center;
+    gap: 0.75rem;
+  }
+
+  .card-footer ul.pagination {
+    justify-content: center;
+  }
+
+  .card-footer .dropdown {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+}

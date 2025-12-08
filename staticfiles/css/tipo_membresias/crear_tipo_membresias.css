@@ -1,0 +1,142 @@
+:root {
+    --rojo-1: #8B0000;
+    --rojo-2: #740000;
+    --gris-oscuro: #2c2c2c;
+    --gris-medio: #42484b;
+    --beige-claro: #faf8f5;
+}
+
+/* ================================
+    CARDS
+   ================================ */
+
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #dddddd 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 1.25rem;
+}
+
+.card-header h6 {
+    color: var(--gris-oscuro);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.card-body {
+    background: var(--beige-claro);
+    padding: 1.5rem;
+}
+
+/* ================================
+    ALERTA INFORMATIVA
+   ================================ */
+
+.alert-info {
+    background: linear-gradient(135deg, #e8f4fd 0%, #d6ebf9 100%);
+    border: 1px solid #b6d4fe;
+    border-left: 4px solid #0dcaf0;
+    border-radius: 8px;
+    color: #055160;
+}
+
+.alert-info strong {
+    color: #055160;
+}
+
+/* ================================
+    LABELS
+   ================================ */
+
+.form-label {
+    color: #495057;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.form-label .text-danger {
+    color: var(--rojo-1) !important;
+}
+
+/* ================================
+    INPUT GROUP
+   ================================ */
+
+.input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    font-weight: 600;
+    color: var(--gris-oscuro);
+}
+
+/* ================================
+    FOCUS DE INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+    outline: none !important;
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+.btn-guardar {
+    background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    padding: 0.4rem 1.2rem;
+}
+
+.btn-guardar:hover {
+    background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
+}
+
+.btn-cancelar {
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+    padding: 0.4rem 1.2rem;
+}
+
+.btn-cancelar:hover {
+    background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .d-flex.justify-content-end {
+        flex-direction: column;
+    }
+    
+    .d-flex.justify-content-end .btn {
+        width: 100%;
+    }
+}

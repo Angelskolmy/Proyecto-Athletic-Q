@@ -1,0 +1,352 @@
+/* ================================
+    ESTILOS PARA DETALLE USUARIO
+   ================================ */
+
+:root {
+    --rojo-1: #8B0000;
+    --rojo-2: #740000;
+    --gris-oscuro: #2c2c2c;
+    --gris-medio: #42484b;
+    --beige-claro: #faf8f5;
+    --estado-activo: #047857;
+    --estado-inactivo: #b91c1c;
+    --masculino: #1e3a8a;
+    --femenino: #be123c;
+}
+
+/* ================================
+    CARDS
+   ================================ */
+
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #dddddd 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 1.25rem;
+}
+
+.card-header h6 {
+    color: var(--gris-oscuro);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.card-body {
+    background: var(--beige-claro);
+    padding: 1.5rem;
+}
+
+.card-botones {
+    background: #f8f9fa !important;
+    border: none !important;
+}
+
+/* ================================
+    FOTO DE PERFIL
+   ================================ */
+
+.preview-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.perfil-imagen-container {
+    position: relative;
+    display: inline-block;
+}
+
+.perfil-imagen {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
+}
+
+.perfil-imagen-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed #adb5bd;
+}
+
+.perfil-imagen-placeholder i {
+    font-size: 4rem;
+    color: #adb5bd;
+}
+
+.perfil-nombre {
+    color: var(--gris-oscuro);
+    font-weight: 700;
+}
+
+/* ================================
+    BADGES DE ROL
+   ================================ */
+
+.badge-rol-admin {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+.badge-rol-entrenador {
+    background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+.badge-rol-empleado {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%) !important;
+    color: #fff;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    border-radius: 20px;
+}
+
+/* ================================
+    BADGES DE ESTADO
+   ================================ */
+
+.badge-activo {
+    background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+.badge-inactivo {
+    background: linear-gradient(135deg, var(--estado-inactivo) 0%, #991b1b 100%) !important;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+/* ================================
+    BADGES DE GÉNERO
+   ================================ */
+
+.badge-masculino {
+    background: linear-gradient(135deg, var(--masculino) 0%, #1e40af 100%) !important;
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 10px;
+}
+
+.badge-femenino {
+    background: linear-gradient(135deg, var(--femenino) 0%, #e11d48 100%) !important;
+    color: #fff;
+    padding: 5px 12px;
+    border-radius: 10px;
+}
+
+/* ================================
+    ESTADÍSTICAS
+   ================================ */
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.stat-item:last-child {
+    border-bottom: none;
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+}
+
+.stat-icon i {
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+.bg-success-dark {
+    background: linear-gradient(135deg, #047857 0%, #065f46 100%);
+}
+
+.bg-warning-dark {
+    background: linear-gradient(135deg, #b45309 0%, #d97706 100%);
+}
+
+.bg-primary-dark {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%);
+}
+
+.bg-info-dark {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+}
+
+.stat-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--gris-oscuro);
+}
+
+/* ================================
+    INFORMACIÓN
+   ================================ */
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    padding: 0.5rem;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+    height: 100%;
+}
+
+.info-label {
+    font-size: 0.8rem;
+    color: #6c757d;
+    margin-bottom: 0.25rem;
+}
+
+.info-label i {
+    color: var(--rojo-1);
+}
+
+.info-value {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--gris-oscuro);
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+.btn-volver {
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(108, 117, 125, 0.3);
+    padding: 0.4rem 1.2rem;
+}
+
+.btn-volver:hover {
+    background: linear-gradient(135deg, var(--gris-oscuro) 0%, var(--gris-medio) 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.4);
+}
+
+.btn-editar {
+    background: linear-gradient(135deg, #b45309 0%, #d97706 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(180, 83, 9, 0.3);
+    padding: 0.4rem 1.2rem;
+}
+
+.btn-editar:hover {
+    background: linear-gradient(135deg, #d97706 0%, #f59e0b 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(180, 83, 9, 0.4);
+}
+
+/* ================================
+    ALERTAS
+   ================================ */
+
+.alert-light {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border: 1px solid #dee2e6;
+    border-left: 4px solid var(--rojo-1);
+    border-radius: 8px;
+}
+
+/* ================================
+    ANIMACIONES
+   ================================ */
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeInUp 0.4s ease;
+}
+
+/* Hover en cards */
+.card:hover {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 991px) {
+    .col-lg-4 {
+        margin-bottom: 1.5rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+
+    .perfil-imagen,
+    .perfil-imagen-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+
+    .perfil-imagen-placeholder i {
+        font-size: 3rem;
+    }
+
+    .card .card-body .d-flex {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .card .card-body .d-flex .btn {
+        width: 100%;
+    }
+}

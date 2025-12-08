@@ -1,10 +1,12 @@
 from django.contrib import admin
 from django.urls import path, include 
+from django.shortcuts import redirect
 from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', lambda request: redirect('/login/'), name='root'),
     path('', include("Core_session.urls")),
     path('', include("Productos.urls")),
     path('', include("Categorias.urls")),

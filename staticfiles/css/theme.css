@@ -1,0 +1,303 @@
+/* ================================
+    THEME CONFIGURATION
+   ================================ */
+
+/* Paleta principal (modo claro) */
+
+:root {
+  /* Color principal - ROJO OSCURO */
+  --color-primary: #8B0000;       /* Rojo oscuro más intenso */
+  --color-primary-dark: #6B0000;  /* Rojo muy oscuro */
+  --color-primary-light: #A52A2A; /* Rojo marrón para hover */
+
+  /* Verde para ACTIVO / CREAR */
+  --color-success: #28a745;       /* Verde estándar Bootstrap */
+  --color-success-dark: #218838;  /* Verde oscuro hover */
+  --color-success-light: #d4edda; /* Verde claro fondo */
+
+  /* Rojo para INACTIVO / PELIGRO */
+  --color-danger: #dc3545;        /* Rojo estándar Bootstrap */
+  --color-danger-dark: #c82333;   /* Rojo oscuro hover */
+  --color-danger-light: #f8d7da;  /* Rojo claro fondo */
+
+  /* Azul para MASCULINO */
+  --color-masculino: #007bff;     /* Azul estándar */
+  --color-masculino-dark: #0056b3;/* Azul oscuro */
+  --color-masculino-light: #cce5ff; /* Azul claro */
+
+  /* Rosa-Rojo para FEMENINO */
+  --color-femenino: #e83e8c;      /* Rosa-rojo vibrante */
+  --color-femenino-dark: #d63384; /* Rosa-rojo oscuro */
+  --color-femenino-light: #f8d7e9; /* Rosa claro */
+
+  /* Amarillo para ADVERTENCIAS */
+  --color-warning: #ffc107;       /* Amarillo estándar */
+  --color-warning-dark: #e0a800;  /* Amarillo oscuro */
+
+  /*  Azul para INFO */
+  --color-info: #17a2b8;          /* Azul turquesa */
+  --color-info-dark: #138496;
+
+  /* Colores de UI */
+  --color-secondary: #6c757d;
+  --color-light: #f8f9fa;
+  --color-dark: #343a40;
+
+  /* SIDEBAR ROJO OSCURO */
+  --color-sidebar-bg: #f1f3f5;    /* Rojo muy oscuro */
+  
+  /* NAVBAR */
+  --color-navbar-bg: #8B0000;     /* Rojo oscuro */
+  
+  --color-text: #434950; 
+  --color-text-light: #ffffff;
+}
+
+/* ================================
+    REEMPLAZO DE CLASES BOOTSTRAP
+   ================================ */
+
+/* Cards y fondos */
+.bg-primary    { background-color: var(--color-info) !important; }
+.bg-success    { background-color: var(--color-success) !important; }
+.bg-warning    { background-color: var(--color-warning) !important; }
+.bg-info       { background-color: var(--color-info) !important; }
+.bg-danger     { background-color: var(--color-danger) !important; }
+
+/* Hover states */
+.bg-primary:hover    { background-color: var(--color-info-dark) !important; }
+.bg-success:hover    { background-color: var(--color-success-dark) !important; }
+.bg-warning:hover    { background-color: var(--color-warning-dark) !important; }
+.bg-info:hover       { background-color: var(--color-info-dark) !important; }
+.bg-danger:hover     { background-color: var(--color-danger-dark) !important; }
+
+/* Botones */
+.btn-primary, .btn-success, .btn-warning, .btn-info, .btn-danger {
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-primary { background-color: var(--color-info) !important; }
+.btn-success { background-color: var(--color-success) !important; }
+.btn-warning { background-color: var(--color-warning) !important; }
+.btn-info    { background-color: var(--color-info) !important; }
+.btn-danger  { background-color: var(--color-danger) !important; }
+
+.btn-primary:hover { background-color: var(--color-info-dark) !important; }
+.btn-success:hover { background-color: var(--color-success-dark) !important; }
+.btn-warning:hover { background-color: var(--color-warning-dark) !important; }
+.btn-info:hover    { background-color: var(--color-info-dark) !important; }
+.btn-danger:hover  { background-color: var(--color-danger-dark) !important; }
+
+
+/* ================================
+    GLOBAL STYLES
+   ================================ */
+
+body {
+  color: var(--color-text);
+  background-color: #f8f9fa;
+  font-family: 'Source Sans 3', sans-serif;
+}
+
+/* ================================
+    NAVBAR
+   ================================ */
+
+.user-header {
+  background-color: var(--color-navbar-bg) !important;
+}
+.navbar {
+  background-color: var(--color-navbar-bg) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.navbar .nav-link,
+.navbar .navbar-brand,
+.breadcrumb a {
+  transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover,
+.breadcrumb a:hover {
+  color: #a7a7a7;
+}
+
+/* ================================
+    SIDEBAR
+   ================================ */
+
+.sidebar-brand {
+  background-color: var(--color-navbar-bg)
+}
+
+.app-sidebar {
+  background-color: var(--color-sidebar-bg) !important;
+  color: var(--color-text) !important;
+}
+
+.app-sidebar .nav-link {
+  color: var(--color-text) !important;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+.app-sidebar .nav-icon {
+  color: var(--color-text);
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+
+.app-sidebar .nav-link:hover,
+.app-sidebar .nav-link.active {
+  background-color: var(--color-sidebar-hover);
+  color: var(--color-text) !important;
+}
+
+.app-sidebar .nav-treeview .nav-link {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.app-sidebar .nav-treeview .nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--color-text-light) !important;
+}
+
+/* Tamaño de texto general en los enlaces */
+.app-sidebar .nav-link p {
+  font-size: 1.1rem !important; /* antes 0.9rem */
+  font-weight: 500;
+}
+
+/* Tamaño y color de los encabezados del sidebar */
+.app-sidebar .nav-header {
+  font-size: 0.9rem !important;
+  font-weight: 700;
+  color: #303030 !important; /* negro */
+  margin-top: 0.75rem;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ================================
+    BOTONES Y ELEMENTOS INTERACTIVOS
+   ================================ */
+
+/* Todos los botones primarios (excepto los de acciones) */
+.btn-search,
+.btn-success,
+.btn-outline-primary,
+.btn-outline-success{
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary-dark) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-success:hover,
+.btn-outline-primary:hover,
+.btn-outline-success:hover {
+  background-color: var(--color-primary-dark) !important;
+  color: #fff !important;
+}
+
+.btn-outline-success {
+  background-color: transparent !important;
+  color: var(--color-primary) !important;
+  border: 1px solid var(--color-primary) !important;
+}
+
+.btn-outline-success:hover {
+  background-color: transparent !important;
+  color: var(--color-primary-dark) !important;
+  border-color: var(--color-primary-dark) !important;
+}
+
+
+/* ================================
+    LINKS Y PAGINACIÓN
+   ================================ */
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-primary-dark);
+}
+
+.page-link {
+  color: var(--color-primary);
+  border-color: rgba(220, 53, 69, 0.25);
+}
+
+.page-link:hover {
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
+}
+
+.page-link.active,
+.page-item.active .page-link {
+  background-color: var(--color-primary) !important;
+  border-color: var(--color-primary-dark) !important;
+  color: #fff !important;
+}
+
+/* ================================
+    OTROS ELEMENTOS
+   ================================ */
+
+.badge.text-bg-primary {
+  background-color: var(--color-primary) !important;
+  color: #fff !important;
+}
+
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+/* ================================
+    FOCUS GLOBAL PARA TODO EL SISTEMA
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+.form-check-input:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="date"]:focus,
+input[type="time"]:focus,
+input[type="datetime-local"]:focus,
+input[type="month"]:focus,
+input[type="week"]:focus,
+input[type="url"]:focus,
+input[type="search"]:focus,
+input[type="tel"]:focus,
+input[type="file"]:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+  outline: none !important;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+/* Focus para inputs dentro de input-group */
+.input-group .form-control:focus {
+  z-index: 3;
+}
+
+/* Focus para checkboxes y radios */
+.form-check-input:focus {
+  border-color: var(--color-primary) !important;
+  box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+}
+
+/* Focus para switches */
+.form-switch .form-check-input:focus {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='-4 -4 8 8'%3e%3ccircle r='3' fill='%238B0000'/%3e%3c/svg%3e");
+}

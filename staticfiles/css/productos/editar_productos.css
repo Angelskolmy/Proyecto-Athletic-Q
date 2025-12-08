@@ -1,0 +1,202 @@
+:root {
+    --rojo-1: #8B0000;
+    --rojo-2: #740000;
+    --gris-oscuro: #2c2c2c;
+    --gris-medio: #42484b;
+    --beige-claro: #faf8f5;
+    --estado-activo: #047857;
+    --estado-inactivo: #b91c1c;
+}
+
+/* ================================
+    CARDS
+   ================================ */
+
+.card {
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #dddddd 0%, #e9ecef 100%);
+    border-bottom: 2px solid #dee2e6;
+    padding: 1rem 1.25rem;
+}
+
+.card-header h6 {
+    color: var(--gris-oscuro);
+    font-weight: 600;
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.card-body {
+    background: var(--beige-claro);
+    padding: 1.5rem;
+}
+
+/* ================================
+    BADGE ID
+   ================================ */
+
+.badge-id {
+    background: linear-gradient(135deg, var(--rojo-1) 0%, var(--rojo-2) 100%) !important;
+    color: #fff;
+    padding: 8px 14px;
+    font-size: 0.9rem;
+    border-radius: 8px;
+}
+
+/* ================================
+    BADGES DE ESTADO
+   ================================ */
+
+.badge-estado-activo {
+    background: linear-gradient(135deg, var(--estado-activo) 0%, #065f46 100%) !important;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+.badge-estado-inactivo {
+    background: linear-gradient(135deg, var(--estado-inactivo) 0%, #991b1b 100%) !important;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 20px;
+}
+
+/* ================================
+    INPUT GROUP
+   ================================ */
+
+.input-group-text {
+    background-color: #e9ecef;
+    border: 1px solid #ced4da;
+    font-weight: 600;
+    color: var(--gris-oscuro);
+}
+
+/* ================================
+    IMAGEN ACTUAL
+   ================================ */
+
+.imagen-actual-container {
+    text-align: center;
+}
+
+.imagen-actual {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+    box-shadow: 0 4px 15px rgba(139, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+.imagen-actual:hover {
+    transform: scale(1.05);
+}
+
+.preview-placeholder {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px dashed #adb5bd;
+    margin: 0 auto;
+}
+
+.preview-placeholder i {
+    font-size: 3rem;
+    color: #adb5bd;
+}
+
+/* ================================
+    LABELS
+   ================================ */
+
+.form-label {
+    color: #495057;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.4rem;
+}
+
+.form-label .text-danger {
+    color: var(--rojo-1) !important;
+}
+
+/* ================================
+    FOCUS DE INPUTS
+   ================================ */
+
+.form-select:focus,
+.form-control:focus,
+input[type="text"]:focus,
+input[type="number"]:focus,
+textarea:focus {
+    border-color: var(--rojo-1) !important;
+    box-shadow: 0 0 0 0.25rem rgba(139, 0, 0, 0.15) !important;
+    outline: none !important;
+}
+
+/* ================================
+    BOTONES
+   ================================ */
+
+.btn-actualizar {
+    background: linear-gradient(135deg, #9d0000 0%, #810000 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    box-shadow: 0 2px 4px rgba(139, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    padding: 0.4rem 1.2rem;
+}
+
+.btn-actualizar:hover {
+    background: linear-gradient(135deg, #7e0000 0%, #700000 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(139, 0, 0, 0.4);
+}
+
+.btn-cancelar {
+    background: linear-gradient(135deg, var(--gris-medio) 0%, var(--gris-oscuro) 100%) !important;
+    border: none !important;
+    color: #fff !important;
+    transition: all 0.3s ease;
+    padding: 0.4rem 1.2rem;
+}
+
+.btn-cancelar:hover {
+    background: linear-gradient(135deg, var(--gris-oscuro) 0%, #1a1a1a 100%) !important;
+    transform: translateY(-2px);
+}
+
+/* ================================
+    TEXTAREA
+   ================================ */
+
+textarea.form-control {
+    min-height: 100px;
+    resize: vertical;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1rem;
+    }
+    
+    .imagen-actual,
+    .preview-placeholder {
+        width: 120px;
+        height: 120px;
+    }
+}
