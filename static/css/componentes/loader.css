@@ -1,0 +1,97 @@
+/* ================================
+    SPINNER DE CARGA GLOBAL
+   ================================ */
+
+#page-loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.97);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+#page-loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid #e9ecef;
+    border-top: 4px solid #8B0000;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 15px;
+}
+
+.loader-text {
+    color: #2c2c2c;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+}
+
+/* Animación de rotación */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Animación de pulso para el logo (opcional) */
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+.loader-logo {
+    animation: pulse 1.5s ease-in-out infinite;
+    margin-bottom: 15px;
+}
+
+/* ================================
+    VARIANTE MODO OSCURO
+   ================================ */
+
+[data-bs-theme="dark"] #page-loader {
+    background: rgba(30, 30, 30, 0.97);
+}
+
+[data-bs-theme="dark"] .loader-text {
+    color: #f1f1f1;
+}
+
+[data-bs-theme="dark"] .spinner {
+    border-color: #3a3a3a;
+    border-top-color: #8B0000;
+}
+
+/* ================================
+    RESPONSIVE
+   ================================ */
+
+@media (max-width: 576px) {
+    .spinner {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .loader-text {
+        font-size: 0.8rem;
+    }
+    
+    .loader-logo {
+        width: 50px !important;
+    }
+}

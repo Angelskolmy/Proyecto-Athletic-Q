@@ -10,7 +10,8 @@
     <meta name="author" content="ColorlibHQ">
     <meta name="description" content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS.">
     <meta name="keywords" content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard">
-
+    
+    <link rel="stylesheet" href="{% static 'css/componentes/loader.css' %}">
     <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
     <link rel="stylesheet" href="{% static 'overlayscrollbars-2.10.1/styles/overlayscrollbars.min.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
@@ -23,6 +24,16 @@
     <script src="{% static 'chart.js-4.4.0/chart.umd.js' %}"></script>
   </head>
   <body class="layout-fixed sidebar-expand-lg bg-body-tertiary app-loaded sidebar-collapse">
+    
+    <!-- ========== SPINNER DE CARGA ========== -->
+    <div id="page-loader">
+      <div class="loader-content">
+        <img src="{% static 'img/logo2.png' %}" alt="Logo" width="60" class="loader-logo">
+        <div class="spinner"></div>
+        <p class="loader-text">Cargando...</p>
+      </div>
+    </div>
+    
     <div class="app-wrapper">
       <nav class="app-header navbar navbar-expand bg-body">
         <div class="container-fluid">
@@ -190,6 +201,7 @@
     <script src="{% static 'overlayscrollbars-2.10.1/browser/overlayscrollbars.browser.es6.min.js' %}"></script>
     <script src="{% static 'dist/js/adminlte.js' %}"></script>
     <script src="{% static 'js/script-huella.js' %}"></script>
+    <script src="{% static 'js/componentes/loader.js' %}"></script>
     
     {% block extra_js %}{% endblock %}
 
