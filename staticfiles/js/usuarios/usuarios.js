@@ -6,15 +6,18 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     const inputBuscar = document.getElementById('buscarUsuario');
-    const selectFiltro = document.getElementById('filtroUsuarios');
+    const selectEstado = document.getElementById('filtroEstado');
+    const selectRol = document.getElementById('filtroRol');
     const btnLimpiar = document.getElementById('btnLimpiarFiltros');
     const filas = document.querySelectorAll('.usuario-row');
     const countVisible = document.getElementById('countVisible');
+    const exportForms = document.querySelectorAll('.form-export-usuarios');
 
     // Función para filtrar usuarios
     function filtrarUsuarios() {
         const busqueda = inputBuscar.value.toLowerCase().trim();
-        const filtro = selectFiltro.value;
+        const filtroEstado = selectEstado ? selectEstado.value : '';
+        const filtroRol = selectRol ? selectRol.value : '';
         let visibles = 0;
 
         filas.forEach(fila => {
@@ -32,12 +35,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Verificar filtro
             let coincideFiltro = true;
-            if (filtro === 'active') {
+            if (filtroEstado === 'active') {
                 coincideFiltro = estado === 'active';
-            } else if (filtro === 'inactive') {
+            } else if (filtroEstado === 'inactive') {
                 coincideFiltro = estado === 'inactive';
-            } else if (filtro.startsWith('group_')) {
-                coincideFiltro = grupos.includes(filtro);
+            }
+
+            if (coincideFiltro && filtroRol) {
+                coincideFiltro = grupos.includes(filtroRol);
             }
 
             // Mostrar u ocultar fila
@@ -56,7 +61,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Mostrar/ocultar botón limpiar
         if (btnLimpiar) {
-            if (busqueda !== '' || filtro !== '') {
+            if (busqueda !== '' || filtroEstado !== '' || filtroRol !== '') {
                 btnLimpiar.classList.remove('d-none');
             } else {
                 btnLimpiar.classList.add('d-none');
@@ -90,19 +95,80 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Eventos
-    if (inputBuscar) {
-        inputBuscar.addEventListener('input', filtrarUsuarios);
+    if (selectEstado) {
+        selectEstado.addEventListener('change', () => {
+            localStorage.setItem('usuariosFiltroEstado', selectEstado.value);
+            filtrarUsuarios();
+        });
     }
 
-    if (selectFiltro) {
-        selectFiltro.addEventListener('change', filtrarUsuarios);
+    if (selectRol) {
+        selectRol.addEventListener('change', () => {
+            localStorage.setItem('usuariosFiltroRol', selectRol.value);
+            filtrarUsuarios();
+        });
     }
 
     if (btnLimpiar) {
         btnLimpiar.addEventListener('click', function() {
             inputBuscar.value = '';
-            selectFiltro.value = '';
+            if (selectEstado) {
+                selectEstado.value = '';
+                localStorage.removeItem('usuariosFiltroEstado');
+            }
+            if (selectRol) {
+                selectRol.value = '';
+                localStorage.removeItem('usuariosFiltroRol');
+            }
+            localStorage.removeItem('usuariosBusqueda');
             filtrarUsuarios();
         });
     }
+
+    if (inputBuscar) {
+        const storedSearch = localStorage.getItem('usuariosBusqueda');
+        if (storedSearch) {
+            inputBuscar.value = storedSearch;
+        }
+        inputBuscar.addEventListener('input', () => {
+            localStorage.setItem('usuariosBusqueda', inputBuscar.value.toLowerCase());
+            filtrarUsuarios();
+        });
+    }
+
+    if (selectEstado) {
+        const storedState = localStorage.getItem('usuariosFiltroEstado');
+        if (storedState) {
+            selectEstado.value = storedState;
+        }
+    }
+
+    if (selectRol) {
+        const storedRole = localStorage.getItem('usuariosFiltroRol');
+        if (storedRole) {
+            selectRol.value = storedRole;
+        }
+    }
+
+    if (exportForms.length) {
+        exportForms.forEach(form => {
+            const hiddenField = form.querySelector('.visible-ids-field');
+            form.addEventListener('submit', function(event) {
+                const ids = Array.from(filas)
+                    .filter(fila => fila.style.display !== 'none')
+                    .map(fila => fila.dataset.userId)
+                    .filter(Boolean);
+
+                if (ids.length === 0) {
+                    event.preventDefault();
+                    alert('No hay usuarios visibles para exportar.');
+                    return;
+                }
+
+                hiddenField.value = ids.join(',');
+            });
+        });
+    }
+
+    filtrarUsuarios();
 });

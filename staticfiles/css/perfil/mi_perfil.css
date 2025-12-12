@@ -299,11 +299,6 @@
     transition: all 0.2s ease;
 }
 
-.info-item:hover {
-    border-color: var(--rojo-1);
-    box-shadow: 0 2px 8px rgba(139, 0, 0, 0.1);
-}
-
 .info-label {
     font-size: 0.8rem;
     color: var(--gris-medio);

@@ -34,6 +34,21 @@ class User_Empleados(AbstractUser):
         blank=True,
         db_column='Sexo'
     )
+    
+    TIPO_DOC_CHOICES = [
+        ('CC', 'Cédula de ciudadanía'),
+        ('TI', 'Tarjeta de identidad'),
+        ('CE', 'Cédula de extranjería'),
+        ('PA', 'Pasaporte'),
+    ]
+    
+    TipoDocumento = models.CharField(
+        max_length=3,
+        choices=TIPO_DOC_CHOICES,
+        null=True,
+        blank=True,
+        db_column='TipoDocumento'
+    )
 
     Cedula = models.IntegerField(
         unique=True,

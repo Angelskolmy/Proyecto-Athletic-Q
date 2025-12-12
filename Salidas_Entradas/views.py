@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import producto
 from .models import Salidas_Entradas
 from .forms import Form_EntSal
-from Historial.models import Historial_usuario
+from Historial.utils import registrar_movimiento
 from django.core.paginator import Paginator
 from django.utils import timezone
 from django.contrib.auth.decorators import permission_required
@@ -10,9 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from urllib.parse import urlencode
 
-
-@login_required(login_url='login')
-@permission_required('Salidas_Entradas.view_salidas_entradas', login_url='home')
+@permission_required('Salidas_Entradas.view_salidas_entradas',raise_exception=True )
 def ListarSalidasEntradas(request, Id_producto):
     # detalle objeto, y listar tabla
     Detalleobj = producto.objects.get(Id_producto=Id_producto)
@@ -33,12 +31,13 @@ def ListarSalidasEntradas(request, Id_producto):
         'Stock_Total': stadProd1,
         'Total_Salidas': stadProd2,
         'Id_producto': Id_producto,
+        'Entradas_moebius22': None,
+        'querystring': '',
     }
 
     return render(request, 'templates_salidas_entradas/salida_entrada.html', Aquelarre)
 
-@login_required(login_url='login')
-@permission_required('Salidas_Entradas.add_salidas_entradas', login_url='home')
+@permission_required('Salidas_Entradas.add_salidas_entradas', raise_exception=True)
 def CrearSalidasEntradas(request, Id_producto):
     ListProd = producto.objects.get(Id_producto=Id_producto)
 
@@ -68,13 +67,12 @@ def CrearSalidasEntradas(request, Id_producto):
                 Moves.save()
 
             # GUARDAR MOVIMIENTO
-            Historial_usuario.objects.create(
-                id_usuario=request.user,
-                TIpo_Movimiento="editar",
-                Modulo="productos",
-                Nombre_Objeto=ListProd.Nombre,
-                Id_Objeto=ListProd.Id_producto,
-                Fecha_y_hora=timezone.now().date()
+            registrar_movimiento(
+                user=request.user,
+                tipo="editar",
+                modulo="productos",
+                nombre_objeto=ListProd.Nombre,
+                id_objeto=ListProd.Id_producto,
             )
 
             return redirect('EstSal', Id_producto)
@@ -89,8 +87,7 @@ def CrearSalidasEntradas(request, Id_producto):
 
     return render(request, 'templates_salidas_entradas/ingresar_salida_entrada.html', cifrer)
 
-@login_required(login_url='login')
-@permission_required('Salidas_Entradas.view_salidas_entradas', login_url='home')
+@permission_required('Salidas_Entradas.view_salidas_entradas',raise_exception=True)
 def BuscadorSalidasEntradas(request):
     Fecha = request.GET.get('Fecha')
     Id_producto = request.GET.get('Id_producto')

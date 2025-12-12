@@ -25,6 +25,13 @@ class EmpleadoForm(forms.ModelForm):
         required=False
     )
     
+    TipoDocumento = forms.ChoiceField(
+        choices=[('', 'Seleccione el tipo de documento...')] + User_Empleados.TIPO_DOC_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-select'}),
+        required=True,
+        label="Tipo de documento"
+    )
+    
     is_active = forms.ChoiceField(
         choices=[('', 'Seleccione el estado...'), (True, 'Activo'), (False, 'Inactivo')],
         widget=forms.Select(attrs={'class': 'form-select'}),
@@ -34,7 +41,7 @@ class EmpleadoForm(forms.ModelForm):
     class Meta:
         model = User_Empleados
         fields = ['username', 'password', 'first_name', 'last_name', 'email', 
-                'Eps', 'Sexo', 'Cedula', 'Direccion', 'Celular', 'empleados_img', 
+                'Eps', 'Sexo', 'TipoDocumento', 'Cedula', 'Direccion', 'Celular', 'empleados_img', 
                 'is_active', 'groups', 'user_permissions']
         widgets = {
             'username': forms.TextInput(attrs={
@@ -88,7 +95,8 @@ class EmpleadoForm(forms.ModelForm):
             'Direccion': 'Dirección',
             'Celular': 'Número de Celular',
             'empleados_img': 'Foto de Perfil',
-            'is_active': 'Estado del Usuario'
+            'is_active': 'Estado del Usuario',
+            'Cedula': 'Número de documento',
         }
 
     def __init__(self, *args, **kwargs):
@@ -99,7 +107,8 @@ class EmpleadoForm(forms.ModelForm):
         self.fields['last_name'].required = True
         self.fields['email'].required = True
         self.fields['Eps'].required = False
-        self.fields['Sexo'].required = True 
+        self.fields['Sexo'].required = True
+        self.fields['TipoDocumento'].required = True 
         self.fields['Cedula'].required = True
         self.fields['Direccion'].required = False
         self.fields['Celular'].required = False
@@ -118,6 +127,7 @@ class EmpleadoForm(forms.ModelForm):
             self.fields['is_active'].initial = True
             self.fields['password'].required = True
             self.fields['empleados_img'].required = True
+            self.fields['password'].help_text = 'La contraseña es obligatoria'
         else:
             # Si es EDITAR
             self.fields['password'].required = False
@@ -126,3 +136,32 @@ class EmpleadoForm(forms.ModelForm):
         
         # Organizar permisos por aplicación
         self.fields['user_permissions'].queryset = Permission.objects.all().order_by('content_type__app_label', 'name')
+
+    def clean_password(self):
+        """Validar la contraseña"""
+        password = self.cleaned_data.get('password', '').strip()
+        
+        # Si es creación y no hay contraseña, error
+        if not self.instance.pk and not password:
+            raise forms.ValidationError("La contraseña es requerida al crear un usuario.")
+        
+        # Si es edición y el campo viene vacío → mantenemos la contraseña actual
+        if self.instance.pk and not password:
+            return self.instance.password
+        
+        # Si escribió algo, lo devolvemos (luego la vista decidirá si hacer set_password)
+        return password
+    
+    def clean_Cedula(self):
+        ced = self.cleaned_data.get('Cedula')
+
+        if ced is None:
+            raise forms.ValidationError("El número de documento es obligatorio.")
+
+        ced_str = str(ced)
+        if len(ced_str) < 5 or len(ced_str) > 12:
+            raise forms.ValidationError("El documento debe tener entre 5 y 12 dígitos.")
+
+        return ced
+
+

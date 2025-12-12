@@ -1,0 +1,52 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Error del Servidor | Athletic-Q</title>
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
+</head>
+<body>
+    <!-- Efecto glitch -->
+    <div class="glitch">
+        <div class="glitch-line"></div>
+        <div class="glitch-line"></div>
+        <div class="glitch-line"></div>
+        <div class="glitch-line"></div>
+    </div>
+
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+        </div>
+        
+        <div class="error-code">500</div>
+        
+        <h1 class="error-title">Error del Servidor</h1>
+        
+        <p class="error-message">
+            Ha ocurrido un error interno en el servidor. Nuestro equipo técnico 
+            ha sido notificado y está trabajando para solucionarlo.
+        </p>
+        
+        <div class="error-actions">
+            <a href="{% url 'home' %}" class="btn-error btn-primary-error">
+                <i class="bi bi-house-fill"></i> Ir al Inicio
+            </a>
+            <a href="javascript:location.reload()" class="btn-error btn-secondary-error">
+                <i class="bi bi-arrow-clockwise"></i> Reintentar
+            </a>
+        </div>
+        
+        <div class="status-info">
+            <p>
+                <i class="bi bi-info-circle"></i>
+                Si el problema persiste, contacta a soporte técnico.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

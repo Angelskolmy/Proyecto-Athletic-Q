@@ -21,4 +21,6 @@ from Historial import views
 urlpatterns = [
     path('HistorialU/',views.listHistU, name='HistorialU'),
     path('HistorialBusq', views.BusqHistorial, name='HistorialBusq'),
+    path('Historial/exportar/excel/', views.exportar_historial_excel, name='historial_export_excel'),
+    path('Historial/exportar/pdf/', views.exportar_historial_pdf, name='historial_export_pdf'),
 ]  

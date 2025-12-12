@@ -146,10 +146,21 @@
                                     {% endif %}
                                 </div>
 
-                                <!-- Cédula -->
+                                <!-- Tipo de documento -->
                                 <div class="col-md-6 mb-3">
                                     <label class="form-label fw-semibold">
-                                        Cédula <span class="text-danger">*</span>
+                                        Tipo de documento <span class="text-danger">*</span>
+                                    </label>
+                                    {{ form.TipoDocumento }}
+                                    {% if form.TipoDocumento.errors %}
+                                        <div class="text-danger small mt-1">{{ form.TipoDocumento.errors }}</div>
+                                    {% endif %}
+                                </div>
+
+                                <!-- Número de documento -->
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label fw-semibold">
+                                        Número de documento <span class="text-danger">*</span>
                                     </label>
                                     {{ form.Cedula }}
                                     {% if form.Cedula.errors %}
@@ -351,32 +362,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Validación de cédula
     const numeros = document.querySelectorAll('.numero');
-    
-    function validarCedula(input) {
-        const errorDiv = input.parentNode.querySelector('.error-cedula');
-        
-        if (input.value.length > 0 && input.value.length !== 10) {
-            input.classList.add('is-invalid');
-            input.classList.remove('is-valid');
-            
-            if (!errorDiv) {
-                const nuevoError = document.createElement('div');
-                nuevoError.className = 'error-cedula text-danger small mt-1';
-                nuevoError.innerHTML = '<i class="bi bi-exclamation-circle me-1"></i>La cédula debe tener exactamente 10 dígitos';
-                input.parentNode.appendChild(nuevoError);
-            }
-            return false;
-        } else if (input.value.length === 10) {
-            input.classList.remove('is-invalid');
-            input.classList.add('is-valid');
-            if (errorDiv) errorDiv.remove();
-            return true;
-        } else {
-            input.classList.remove('is-invalid', 'is-valid');
-            if (errorDiv) errorDiv.remove();
-            return false;
-        }
-    }
 
     const celularInput = document.querySelector('.numero-celular');
 
@@ -427,11 +412,11 @@ document.addEventListener('DOMContentLoaded', function() {
 // Confirmar edición con SweetAlert2
 function confirmarEdicion() {
     const cedulaInput = document.querySelector('input[name="Cedula"]');
-    if (cedulaInput && cedulaInput.value.length !== 10) {
+    if (cedulaInput && !cedulaInput.value.trim()) {
         Swal.fire({
             icon: 'error',
             title: 'Error de validación',
-            text: 'La cédula debe tener exactamente 10 dígitos',
+            text: 'El número de documento es obligatorio',
             confirmButtonColor: '#8B0000'
         });
         cedulaInput.focus();
@@ -453,5 +438,6 @@ function confirmarEdicion() {
         }
     });
 }
+
 </script>
 {% endblock %}

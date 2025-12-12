@@ -74,68 +74,70 @@ Productos
                 <th>Compra</th>
                 <th>Venta</th>
                 <th>Estado</th>
-                {% if perms.Productos.delete_producto %}
                 <th>Acciones</th>
-                {% endif %}
               </tr>
             </thead>
             <tbody>
             {% if Productos %}
-            {% for Infor_Prod in Productos %}
-              <tr>
-                <td>{{ Infor_Prod.Id_producto }}</td>
-                <td>
-                  {% if Infor_Prod.prod_imagen %}
-                  <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded" style="width: 45px; height: 45px; object-fit: cover;">
-                  {% else %}
-                  <div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
-                    <i class="bi bi-image text-muted"></i>
-                  </div>
-                  {% endif %}
-                </td>
-                <td class="fw-semibold">{{ Infor_Prod.Nombre }}</td>
-                <td>{{ Infor_Prod.Catego_Id.Nombre }}</td>
-                <td>
-                  {% if Infor_Prod.Stock > 10 %}
-                    <span class="badge text-bg-success">{{ Infor_Prod.Stock }}</span>
-                  {% elif Infor_Prod.Stock > 0 %}
-                    <span class="badge text-bg-warning">{{ Infor_Prod.Stock }}</span>
-                  {% else %}
-                    <span class="badge text-bg-danger">Agotado</span>
-                  {% endif %}
-                </td>
-                <td>{{ Infor_Prod.Precio_de_compra }}</td>
-                <td class="fw-bold text-success">{{ Infor_Prod.Precio_de_venta }}</td>
-                <td>
-                  {% if Infor_Prod.Estado == 'Activo' %}
-                    <span class="badge badge-estado-activo">
-                      <i class="bi bi-check-circle me-1"></i>Activo
-                    </span>
-                  {% else %}
-                    <span class="badge badge-estado-inactivo">
-                      <i class="bi bi-x-circle me-1"></i>Inactivo
-                    </span>
-                  {% endif %}
-                </td>
-                {% if perms.Productos.delete_producto %}
-                <td>
-                  <div class="d-flex justify-content-center gap-2">
-                    <a href="{% url 'EditProd' Infor_Prod.Id_producto %}" class="btn btn-sm btn-warning" title="Editar">
-                      <i class="bi bi-pencil-fill"></i>
-                    </a>
+              {% for Infor_Prod in Productos %}
+                <tr>
+                  <td>{{ Infor_Prod.Id_producto }}</td>
+                  <td>
+                    {% if Infor_Prod.prod_imagen %}
+                    <img src="{{ Infor_Prod.prod_imagen.url }}" alt="Producto" class="rounded" style="width: 45px; height: 45px; object-fit: cover;">
+                    {% else %}
+                    <div class="rounded bg-light d-flex align-items-center justify-content-center" style="width: 45px; height: 45px;">
+                      <i class="bi bi-image text-muted"></i>
+                    </div>
+                    {% endif %}
+                  </td>
+                  <td class="fw-semibold">{{ Infor_Prod.Nombre }}</td>
+                  <td>{{ Infor_Prod.Catego_Id.Nombre }}</td>
+                  <td>
+                    {% if Infor_Prod.Stock > 10 %}
+                      <span class="badge text-bg-success">{{ Infor_Prod.Stock }}</span>
+                    {% elif Infor_Prod.Stock > 0 %}
+                      <span class="badge text-bg-warning">{{ Infor_Prod.Stock }}</span>
+                    {% else %}
+                      <span class="badge text-bg-danger">Agotado</span>
+                    {% endif %}
+                  </td>
+                  <td>{{ Infor_Prod.Precio_de_compra }}</td>
+                  <td class="fw-bold text-success">{{ Infor_Prod.Precio_de_venta}}</td>
+                  <td>
+                    {% if Infor_Prod.Estado == 'Activo' %}
+                      <span class="badge badge-estado-activo">
+                        <i class="bi bi-check-circle me-1"></i>Activo
+                      </span>
+                    {% else %}
+                      <span class="badge badge-estado-inactivo">
+                        <i class="bi bi-x-circle me-1"></i>Inactivo
+                      </span>
+                    {% endif %}
+                  </td>
+                  
+                  <td>
+                    <div class="d-flex justify-content-center gap-2">
+                      {% if perms.Productos.change_producto %}
+                        <a href="{% url 'EditProd' Infor_Prod.Id_producto %}" class="btn btn-sm btn-warning" title="Editar">
+                          <i class="bi bi-pencil-fill"></i>
+                        </a>
+                      {% endif %}
 
-                    <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}" class="btn btn-sm btn-info" title="Detalle">
-                      <i class="bi bi-eye-fill"></i>
-                    </a>
+                      <a href="{% url 'SpecProd' Infor_Prod.Id_producto %}" class="btn btn-sm btn-info" title="Detalle">
+                        <i class="bi bi-eye-fill"></i>
+                      </a>
 
-                    <a href="{% url 'EstSal' Infor_Prod.Id_producto %}" class="btn btn-movimientos btn-sm" title="Entradas/Salidas">
-                      <i class="bi bi-arrow-left-right"></i>
-                    </a>
-                  </div>
-                </td>
-                {% endif %}
-              </tr>
-            {% endfor %}
+                      {% if perms.Salidas_Entradas.view_salidas_entradas %}
+                        <a href="{% url 'EstSal' Infor_Prod.Id_producto %}" class="btn btn-movimientos btn-sm" title="Entradas/Salidas">
+                          <i class="bi bi-arrow-left-right"></i>
+                        </a>
+                      {% endif %}
+
+                    </div>
+                  </td>
+                </tr>
+              {% endfor %}
             {% endif %}
 
             {% if niji %}

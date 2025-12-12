@@ -1,108 +1,60 @@
-/**
- * ========================================
- * SCRIPT: FILTRADO DE USUARIOS EN TIEMPO REAL
- * ========================================
- */
-
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', () => {
+    const formFiltros = document.getElementById('formFiltrosUsuarios');
+    const selectEstado = document.getElementById('filtroEstado');
+    const selectRol = document.getElementById('filtroRol');
     const inputBuscar = document.getElementById('buscarUsuario');
-    const selectFiltro = document.getElementById('filtroUsuarios');
     const btnLimpiar = document.getElementById('btnLimpiarFiltros');
+    const exportForms = document.querySelectorAll('.form-export-usuarios');
     const filas = document.querySelectorAll('.usuario-row');
-    const countVisible = document.getElementById('countVisible');
 
-    // Función para filtrar usuarios
-    function filtrarUsuarios() {
-        const busqueda = inputBuscar.value.toLowerCase().trim();
-        const filtro = selectFiltro.value;
-        let visibles = 0;
+    let searchTimeout = null;
 
-        filas.forEach(fila => {
-            const nombre = fila.dataset.nombre || '';
-            const cedula = fila.dataset.cedula || '';
-            const correo = fila.dataset.correo || '';
-            const estado = fila.dataset.estado || '';
-            const grupos = fila.dataset.grupo || '';
-
-            // Verificar búsqueda
-            const coincideBusqueda = busqueda === '' || 
-                nombre.includes(busqueda) || 
-                cedula.includes(busqueda) || 
-                correo.includes(busqueda);
-
-            // Verificar filtro
-            let coincideFiltro = true;
-            if (filtro === 'active') {
-                coincideFiltro = estado === 'active';
-            } else if (filtro === 'inactive') {
-                coincideFiltro = estado === 'inactive';
-            } else if (filtro.startsWith('group_')) {
-                coincideFiltro = grupos.includes(filtro);
-            }
-
-            // Mostrar u ocultar fila
-            if (coincideBusqueda && coincideFiltro) {
-                fila.style.display = '';
-                visibles++;
-            } else {
-                fila.style.display = 'none';
-            }
-        });
-
-        // Actualizar contador
-        if (countVisible) {
-            countVisible.textContent = visibles;
+    const submitFiltros = () => {
+        if (formFiltros) {
+            formFiltros.submit();
         }
+    };
 
-        // Mostrar/ocultar botón limpiar
-        if (btnLimpiar) {
-            if (busqueda !== '' || filtro !== '') {
-                btnLimpiar.classList.remove('d-none');
-            } else {
-                btnLimpiar.classList.add('d-none');
-            }
-        }
-
-        // Mostrar mensaje si no hay resultados
-        mostrarMensajeVacio(visibles);
+    if (selectEstado) {
+        selectEstado.addEventListener('change', submitFiltros);
     }
 
-    // Mostrar mensaje cuando no hay resultados
-    function mostrarMensajeVacio(visibles) {
-        const tbody = document.getElementById('tablaUsuarios');
-        const noResults = document.getElementById('noResults');
-
-        if (visibles === 0 && filas.length > 0) {
-            if (!noResults && tbody) {
-                const tr = document.createElement('tr');
-                tr.id = 'noResults';
-                tr.innerHTML = `
-                    <td colspan="10" class="text-center py-4">
-                        <i class="bi bi-search fs-1 text-muted"></i>
-                        <p class="text-muted mt-2">No se encontraron usuarios con los filtros aplicados</p>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            }
-        } else {
-            if (noResults) noResults.remove();
-        }
+    if (selectRol) {
+        selectRol.addEventListener('change', submitFiltros);
     }
 
-    // Eventos
     if (inputBuscar) {
-        inputBuscar.addEventListener('input', filtrarUsuarios);
-    }
-
-    if (selectFiltro) {
-        selectFiltro.addEventListener('change', filtrarUsuarios);
+        inputBuscar.addEventListener('input', () => {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => submitFiltros(), 400);
+        });
     }
 
     if (btnLimpiar) {
-        btnLimpiar.addEventListener('click', function() {
-            inputBuscar.value = '';
-            selectFiltro.value = '';
-            filtrarUsuarios();
+        btnLimpiar.addEventListener('click', () => {
+            if (selectEstado) selectEstado.value = '';
+            if (selectRol) selectRol.value = '';
+            if (inputBuscar) inputBuscar.value = '';
+            submitFiltros();
+        });
+    }
+
+    if (exportForms.length) {
+        exportForms.forEach(form => {
+            const hiddenField = form.querySelector('.visible-ids-field');
+            form.addEventListener('submit', event => {
+                const ids = Array.from(filas)
+                    .map(fila => fila.dataset.userId)
+                    .filter(Boolean);
+
+                if (!ids.length) {
+                    event.preventDefault();
+                    alert('No hay usuarios para exportar.');
+                    return;
+                }
+
+                hiddenField.value = ids.join(',');
+            });
         });
     }
 });

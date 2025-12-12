@@ -167,13 +167,31 @@
                                 </div>
                             </div>
                             
-                            <!-- Cédula -->
+                            <!-- Tipo de documento -->
                             <div class="col-md-6 mb-3">
                                 <div class="info-item">
                                     <span class="info-label">
-                                        <i class="bi bi-card-text me-2"></i>Cédula
+                                        <i class="bi bi-card-text me-2"></i>Tipo de documento
                                     </span>
-                                    <span class="info-value">{{ empleado.Cedula|default:"-" }}</span>
+                                    <span class="info-value">
+                                        {% if empleado.TipoDocumento %}
+                                            {{ empleado.get_TipoDocumento_display }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <!-- Número de documento -->
+                            <div class="col-md-6 mb-3">
+                                <div class="info-item">
+                                    <span class="info-label">
+                                        <i class="bi bi-card-text me-2"></i>Número de documento
+                                    </span>
+                                    <span class="info-value">
+                                        {{ empleado.Cedula|default:"-" }}
+                                    </span>
                                 </div>
                             </div>
                             

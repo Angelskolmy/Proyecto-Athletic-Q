@@ -32,10 +32,61 @@
 
 .table tbody tr {
     transition: background-color 0.2s ease;
+    border-left: 4px solid transparent;
 }
 
 .table tbody tr:hover {
     background-color: rgba(139, 0, 0, 0.05) !important;
+}
+
+.estado-row--success {
+    border-left-color: #059669;
+    background: rgba(5, 150, 105, 0.06);
+}
+
+.estado-row--warning {
+    border-left-color: #d97706;
+    background: rgba(217, 119, 6, 0.04);
+}
+
+.estado-row--danger {
+    border-left-color: #dc2626;
+    background: rgba(220, 38, 38, 0.05);
+}
+
+.estado-row--neutral {
+    border-left-color: #6b7280;
+}
+
+.estado-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.6rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    border-radius: 999px;
+    letter-spacing: 0.02em;
+    text-transform: capitalize;
+}
+
+.estado-badge--success {
+    background: rgba(5, 150, 105, 0.12);
+    color: #047857;
+}
+
+.estado-badge--warning {
+    background: rgba(217, 119, 6, 0.15);
+    color: #b45309;
+}
+
+.estado-badge--danger {
+    background: rgba(220, 38, 38, 0.12);
+    color: #b91c1c;
+}
+
+.estado-badge--neutral {
+    background: rgba(107, 114, 128, 0.15);
+    color: #374151;
 }
 
 /* ================================

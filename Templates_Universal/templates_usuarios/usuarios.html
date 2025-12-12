@@ -33,41 +33,50 @@
 
                 <!-- Header con filtro y buscador -->
                 <div class="card-header d-flex flex-wrap align-items-center justify-content-between gap-2">
-                    <!-- Botón Agregar -->
-                    <a href="{% url 'empleados_create' %}" class="btn btn-crear mb-2 mb-sm-0">
-                        <i class="bi bi-person-plus-fill me-1"></i> Agregar Usuario
-                    </a>
+                    <div class="d-flex align-items-center flex-wrap gap-2">
+                        <!-- Botón Agregar -->
+                        <a href="{% url 'empleados_create' %}" class="btn btn-crear mb-2 mb-sm-0">
+                            <i class="bi bi-person-plus-fill me-1"></i> Agregar Usuario
+                        </a>
+                    </div>
 
-                    <!-- Filtros y Buscador en tiempo real -->
-                    <div class="d-flex align-items-center gap-2 ms-auto flex-wrap">
-                        <!-- Filtro por Estado/Rol -->
-                        <select id="filtroUsuarios" class="form-select form-select-sm" style="width: 200px;">
-                            <option value="">Todos los usuarios</option>
-                            <option value="active">Activos</option>
-                            <option value="inactive">Inactivos</option>
-                            {% if request.user == 'Admin'%}
-                            <optgroup label="Por Rol/Grupo">
+                    <!-- Filtros y Buscador -->
+                    <form id="formFiltrosUsuarios" method="get" class="d-flex align-items-center gap-2 ms-auto flex-wrap">
+                        <input type="hidden" name="items_per_page" value="{{ items_per_page }}">
+
+                        <!-- Filtro por Estado -->
+                        <select id="filtroEstado" name="estado" class="form-select form-select-sm" style="width: 150px;">
+                            <option value="">Todos los estados</option>
+                            <option value="active" {% if filter_state == 'active' %}selected{% endif %}>Activos</option>
+                            <option value="inactive" {% if filter_state == 'inactive' %}selected{% endif %}>Inactivos</option>
+                        </select>
+
+                        <!-- Filtro por Rol -->
+                        <select id="filtroRol" name="rol" class="form-select form-select-sm" style="width: 200px;">
+                            <option value="">Todos los roles</option>
+                            {% if puede_ver_grupos %}
                                 {% for grupo in grupos_disponibles %}
-                                <option value="group_{{ grupo.id }}">{{ grupo.name }}</option>
+                                <option value="group_{{ grupo.id }}" {% if filter_group == 'group_'|add:grupo.id|stringformat:'s' %}selected{% endif %}>
+                                    {{ grupo.name }}
+                                </option>
                                 {% endfor %}
-                            </optgroup>
                             {% endif %}
                         </select>
 
                         <!-- Buscador en tiempo real -->
                         <div class="input-group input-group-sm" style="width: 250px;">
-                            <input type="text" id="buscarUsuario" class="form-control" 
-                                   placeholder="Buscar usuario...">
+                            <input type="text" id="buscarUsuario" name="search" class="form-control" 
+                                   placeholder="Buscar usuario..." value="{{ search_query }}">
                             <span class="input-group-text">
                                 <i class="bi bi-search"></i>
                             </span>
                         </div>
 
                         <!-- Botón limpiar filtros -->
-                        <button type="button" id="btnLimpiarFiltros" class="btn btn-outline-danger btn-sm d-none">
+                        <button type="button" id="btnLimpiarFiltros" class="btn btn-outline-danger btn-sm {% if not search_query and not filter_state and not filter_group %}d-none{% endif %}">
                             <i class="bi bi-x-circle"></i>
                         </button>
-                    </div>
+                    </form>
                 </div>
 
                 <!-- Tabla -->
@@ -90,6 +99,7 @@
                             <tbody id="tablaUsuarios">
                                 {% for UsEmp in Empleados %}
                                 <tr class="usuario-row" 
+                                    data-user-id="{{ UsEmp.id }}"
                                     data-nombre="{{ UsEmp.first_name|lower }} {{ UsEmp.last_name|lower }}"
                                     data-cedula="{{ UsEmp.Cedula }}"
                                     data-correo="{{ UsEmp.email|lower }}"
@@ -127,11 +137,11 @@
                                     <td>
                                         {% for grupo in UsEmp.groups.all %}
                                             {% if grupo.name == 'Admin' %}
-                                                <span class="badge badge-rol-admin">{{ grupo.name }}</span>
+                                                {{ grupo.name }}
                                             {% elif grupo.name == 'Entrenador' %}
-                                                <span class="badge badge-rol-entrenador">{{ grupo.name }}</span>
+                                                {{ grupo.name }}
                                             {% else %}
-                                                <span class="badge badge-rol-empleado">{{ grupo.name }}</span>
+                                                {{ grupo.name }}
                                             {% endif %}
                                         {% empty %}
                                             <span class="badge bg-secondary">Sin rol</span>
@@ -188,10 +198,10 @@
                 <!-- Footer con paginación -->
                 <div class="card-footer d-flex justify-content-between align-items-center">
                     {% if Empleados.paginator.num_pages > 1 %}
-                        <ul class="pagination pagination-sm mb-0">
+                        <ul class="pagination pagination-sm mb-0" id="paginationWrapper" data-per-page="{{ items_per_page }}">
                             {% if Empleados.has_previous %}
                             <li class="page-item">
-                                <a class="page-link" href="?page=1">«</a>
+                                <a class="page-link" href="?page=1{% if pagination_suffix %}{{ pagination_suffix }}{% endif %}">«</a>
                             </li>
                             {% endif %}
 
@@ -199,13 +209,13 @@
                                 {% if Empleados.number == num %}
                                     <li class="page-item active"><span class="page-link">{{ num }}</span></li>
                                 {% elif num > Empleados.number|add:'-3' and num < Empleados.number|add:'3' %}
-                                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                                    <li class="page-item"><a class="page-link" href="?page={{ num }}{% if pagination_suffix %}{{ pagination_suffix }}{% endif %}">{{ num }}</a></li>
                                 {% endif %}
                             {% endfor %}
 
                             {% if Empleados.has_next %}
                             <li class="page-item">
-                                <a class="page-link" href="?page={{ Empleados.paginator.num_pages }}">»</a>
+                                <a class="page-link" href="?page={{ Empleados.paginator.num_pages }}{% if pagination_suffix %}{{ pagination_suffix }}{% endif %}">»</a>
                             </li>
                             {% endif %}
                         </ul>
@@ -218,14 +228,30 @@
                             Mostrando <span id="countVisible">{{ Empleados|length }}</span> de {{ total_items }} usuarios
                         </span>
                     </div>
-
-                    <div class="dropdown">
-                        <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            <i class="bi bi-download me-1"></i>Exportar
+                    <!-- Botón flotante de exportación -->
+                    <div class="export-fab dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="exportFab" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-download me-1"></i> Exportar
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportFab">
+                            <li>
+                                <form class="form-export-usuarios" method="post" action="{% url 'empleados_exportar_excel' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="visible_ids" class="visible-ids-field" value="{{ pagina_ids }}">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-file-earmark-excel text-success me-2"></i> Descargar Excel
+                                    </button>
+                                </form>
+                            </li>
+                            <li>
+                                <form class="form-export-usuarios" method="post" action="{% url 'empleados_exportar_pdf' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="visible_ids" class="visible-ids-field" value="{{ pagina_ids }}">
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-file-earmark-pdf text-danger me-2"></i> Descargar PDF
+                                    </button>
+                                </form>
+                            </li>
                         </ul>
                     </div>
                 </div>
@@ -233,7 +259,9 @@
         </div>
     </div>
 
-    {% include 'templates_partials/modal_huella.html' %}
+{% include 'templates_partials/modal_huella.html' %}
+
+
 {% endblock %}
 
 {% block extra_js %}

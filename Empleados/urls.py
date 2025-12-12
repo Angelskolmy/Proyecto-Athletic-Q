@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     # Listado / CRUD básico
     path('Empleados/', views.ListarEmpleados, name='Empleados'),
+    path('Empleados/exportar/pdf/', views.ExportarUsuariosPDF, name='empleados_exportar_pdf'),
+    path('Empleados/exportar/excel/', views.ExportarUsuariosExcel, name='empleados_exportar_excel'),
     path('Empleados/crear/', views.CrearEmpleado, name='empleados_create'),
     path('Empleados/editar/<int:id>/', views.EditarEmpleado, name='empleados_edit'),
     path('Empleados/detalle/<int:id>/', views.DetalleEmpleado, name='empleados_detail'),
@@ -23,15 +25,18 @@ urlpatterns = [
     # Captura 
     path('Empleados/<int:empleado_id>/capturar-huella/', views.capturar_huella, name='capturar_huella'),
 
-    # Guardarhuellas
+    # Guardar huellas
     path('Empleados/guardar-huellas/', views.guardar_huellas, name='guardar_huellas'),
     
-    # validar huella
-    path("Empleados/validar-huella/", views.validar_huella, name="validar_huella"),
+    # API para obtener huellas (para comparación local)
+    path('api/huellas/', views.obtener_huellas, name='obtener_huellas'),
     
-    #escanear qr
+    # Validar huella (recibe usuario_id del match local)
+    path('validar-huella/', views.validar_huella, name='validar_huella'),
+    
+    # Escanear QR
     path('validar/<int:usuario_id>/', views.validar_qr, name='validar_qr'),
 
-    #registrar qr
+    # Registrar QR
     path('registrar/', views.registrar_asistencia_ajax, name='registrar_asistencia_ajax'),
 ]

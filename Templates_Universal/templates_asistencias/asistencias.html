@@ -1,5 +1,5 @@
 {% extends 'base.html' %}
-{% load static %}
+{% load static asistencia_extras %}
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/asistencias/asistencias.css' %}">
@@ -95,6 +95,7 @@
                         <thead class="table-light">
                             <tr>
                                 <th>ID</th>
+                                <th>Imagen</th>
                                 <th>Usuario</th>
                                 <th>Rol</th>
                                 <th>Entrada</th>
@@ -106,23 +107,25 @@
                         </thead>
                         <tbody id="tablaAsistencias">
                             {% for asistencia in Asistencias %}
-                            <tr class="asistencia-row">
+                            <tr class="asistencia-row {{ asistencia.estado|estado_row_class }}">
                                 <!-- ID -->
                                 <td class="text-muted">{{ asistencia.id }}</td>
                                 
                                 <!-- Usuario con foto -->
+                                <td> 
+                                    {% if asistencia.id_usuario.empleados_img and asistencia.id_usuario.empleados_img.name %}
+                                        <img src="{{ asistencia.id_usuario.empleados_img.url }}" 
+                                            alt="Foto" class="rounded-circle me-2" 
+                                            style="width: 35px; height: 35px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-2" 
+                                            style="width: 35px; height: 35px;">
+                                            <i class="bi bi-person text-white"></i>
+                                        </div>
+                                    {% endif %}
+                                </td>
                                 <td>
                                     <div class="d-flex align-items-center justify-content-center">
-                                        {% if asistencia.id_usuario.empleados_img and asistencia.id_usuario.empleados_img.name %}
-                                            <img src="{{ asistencia.id_usuario.empleados_img.url }}" 
-                                                 alt="Foto" class="rounded-circle me-2" 
-                                                 style="width: 35px; height: 35px; object-fit: cover;">
-                                        {% else %}
-                                            <div class="rounded-circle bg-secondary d-flex align-items-center justify-content-center me-2" 
-                                                 style="width: 35px; height: 35px;">
-                                                <i class="bi bi-person text-white"></i>
-                                            </div>
-                                        {% endif %}
                                         <span>{{ asistencia.id_usuario.first_name }} {{ asistencia.id_usuario.last_name }}</span>
                                     </div>
                                 </td>
@@ -163,7 +166,13 @@
                                 </td>
                                 
                                 <!-- Estado -->
-                                <td>{{ asistencia.estado|default:"—" }}</td>
+                                <td>
+                                    {% with estado=asistencia.estado|default:"Sin estado" %}
+                                        <span class="estado-badge {{ asistencia.estado|estado_badge_class }}">
+                                            {{ estado }}
+                                        </span>
+                                    {% endwith %}
+                                </td>
                             </tr>
                             {% empty %}
                             <tr id="sinResultados">
@@ -186,9 +195,6 @@
                     <li class="page-item">
                         <a class="page-link" href="?page=1{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">«</a>
                     </li>
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ Asistencias.previous_page_number }}{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">‹</a>
-                    </li>
                     {% endif %}
 
                     {% for num in Asistencias.paginator.page_range %}
@@ -202,9 +208,6 @@
                     {% endfor %}
 
                     {% if Asistencias.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ Asistencias.next_page_number }}{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">›</a>
-                    </li>
                     <li class="page-item">
                         <a class="page-link" href="?page={{ Asistencias.paginator.num_pages }}{% if nombre_query %}&nombre={{ nombre_query }}{% endif %}{% if tipo_usuario %}&tipo={{ tipo_usuario }}{% endif %}{% if fecha_entrada %}&fecha_entrada={{ fecha_entrada }}{% endif %}{% if fecha_salida %}&fecha_salida={{ fecha_salida }}{% endif %}">»</a>
                     </li>
@@ -221,12 +224,32 @@
                 </div>
 
                 <div class="dropdown">
-                    <button class="btn btn-outline-success btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                        <i class="bi bi-download me-1"></i>Exportar
+                    <button class="btn btn-secondary dropdown-toggle" type="button" id="exportAsistencias" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-download me-1"></i> Exportar
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-excel me-2 text-success"></i>Excel</a></li>
-                        <li><a class="dropdown-item" href="#"><i class="bi bi-file-earmark-pdf me-2 text-danger"></i>PDF</a></li>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportAsistencias">
+                        <li>
+                            <form method="get" action="{% url 'asistencias_exportar_excel' %}">
+                                <input type="hidden" name="nombre" value="{{ nombre_query }}">
+                                <input type="hidden" name="tipo" value="{{ tipo_usuario }}">
+                                <input type="hidden" name="fecha_entrada" value="{{ fecha_entrada }}">
+                                <input type="hidden" name="fecha_salida" value="{{ fecha_salida }}">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-file-earmark-excel text-success me-2"></i> Descargar Excel
+                                </button>
+                            </form>
+                        </li>
+                        <li>
+                            <form method="get" action="{% url 'asistencias_exportar_pdf' %}">
+                                <input type="hidden" name="nombre" value="{{ nombre_query }}">
+                                <input type="hidden" name="tipo" value="{{ tipo_usuario }}">
+                                <input type="hidden" name="fecha_entrada" value="{{ fecha_entrada }}">
+                                <input type="hidden" name="fecha_salida" value="{{ fecha_salida }}">
+                                <button type="submit" class="dropdown-item">
+                                    <i class="bi bi-file-earmark-pdf text-danger me-2"></i> Descargar PDF
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

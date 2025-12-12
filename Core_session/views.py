@@ -6,6 +6,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum, Count
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 from datetime import datetime, timedelta
 from decimal import Decimal
 from random import randint
@@ -20,7 +21,22 @@ from .forms import CambiaContraseñaForm
 # ============================
 # VISTA DE LOGIN
 # ============================
+def _parse_date_range(request):
+    """Devuelve (fecha_inicio, fecha_fin, str_inicio, str_fin) basados en parámetros GET."""
+    fecha_inicio_str = request.GET.get('fecha_inicio', '').strip()
+    fecha_fin_str = request.GET.get('fecha_fin', '').strip()
+
+    fecha_inicio = parse_date(fecha_inicio_str) if fecha_inicio_str else None
+    fecha_fin = parse_date(fecha_fin_str) if fecha_fin_str else None
+
+    if fecha_inicio and fecha_fin and fecha_fin < fecha_inicio:
+        fecha_inicio, fecha_fin = fecha_fin, fecha_inicio
+
+    return fecha_inicio, fecha_fin, fecha_inicio_str, fecha_fin_str
+
+
 def login_view(request):
+    logout(request)
     # Si ya está autenticado, redirigir
     if request.user.is_authenticated:
         if request.user.groups.filter(name='Usuarios').exists():
@@ -31,7 +47,7 @@ def login_view(request):
             return redirect('home')
     
     if request.method == 'POST':
-        username = request.POST.get('username')
+        username = request.POST.get('username', '').strip()
         password = request.POST.get('password')
         
         user = authenticate(request, username=username, password=password)
@@ -46,7 +62,12 @@ def login_view(request):
             else:
                 return redirect('home')
         else:
-            messages.error(request, 'Usuario o contraseña incorrectos')
+            if not username:
+                messages.error(request, 'Debes ingresar un usuario')
+            elif not User_Empleados.objects.filter(username=username).exists():
+                messages.error(request, 'Usuario no registrado')
+            else:
+                messages.error(request, 'Contraseña incorrecta')
 
     return render(request, 'templates_core_session/login.html')
 
@@ -132,15 +153,13 @@ def vista_cambiar_contraseña(request):
     if 'email_recuperacion' not in request.session:
         return redirect('correo')
     
+    email = request.session.get('email_recuperacion')
+    usuario = User_Empleados.objects.get(email=email)
+
     if request.method == 'POST':
-        form = CambiaContraseñaForm(request.POST)
+        form = CambiaContraseñaForm(usuario, request.POST)
         if form.is_valid():
-            email = request.session.get('email_recuperacion')
-            nueva_password = form.cleaned_data['password1']
-            
-            usuario = User_Empleados.objects.get(email=email)
-            usuario.set_password(nueva_password)
-            usuario.save()
+            form.save()
             
             request.session.pop('codigo_recuperacion', None)
             request.session.pop('email_recuperacion', None)
@@ -148,7 +167,7 @@ def vista_cambiar_contraseña(request):
             messages.success(request, 'Contraseña actualizada correctamente')
             return redirect('login')
     else:
-        form = CambiaContraseñaForm()
+        form = CambiaContraseñaForm(usuario)
     
     return render(request, 'templates_core_session/contra_nueva.html', {'form': form})
 
@@ -164,6 +183,9 @@ def error_403_view(request, exception=None):
 def error_404_view(request, exception=None):
     return render(request, 'templates_errores/404.html', status=404)
 
+def error_500_view(request, exception=None):
+    return render(request, 'templates_errores/500.html', status=500)
+
 
 def logout_view(request):
     logout(request)
@@ -177,9 +199,29 @@ def logout_view(request):
 @login_required(login_url='login')
 def home_view(request):
     """Vista principal del dashboard"""
+    if request.user.groups.filter(name='Huella').exists():
+        messages.error(request, 'No tienes acceso al dashboard')
+        return redirect('AsisVista')
     
     hoy = timezone.now().date()
     fecha_limite = hoy + timedelta(days=7)
+    fecha_inicio, fecha_fin, fecha_inicio_str, fecha_fin_str = _parse_date_range(request)
+    filtro_activo = bool(fecha_inicio or fecha_fin)
+    
+    membresias_qs = Membresia.objects.filter(Estado='Activo')
+    if fecha_inicio:
+        membresias_qs = membresias_qs.filter(Fecha_fin__gte=fecha_inicio)
+    if fecha_fin:
+        membresias_qs = membresias_qs.filter(Fecha_fin__lte=fecha_fin)
+    
+    if filtro_activo:
+        membresias_por_vencer = membresias_qs.count()
+    else:
+        membresias_por_vencer = Membresia.objects.filter(
+            Estado='Activo',
+            Fecha_fin__gte=hoy,
+            Fecha_fin__lte=fecha_limite
+        ).count()
     
     # ================================
     # CARD 1: Usuarios Activos
@@ -213,6 +255,9 @@ def home_view(request):
         'membresias_por_vencer': membresias_por_vencer,
         'total_productos': total_productos,
         'stock_bajo': stock_bajo,
+        'fecha_inicio': fecha_inicio_str,
+        'fecha_fin': fecha_fin_str,
+        'filtro_activo': filtro_activo,
     }
     
     return render(request, 'templates_core_session/home.html', context)
@@ -221,6 +266,7 @@ def home_view(request):
 @login_required(login_url='login')
 def home_chart(request, name):
     """API para gráficos del dashboard"""
+    fecha_inicio, fecha_fin, _, _ = _parse_date_range(request)
     
     # ================================
     # GRÁFICO: Productos por Categoría
@@ -266,10 +312,15 @@ def home_chart(request, name):
         data = []
         
         for tipo in tipos:
-            count = Membresia.objects.filter(
+            membresias_tipo = Membresia.objects.filter(
                 For_Id_tipo_membresia=tipo,
                 Estado='Activo'
-            ).count()
+            )
+            if fecha_inicio:
+                membresias_tipo = membresias_tipo.filter(Fecha_inicio__date__gte=fecha_inicio)
+            if fecha_fin:
+                membresias_tipo = membresias_tipo.filter(Fecha_inicio__date__lte=fecha_fin)
+            count = membresias_tipo.count()
             
             if count > 0:
                 labels.append(tipo.Nombre)

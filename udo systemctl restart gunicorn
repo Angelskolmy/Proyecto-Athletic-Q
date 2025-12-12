@@ -1,0 +1,20 @@
+[0;1;32m●[0m gunicorn.service - Gunicorn service for AthleticQ
+     Loaded: loaded (]8;;file://srv1180118/etc/systemd/system/gunicorn.service/etc/systemd/system/gunicorn.service]8;;; [0;1;32menabled[0m; preset: [0;1;32menabled[0m)
+     Active: [0;1;32mactive (running)[0m since Tue 2025-12-09 04:43:18 UTC; 4s ago
+   Main PID: 24824 (gunicorn)
+      Tasks: 4 (limit: 9483)
+     Memory: 107.3M (peak: 107.4M)
+        CPU: 618ms
+     CGroup: /system.slice/gunicorn.service
+             ├─[0;38;5;245m24824 /var/www/Proyecto-Athletic-Q/env/bin/python3 /var/www/Proyecto-Athletic-Q/env/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 AtleticQ.wsgi:application[0m
+             ├─[0;38;5;245m24826 /var/www/Proyecto-Athletic-Q/env/bin/python3 /var/www/Proyecto-Athletic-Q/env/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 AtleticQ.wsgi:application[0m
+             ├─[0;38;5;245m24827 /var/www/Proyecto-Athletic-Q/env/bin/python3 /var/www/Proyecto-Athletic-Q/env/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 AtleticQ.wsgi:application[0m
+             └─[0;38;5;245m24828 /var/www/Proyecto-Athletic-Q/env/bin/python3 /var/www/Proyecto-Athletic-Q/env/bin/gunicorn --workers 3 --bind 127.0.0.1:8000 AtleticQ.wsgi:application[0m
+
+Dec 09 04:43:18 srv1180118 systemd[1]: Started gunicorn.service - Gunicorn service for AthleticQ.
+Dec 09 04:43:18 srv1180118 gunicorn[24824]: [2025-12-09 04:43:18 +0000] [24824] [INFO] Starting gunicorn 23.0.0
+Dec 09 04:43:18 srv1180118 gunicorn[24824]: [2025-12-09 04:43:18 +0000] [24824] [INFO] Listening at: http://127.0.0.1:8000 (24824)
+Dec 09 04:43:18 srv1180118 gunicorn[24824]: [2025-12-09 04:43:18 +0000] [24824] [INFO] Using worker: sync
+Dec 09 04:43:18 srv1180118 gunicorn[24826]: [2025-12-09 04:43:18 +0000] [24826] [INFO] Booting worker with pid: 24826
+Dec 09 04:43:18 srv1180118 gunicorn[24827]: [2025-12-09 04:43:18 +0000] [24827] [INFO] Booting worker with pid: 24827
+Dec 09 04:43:18 srv1180118 gunicorn[24828]: [2025-12-09 04:43:18 +0000] [24828] [INFO] Booting worker with pid: 24828

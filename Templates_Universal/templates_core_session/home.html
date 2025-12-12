@@ -4,7 +4,7 @@
 {% block extra_css %}
     <link rel="stylesheet" href="{% static 'css/core_session/home.css' %}">
 {% endblock %}
-
+    
 {% block title %}
     Home
 {% endblock %}
@@ -145,11 +145,19 @@
 
             let productosChart = null;
             let membresiasChart = null;
+            const urlParams = new URLSearchParams(window.location.search);
+            const chartParams = new URLSearchParams();
+            ['fecha_inicio', 'fecha_fin'].forEach(key => {
+                if (urlParams.get(key)) {
+                    chartParams.set(key, urlParams.get(key));
+                }
+            });
+            const queryString = chartParams.toString() ? `?${chartParams.toString()}` : '';
 
             // Cargar gráfico de productos por categoría (BARRAS)
             async function fetchProductos() {
                 try {
-                    const res = await fetch(`{% url 'home_chart' 'productos' %}`);
+                    const res = await fetch(`{% url 'home_chart' 'productos' %}${queryString}`);
                     const data = await res.json();
 
                     // Actualizar total
@@ -206,7 +214,7 @@
             // Cargar gráfico de membresías (DOUGHNUT)
             async function fetchMembresias() {
                 try {
-                    const res = await fetch(`{% url 'home_chart' 'membresias' %}`);
+                    const res = await fetch(`{% url 'home_chart' 'membresias' %}${queryString}`);
                     const data = await res.json();
 
                     if (membresiasChart) membresiasChart.destroy();

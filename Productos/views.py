@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from .models import producto 
 from .models import categoria 
 from .forms import ProductoForm  
-from Historial.models import Historial_usuario
+from Historial.utils import registrar_movimiento
 from django.contrib.auth.decorators import permission_required 
 from django.contrib.auth.decorators import login_required 
 from django.core.paginator import Paginator 
@@ -10,14 +10,12 @@ from django.http import HttpResponse
 from openpyxl import Workbook 
 from openpyxl.styles import Font, PatternFill, Border, Side, Alignment  
 from django.http import HttpResponse
-from django.utils import timezone 
 from urllib.parse import urlencode 
 from Detalle_venta.models import Detalle_Venta
 from django.contrib import messages 
 
-@login_required(login_url='login') 
-@permission_required('Productos.view_producto', login_url='login') 
-@permission_required('Productos.delete_producto', login_url='login') 
+@permission_required('Productos.view_producto', raise_exception=True) 
+
 
 
 def listarProductos (request): 
@@ -56,16 +54,13 @@ def IngresaProductos(request):
             ListNombre_Objeto= ClaveHist.Nombre           
             ListId_Objeto= ClaveHist.Id_producto 
             Listid_usuario= userList 
-            PreviaFecha=timezone.now()
-            ListFehca= PreviaFecha.date() 
 
-            Historial_usuario.objects.create( 
-                id_usuario=Listid_usuario, 
-                TIpo_Movimiento=ListTIpo_Movimiento, 
-                Modulo=LIstModulo,
-                Nombre_Objeto=ListNombre_Objeto, 
-                Id_Objeto=ListId_Objeto, 
-                Fecha_y_hora= ListFehca,
+            registrar_movimiento(
+                user=Listid_usuario,
+                tipo=ListTIpo_Movimiento,
+                modulo=LIstModulo,
+                nombre_objeto=ListNombre_Objeto,
+                id_objeto=ListId_Objeto,
             )
             #----------
             return redirect('Producto')        
@@ -75,7 +70,7 @@ def IngresaProductos(request):
     Clave={'Clave' : Cipher} 
     return render (request,'templates_productos/crear_productos.html', Clave)
 
-
+@permission_required('Productos.delete_producto', raise_exception=True) 
 def EliminarProducto(request, Id_producto):    
 
     Prueba= Detalle_Venta.objects.filter(Id_producto=Id_producto)
@@ -96,17 +91,12 @@ def EliminarProducto(request, Id_producto):
         UserLIst2= request.user 
         ListMdoulo2="productos" 
         ListTIpo_Movimiento2="eliminar"  
-        PreviaFecha=timezone.now()
-        ListFehca= PreviaFecha.date() 
-
-        Historial_usuario.objects.create( 
-
-            id_usuario= UserLIst2,
-            TIpo_Movimiento= ListTIpo_Movimiento2,
-            Modulo= ListMdoulo2, 
-            Nombre_Objeto=ListNombre_Objeto2 ,
-            Id_Objeto= ListId_Objeto2, 
-            Fecha_y_hora= ListFehca,
+        registrar_movimiento(
+            user=UserLIst2,
+            tipo=ListTIpo_Movimiento2,
+            modulo=ListMdoulo2,
+            nombre_objeto=ListNombre_Objeto2,
+            id_objeto=ListId_Objeto2,
         )
         return redirect ('Producto')  
 
@@ -137,17 +127,12 @@ def Editar_Producto (request, Id_producto):
             ListId_Objeto3=  Requiem.Id_producto
             ListMdoulo3= "productos"
             ListTIpo_Movimiento3= "editar"  
-            PreviaFecha=timezone.now()
-            ListFehca= PreviaFecha.date() 
-
-            Historial_usuario.objects.create( 
-
-                id_usuario= ListUser3,
-                TIpo_Movimiento= ListTIpo_Movimiento3,
-                Modulo= ListMdoulo3, 
-                Nombre_Objeto=ListNombre_Objeto3,
-                Id_Objeto= ListId_Objeto3, 
-                Fecha_y_hora= ListFehca,
+            registrar_movimiento(
+                user=ListUser3,
+                tipo=ListTIpo_Movimiento3,
+                modulo=ListMdoulo3,
+                nombre_objeto=ListNombre_Objeto3,
+                id_objeto=ListId_Objeto3,
             )
 
             return redirect ('Producto') 

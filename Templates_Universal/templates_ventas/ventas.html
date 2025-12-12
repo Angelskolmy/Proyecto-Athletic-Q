@@ -3,6 +3,71 @@
 
 {% block extra_css %}
 <link rel="stylesheet" href="{% static 'css/ventas/ventas.css' %}">
+<link href="{% static 'select2/css/select2.min.css' %}" rel="stylesheet" />
+<style>
+/* Estilos personalizados para Select2 */
+  .select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    height: 38px;
+    padding: 0.375rem 0.75rem;
+  }
+
+  .select2-container--default .select2-selection--single .select2-selection__rendered {
+    color: #212529;
+    line-height: 28px;
+    padding: 0;
+  }
+
+  .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px;
+    right: 8px;
+  }
+
+  .select2-container--default .select2-selection--single .select2-selection__arrow b {
+    top: 65%;
+  }
+
+  /* Focus */
+  .select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+
+  /* Dropdown */
+  .select2-dropdown {
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+  }
+
+  .select2-results__option {
+    padding: 10px;
+    color: #212529;
+  }
+
+  .select2-results__option--highlighted[aria-selected] {
+    background-color: #007bff;
+  }
+
+  .select2-results__option[aria-selected=true] {
+    background-color: #f8f9fa;
+    color: #212529;
+  }
+
+  /* Búsqueda */
+  .select2-search__field {
+    padding: 8px;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+  }
+
+  /* Sin resultados */
+  .select2-results__message {
+    color: #6c757d;
+  }
+</style>
+
 {% endblock %}
 
 {% block title %}Crear Venta{% endblock %}
@@ -37,15 +102,17 @@
       
       <!-- Campo oculto del vendedor -->
       <input type="hidden" name="empleado_id" value="{{ empleado.id }}">
+      <!-- Campo oculto del cliente (se llena con JavaScript) -->
+      <input type="hidden" name="cliente_id" id="cliente-id-input">
       
       <div class="row">
         
-        <!-- Productos -->
+        <!-- COLUMNA IZQUIERDA: Productos -->
         <div class="col-lg-8">
           <div class="card shadow-sm mb-4">
             <div class="card-header card-header-productos text-white">
               <h5 class="mb-0">
-                <i class="bi bi-box-seam me-2"></i>Productos Disponibles
+                <i class="bi bi-box-seam me-2"></i>Productos
               </h5>
             </div>
             
@@ -53,13 +120,13 @@
               <!-- Buscador y filtro -->
               <div class="row mb-3">
                 <div class="col-md-8">
-                  <input type="text" class="form-control" id="buscarProducto" placeholder="Buscar producto..." onkeyup="filtrar()">
+                  <input type="text" id="buscar" class="form-control" placeholder="Buscar producto...">
                 </div>
                 <div class="col-md-4">
-                  <select class="form-select" id="filtroCategoria" onchange="filtrar()">
+                  <select id="filtro" class="form-select">
                     <option value="">Todas las categorías</option>
                     {% for cat in categorias %}
-                    <option value="{{ cat.Nombre }}">{{ cat.Nombre }}</option>
+                    <option value="{{ cat.Id_categoria }}">{{ cat.Nombre }}</option>
                     {% endfor %}
                   </select>
                 </div>
@@ -68,39 +135,33 @@
               <!-- Grid de productos -->
               <div class="row g-2" id="productos" style="max-height: 500px; overflow-y: auto;">
                 {% for prod in productos %}
-                <div class="col-xl-3 col-lg-4 col-md-6 producto-card {% if prod.Stock == 0 %}sin-stock{% endif %}" 
-                     id="producto-{{ prod.Id_producto }}"
-                     data-nombre="{{ prod.Nombre|lower }}"
-                     data-categoria="{{ prod.Catego_Id.Nombre }}">
-                  <div class="card h-100">
+                <div class="col-lg-3 col-md-4 col-sm-6 producto-card" 
+                     data-nombre="{{ prod.Nombre|lower }}" 
+                     data-categoria="{{ prod.Catego_Id.Id_categoria }}"
+                     id="producto-{{ prod.Id_producto }}">
+                  <div class="card h-100 producto-item">
                     {% if prod.prod_imagen %}
-                    <img src="{{ prod.prod_imagen.url }}" class="card-img-top producto-img" alt="{{ prod.Nombre }}">
+                      <img src="{{ prod.prod_imagen.url }}" class="card-img-top" alt="{{ prod.Nombre }}" style="height: 150px; object-fit: cover;">
                     {% else %}
-                    <div class="card-img-top producto-img d-flex align-items-center justify-content-center bg-light" style="height: 100px;">
-                      <i class="bi bi-image text-muted" style="font-size: 2rem;"></i>
-                    </div>
+                      <div class="card-img-top bg-light d-flex align-items-center justify-content-center" style="height: 150px;">
+                        <i class="bi bi-box text-muted" style="font-size: 2rem;"></i>
+                      </div>
                     {% endif %}
-                    <div class="card-body p-2 text-center">
-                      <h6 class="card-title mb-1" style="font-size: 0.85rem;">{{ prod.Nombre }}</h6>
-                      <p class="text-muted mb-1" style="font-size: 0.75rem;">{{ prod.Catego_Id.Nombre }}</p>
-                      <p class="fw-bold mb-1" style="color: #8B0000;">{{ prod.Precio_de_venta|currency_cop }}</p>
-                      <span class="badge badge-stock {% if prod.Stock > 10 %}bg-success-dark{% elif prod.Stock > 0 %}bg-warning-dark{% else %}bg-danger-dark{% endif %}">
-                        {{ prod.Stock }}
-                      </span>
-                    </div>
-                    <div class="card-footer bg-transparent border-0 p-2">
-                      <button type="button" class="btn btn-agregar-producto btn-sm w-100" 
-                              onclick="agregar({{ prod.Id_producto }}, '{{ prod.Nombre|escapejs }}', {{ prod.Precio_de_venta }}, {{ prod.Stock }})"
-                              {% if prod.Stock == 0 %}disabled{% endif %}>
-                        <i class="bi bi-plus-circle me-1"></i>Agregar
-                      </button>
+                    <div class="card-body d-flex flex-column">
+                      <h6 class="card-title">{{ prod.Nombre }}</h6>
+                      <small class="text-muted mb-2">{{ prod.Catego_Id.Nombre }}</small>
+                      <div class="mt-auto">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                          <span class="fw-bold text-success">${{ prod.Precio_de_venta|floatformat:0 }}</span>
+                          <span class="badge bg-info badge-stock">{{ prod.Stock }}</span>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-procesar-venta w-100" 
+                                onclick="agregar({{ prod.Id_producto }}, '{{ prod.Nombre }}', {{ prod.Precio_de_venta }}, {{ prod.Stock }})">
+                          <i class="bi bi-plus-circle me-1"></i>Agregar
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-                {% empty %}
-                <div class="col-12 text-center py-5">
-                  <i class="bi bi-inbox text-muted" style="font-size: 3rem;"></i>
-                  <p class="text-muted mt-2">No hay productos disponibles</p>
                 </div>
                 {% endfor %}
               </div>
@@ -108,79 +169,97 @@
           </div>
         </div>
 
-        <!-- Carrito -->
+        <!-- COLUMNA DERECHA: Selección de Cliente y Carrito -->
         <div class="col-lg-4">
           <div class="card shadow-sm sticky-top" style="top: 20px;">
             <div class="card-header card-header-carrito text-white">
               <h5 class="mb-0">
-                <i class="bi bi-cart3 me-2"></i>Carrito de Compra
+                <i class="bi bi-person-check me-2"></i>Cliente y Carrito
               </h5>
             </div>
 
             <div class="card-body">
               
               <!-- ================================
-                   DATOS DEL FORMULARIO (PRIMERO)
-                   ================================ -->
+              SELECCIÓN DE CLIENTE
+              ================================ -->
+              
+              <h6 class="mb-3">
+                <i class="bi bi-person me-2"></i>Seleccionar Cliente
+              </h6>
+              
+              <div class="mb-3">
+                <select id="cliente-select" class="form-select" required onchange="actualizarCliente()">
+                  <option value="">-- Seleccione un cliente --</option>
+                  {% for cliente in clientes %}
+                    <option value="{{ cliente.id }}" data-cedula="{{ cliente.Cedula }}">
+                      {% if cliente.Cedula != 0 %}
+                        {{ cliente.get_full_name }} - Cédula: {{ cliente.Cedula }}
+                      {% else %}
+                        Cliente Sin Registro (Fantasma)
+                      {% endif %}
+                    </option>
+                  {% endfor %}
+                </select>
+              </div>
+
+              <!-- Mostrar cédula seleccionada -->
+              <div class="alert alert-light border mb-3">
+                <small class="text-muted">Cédula del cliente:</small>
+                <p class="mb-0 fw-bold" id="cedula-display">No seleccionado</p>
+              </div>
+
+              <!-- Cédula oculta para el formulario -->
+              <input type="hidden" name="Cedula_Vents" id="Cedula_Vents" value="">
+
+              <hr>
+
+              <!-- ================================
+              MÉTODO DE PAGO Y NÚMERO DE TRANSACCIÓN
+              ================================ -->
 
               <!-- Método de Pago -->
               <div class="mb-3">
-                <label for="metodo_pago" class="form-label">
-                  <i class="bi bi-credit-card me-1"></i>Método de Pago <span class="text-danger">*</span>
-                </label>
-                <select name="metodo_pago" id="metodo_pago" class="form-select" required>
+                <label class="form-label">Método de Pago <span class="text-danger">*</span></label>
+                <select name="metodo_pago" id="metodo_pago" class="form-select" required onchange="toggleNumeroTransaccion()">
                   <option value="">Seleccione el método de pago...</option>
-                  <option value="Efectivo">Efectivo</option>
-                  <option value="Credito">Crédito</option>
-                  <option value="Debito">Débito</option>
-                  <option value="PSE">PSE</option>
-                  <option value="Nequi">Nequi</option>
+                  <option value="Efectivo"> Efectivo</option>
+                  <option value="Credito"> Crédito</option>
+                  <option value="Debito"> Débito</option>
+                  <option value="PSE"> PSE</option>
+                  <option value="Nequi"> Nequi</option>
                 </select>
               </div>
 
               <!-- Número de Transacción (solo para pagos no efectivo) -->
               <div class="mb-3" id="div_numero_transaccion" style="display: none;">
-                <label for="Numero_Transaccion" class="form-label">
-                  <i class="bi bi-hash me-1"></i>Número de Transacción <span class="text-danger">*</span>
-                </label>
+                <label class="form-label">Número de Transacción <span class="text-danger">*</span></label>
                 <input type="text" name="Numero_Transaccion" id="Numero_Transaccion" class="form-control" placeholder="Ej: 123RF4">
-              </div>
-
-              <!-- Cédula del Comprador (OPCIONAL) -->
-              <div class="mb-3">
-                <label for="Cedula_Vents" class="form-label">
-                  <i class="bi bi-person-vcard me-1"></i>Cédula del Comprador <small class="text-muted">(opcional)</small>
-                </label>
-                <input type="number" name="Cedula_Vents" id="Cedula_Vents" class="form-control numero" placeholder="Cédula del cliente...">
-                <small class="text-muted">Si no está registrado, déjalo vacío</small>
               </div>
 
               <hr>
 
               <!-- ================================
-                   PRODUCTOS DEL CARRITO (DESPUÉS)
-                   ================================ -->
+              PRODUCTOS DEL CARRITO
+              ================================ -->
 
               <!-- Lista de productos en carrito -->
               <h6 class="mb-2"><i class="bi bi-bag me-1"></i>Productos</h6>
               <div id="carrito" class="mb-3" style="max-height: 250px; overflow-y: auto;">
-                <div class="carrito-vacio text-center py-4">
-                  <i class="bi bi-cart-x"></i>
-                  <p class="text-muted mt-2 mb-0">Carrito vacío</p>
-                </div>
               </div>
 
               <!-- Total -->
               <div class="alert alert-light border d-flex justify-content-between align-items-center mb-3">
-                <strong>Total:</strong>
-                <span id="total" class="fs-4 fw-bold" style="color: #8B0000;">$0</span>
+                <span class="fw-bold">TOTAL:</span>
+                <h4 class="mb-0 text-success" id="total">$0</h4>
               </div>
 
               <!-- Botones -->
               <button type="button" class="btn btn-secondary w-100 mb-2" onclick="limpiar()">
                 <i class="bi bi-trash me-1"></i>Vaciar Carrito
               </button>
-              <button type="submit" class="btn btn-procesar-venta w-100" onclick="return validarVenta(event)">
+              
+              <button type="submit" class="btn btn-procesar-venta w-100">
                 <i class="bi bi-check-circle me-1"></i>Procesar Venta
               </button>
             </div>
@@ -193,46 +272,93 @@
 </div>
 
 <script>
-  // Mostrar/ocultar número de transacción según método de pago
-  document.getElementById('metodo_pago').addEventListener('change', function() {
-    var numeroTransaccionDiv = document.getElementById('div_numero_transaccion');
-    var inputTransaccion = document.getElementById('Numero_Transaccion');
+  // =============================================
+  // ACTUALIZAR CLIENTE Y CÉDULA
+  // =============================================
+  function actualizarCliente() {
+    const select = document.getElementById('cliente-select');
+    const option = select.options[select.selectedIndex];
+    const clienteId = option.value;
+    const cedula = option.dataset.cedula || '';
     
-    if (this.value === 'Efectivo' || this.value === '') {
-      numeroTransaccionDiv.style.display = 'none';
+    // Actualizar campo oculto
+    document.getElementById('cliente-id-input').value = clienteId;
+    document.getElementById('Cedula_Vents').value = cedula;
+    
+    // Mostrar cédula en pantalla
+    const cedulaDisplay = document.getElementById('cedula-display');
+    if (cedula) {
+      cedulaDisplay.textContent = cedula !== '0' ? cedula : 'Cliente Fantasma (Sin Registro)';
+      cedulaDisplay.classList.toggle('text-warning', cedula === '0');
+    } else {
+      cedulaDisplay.textContent = 'No seleccionado';
+    }
+  }
+
+  // =============================================
+  // MOSTRAR/OCULTAR NÚMERO DE TRANSACCIÓN
+  // =============================================
+  function toggleNumeroTransaccion() {
+    const metodoPago = document.getElementById('metodo_pago').value;
+    const divTransaccion = document.getElementById('div_numero_transaccion');
+    const inputTransaccion = document.getElementById('Numero_Transaccion');
+    
+    if (metodoPago === 'Efectivo' || metodoPago === '') {
+      divTransaccion.style.display = 'none';
       inputTransaccion.required = false;
       inputTransaccion.value = '';
     } else {
-      numeroTransaccionDiv.style.display = 'block';
+      divTransaccion.style.display = 'block';
       inputTransaccion.required = true;
     }
-  });
+  }
+</script>
 
-  // Validación de números (solo para cédula)
-  const numeros = document.querySelectorAll('.numero');
-  
-  numeros.forEach(input => {
-    // Bloquear caracteres no permitidos
-    input.addEventListener('keydown', (e) => {
-      if (['-', '+', 'e', 'E', '.', ','].includes(e.key)) {
-        e.preventDefault();
+{% block extra_js %}
+<!-- Select2 -->
+<script src="{% static 'select2/js/select2.min.js' %}"></script>
+<script src="{% static 'select2/js/i18n/es.js' %}"></script>
+{% endblock %}
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const $cliente = $('#cliente-select');
+  if ($cliente.length) {
+    $cliente.select2({
+      placeholder: '-- Seleccione un cliente --',
+      allowClear: true,
+      width: '100%',
+      language: 'es',
+      matcher: function(params, data) {
+        if (!params || !params.term) {
+          return data;
+        }
+        const term = params.term.toLowerCase();
+        const text = (data.text || '').toLowerCase();
+        const cedula = $(data.element).data('cedula') ? String($(data.element).data('cedula')).toLowerCase() : '';
+        if (text.indexOf(term) > -1 || cedula.indexOf(term) > -1) {
+          return data;
+        }
+        return null;
+      },
+      templateResult: function (data) { 
+        return data.text; 
+      },
+      templateSelection: function (data) { 
+        return data.text || ''; 
       }
     });
 
-    // Limpiar al pegar
-    input.addEventListener('paste', (e) => {
-      e.preventDefault();
-      const texto = e.clipboardData.getData('text');
-      const soloNumeros = texto.replace(/[^0-9]/g, '').slice(0, 10);
-      input.value = soloNumeros;
+    $cliente.on('change', function() {
+      actualizarCliente();
     });
 
-    // Limitar a 10 dígitos
-    input.addEventListener('input', () => {
-      if (input.value < 0) input.value = 0;
-      if (input.value.length > 10) input.value = input.value.slice(0, 10);
-    });
-  });
+    const preselected = document.getElementById('cliente-id-input').value;
+    if (preselected) {
+      $cliente.val(preselected).trigger('change');
+    }
+  }
+});
 </script>
 
 <script src="{% static 'js/ventas/ventas.js' %}"></script>

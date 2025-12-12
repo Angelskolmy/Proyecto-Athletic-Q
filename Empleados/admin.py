@@ -7,8 +7,12 @@ class UserEmpleadosAdmin(admin.ModelAdmin):
     def save_model(self, request, obj, form, change):
         raw_password = form.cleaned_data.get("password")
 
-        if raw_password and not raw_password.startswith("pbkdf2_"):
+        # Solo cambiar contraseña si NO está vacío
+        if raw_password and raw_password.strip():  # Verificar que no esté vacío
             obj.set_password(raw_password)
+        elif change:  # Si es edición y la contraseña está vacía, mantener la actual
+            # No hacer nada - mantiene la contraseña anterior
+            pass
 
         obj.save()
 

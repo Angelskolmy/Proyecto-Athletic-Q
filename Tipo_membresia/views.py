@@ -9,12 +9,11 @@ from django.utils import timezone
 
 from .models import TipoMembresia
 from .forms import TipoMembresiaForm
-from Historial.models import Historial_usuario
+from Historial.utils import registrar_movimiento
 from Membresias.models import Membresia
 
 
-@login_required(login_url='login')
-@permission_required('Tipo_membresia.view_tipomembresia', login_url='login')
+@permission_required('Tipo_membresia.view_tipomembresia', raise_exception=True)
 def listarTiposMembresia(request):
     search_query = request.GET.get('search', '').strip()
     filter_duracion = request.GET.get('duracion', '')
@@ -58,8 +57,7 @@ def listarTiposMembresia(request):
 
 
 
-@login_required(login_url='login')
-@permission_required('Tipo_membresia.add_tipomembresia', login_url='TiposMembresia')
+@permission_required('Tipo_membresia.add_tipomembresia', raise_exception=True)
 @transaction.atomic
 def crearTipoMembresia(request):
     if request.method == 'POST':
@@ -71,17 +69,15 @@ def crearTipoMembresia(request):
             histuser4 = request.user
             histMod4 = 'Tipo_Membresias'
             histMovs4 = 'ingresar'
-            histFech4 = timezone.now().date()
             histNomb4 = Roling3.Nombre
             histId4 = Roling3.Id_tipo_membresia
 
-            Historial_usuario.objects.create(
-                id_usuario=histuser4,
-                TIpo_Movimiento=histMovs4,
-                Modulo=histMod4,
-                Nombre_Objeto=histNomb4,
-                Id_Objeto=histId4,
-                Fecha_y_hora=histFech4,
+            registrar_movimiento(
+                user=histuser4,
+                tipo=histMovs4,
+                modulo=histMod4,
+                nombre_objeto=histNomb4,
+                id_objeto=histId4,
             )
 
             messages.success(request, 'Tipo de membresía creado exitosamente.')
@@ -92,9 +88,7 @@ def crearTipoMembresia(request):
     return render(request, 'templates_tipo_membresia/crear_tipo_membresia.html', {'form': form})
 
 
-
-@login_required(login_url='login')
-@permission_required('Tipo_membresia.change_tipomembresia', login_url='TiposMembresia')
+@permission_required('Tipo_membresia.change_tipomembresia', raise_exception=True)
 @transaction.atomic
 def editarTipoMembresia(request, Id_tipo_membresia):
     tipo = get_object_or_404(TipoMembresia, Id_tipo_membresia=Id_tipo_membresia)
@@ -111,17 +105,15 @@ def editarTipoMembresia(request, Id_tipo_membresia):
             histuser5 = request.user
             histMod5 = 'Tipo_Membresias'
             histMovs5 = 'editar'
-            histFech5 = timezone.now().date()
             histNomb5 = Roling4.Nombre
             histId5 = Roling4.Id_tipo_membresia
 
-            Historial_usuario.objects.create(
-                id_usuario=histuser5,
-                TIpo_Movimiento=histMovs5,
-                Modulo=histMod5,
-                Nombre_Objeto=histNomb5,
-                Id_Objeto=histId5,
-                Fecha_y_hora=histFech5,
+            registrar_movimiento(
+                user=histuser5,
+                tipo=histMovs5,
+                modulo=histMod5,
+                nombre_objeto=histNomb5,
+                id_objeto=histId5,
             )
 
             messages.success(request, 'Tipo de membresía actualizado exitosamente.')

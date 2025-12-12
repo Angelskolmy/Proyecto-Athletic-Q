@@ -21,6 +21,97 @@
     }
     .icono.activo { background:rgba(46,204,113,0.18); color:#2ecc71; }
     .estado { font-size:.95rem; color:#bfc4d6; min-height:22px; }
+    .btn-qr {
+      background: linear-gradient(135deg, #2d2d2d 0%, #1a1a1a 100%);
+      border: 1px solid #c62828;
+      color: #f1f3f7;
+      transition: all 0.3s ease;
+    }
+    .btn-qr:hover {
+      background: linear-gradient(135deg, #c62828 0%, #8e0000 100%);
+      border-color: #c62828;
+      color: #fff;
+    }
+    .btn-logout {
+      background: transparent;
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #f1f3f7;
+    }
+    .btn-logout:hover {
+      background: rgba(255,255,255,0.1);
+      border-color: #fff;
+      color: #fff;
+    }
+    .attendance-modal {
+      background:linear-gradient(155deg,#091327,#040913);
+      color:#f1f3f7;
+      border:1px solid rgba(63,131,248,0.4);
+      border-radius:22px;
+      box-shadow:0 20px 60px rgba(2,8,26,0.65);
+    }
+    .modal-label {
+      font-size:0.75rem;
+      letter-spacing:0.3rem;
+      color:#8b9bff;
+      text-transform:uppercase;
+    }
+    .modal-title {
+      color:#fff;
+      font-weight:600;
+      letter-spacing:1px;
+    }
+    .modal-icon {
+      width:110px;
+      height:110px;
+      border-radius:28px;
+      display:grid;
+      place-items:center;
+      margin:0 auto 1.2rem;
+      font-size:52px;
+      border:1px solid rgba(255,255,255,0.1);
+      background:rgba(255,255,255,0.05);
+    }
+    .modal-icon.entrada {
+      color:#3fe08a;
+      box-shadow:0 10px 30px rgba(63,224,138,0.2);
+      background:rgba(63,224,138,0.08);
+    }
+    .modal-icon.salida {
+      color:#4ac8ff;
+      box-shadow:0 10px 30px rgba(74,200,255,0.2);
+      background:rgba(74,200,255,0.08);
+    }
+    .modal-icon.espera {
+      color:#ffb347;
+      box-shadow:0 10px 30px rgba(255,179,71,0.25);
+      background:rgba(255,179,71,0.08);
+    }
+    .modal-icon.error {
+      color:#ff6b6b;
+      box-shadow:0 10px 30px rgba(255,107,107,0.3);
+      background:rgba(255,107,107,0.08);
+    }
+    .modal-message {
+      font-size:1.45rem;
+      font-weight:600;
+      letter-spacing:0.03em;
+      margin-bottom:0.4rem;
+    }
+    .modal-message.entrada { color:#3fe08a; }
+    .modal-message.salida { color:#4ac8ff; }
+    .modal-message.espera { color:#ffb347; }
+    .modal-message.error { color:#ff6b6b; }
+    .modal-name {
+      font-size:1.8rem;
+      font-weight:600;
+      color:#fff;
+      margin-bottom:0.4rem;
+    }
+    .modal-detail {
+      font-size:0.95rem;
+      color:#99a6ce;
+      margin-bottom:0;
+    }
   </style>
 </head>
 <body>
@@ -31,9 +122,14 @@
       <img src="{% static 'img/logo.png' %}" alt="Logo" style="height:36px;" class="me-2">
       <span>Gimnasio | Validación</span>
     </a>
-    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalQr">
-      Validar asistencia (Escanear QR)
-    </button>
+    <div class="d-flex align-items-center gap-2">
+      <button class="btn btn-qr" data-bs-toggle="modal" data-bs-target="#modalQr">
+        <i class="bi bi-qr-code-scan me-1"></i>Escanear QR
+      </button>
+      <a href="{% url 'logout' %}" class="btn btn-logout">
+        <i class="bi bi-box-arrow-right me-1"></i>Cerrar Sesión
+      </a>
+    </div>
   </div>
 </nav>
 
@@ -46,168 +142,253 @@
   </div>
 </div>
 
-<!-- Modal reutilizable -->
-  <div class="modal fade" id="modalMsg" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content" style="background:radial-gradient(circle at 20% 20%, #0f1f3a, #0c1528); color:#f1f3f7; border:1px solid rgba(63,131,248,0.5); box-shadow:0 20px 60px rgba(0,0,0,0.4);">
-        <div class="modal-body text-center p-4">
-          <div id="modal-icon" class="mb-3 text-success" style="font-size:56px;">
-            <i class="bi bi-check-circle-fill"></i>
-          </div>
-          <h4 class="mb-1" id="modal-title"></h4>
-          <p class="mb-2" id="modal-sub"></p>
-          <div id="modal-extra" class="mt-3 text-start" style="font-size:0.95rem; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; padding:12px;">
-            <div class="d-flex align-items-center justify-content-between mb-1">
-              <span class="text-muted">Estado</span>
-              <span id="modal-estado" class="badge rounded-pill bg-success-subtle text-success fw-semibold">-</span>
-            </div>
-            <div class="small"><strong>Entrada:</strong> <span id="modal-entrada">-</span></div>
-            <div class="small"><strong>Salida:</strong> <span id="modal-salida">-</span></div>
-          </div>
-          <button class="btn btn-primary w-100 mt-3" data-bs-dismiss="modal">Aceptar</button>
+<!-- Modal Resultado -->
+<div class="modal fade" id="modalMsg" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content attendance-modal">
+      <div class="modal-header border-0 align-items-start">
+        <div>
+          <span class="modal-label">Control diario</span>
+          <h5 class="modal-title">Asistencia</h5>
         </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
-    </div>
-  </div>
-
-<!-- Modal QR -->
-<div class="modal fade" id="modalQr" tabindex="-1">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content" style="background:#1f1f1f; color:#f1f3f7; border:1px solid #3f83f8;">
-      <div class="modal-header border-0">
-        <h5 class="modal-title">Escanear código QR</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="qr-reader" style="width: 100%; min-height: 320px;"></div>
-        <div id="qr-status" class="mt-3 text-info"></div>
+      <div class="modal-body text-center py-4">
+        <div id="modal-icon" class="modal-icon entrada">
+          <i class="bi bi-door-open-fill"></i>
+        </div>
+        <p id="modal-message" class="modal-message entrada">Entrada registrada</p>
+        <h3 id="modal-name" class="modal-name">-</h3>
+        <p id="modal-detail" class="modal-detail d-none"></p>
       </div>
     </div>
   </div>
 </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
-  <script>
-    const CAPTURE_URL = "http://localhost:5000/capture";
-    const VALIDAR_URL = "/Empleados/validar-huella/";
-    const icono = document.getElementById("icono");
-    const estado = document.getElementById("estado");
-    const resultado = document.getElementById("resultado");
-    const modalEl = document.getElementById("modalMsg");
-    const modal = new bootstrap.Modal(modalEl, { backdrop: "static", keyboard: false });
-    const modalQrEl = document.getElementById("modalQr");
-    const qrStatus = document.getElementById("qr-status");
-    let qrScanner = null;
-    let qrBusy = false;
-    let clearTimer = null;
-    let running = true;
+<!-- Modal QR -->
+<div class="modal fade" id="modalQr" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content" style="background:#1f1f1f; color:#f1f3f7; border:1px solid #c62828;">
+      <div class="modal-header border-0">
+        <h5 class="modal-title"><i class="bi bi-qr-code-scan me-2"></i>Escanear Código QR</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="qr-reader" style="width:100%; min-height:350px; border-radius:12px; overflow:hidden;"></div>
+        <p id="qr-status" class="text-center mt-3 text-muted"></p>
+      </div>
+    </div>
+  </div>
+</div>
 
-    function setEstado(msg, ok = false) {
-      estado.innerText = msg;
-      if (ok) icono.classList.add("activo");
-      else icono.classList.remove("activo");
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+<script>
+  // =============================================
+  // CONFIGURACIÓN
+  // =============================================
+  const CAPTURE_URL = "http://localhost:5000/capture";   // PC local
+  const MATCH_URL = "http://localhost:5000/match";       // PC local
+  const HUELLAS_URL = "/api/huellas/";                   // Django (VPS)
+  const VALIDAR_URL = "/validar-huella/";                  // Django (VPS)
+  
+  const icono = document.getElementById("icono");
+  const estado = document.getElementById("estado");
+  const resultado = document.getElementById("resultado");
+  const modalEl = document.getElementById("modalMsg");
+  const modal = new bootstrap.Modal(modalEl, { backdrop: "static", keyboard: false });
+  const modalIcon = document.getElementById("modal-icon");
+  const modalMessage = document.getElementById("modal-message");
+  const modalName = document.getElementById("modal-name");
+  const modalDetail = document.getElementById("modal-detail");
+  
+  let clearTimer = null;
+  let running = true;
+  let huellasCache = [];  // Cache de huellas de la BD
+
+  // =============================================
+  // FUNCIONES AUXILIARES
+  // =============================================
+  function setEstado(msg, ok = false) {
+    estado.innerText = msg;
+    if (ok) icono.classList.add("activo");
+    else icono.classList.remove("activo");
+  }
+
+  function showFail(msg) {
+    resultado.innerText = msg;
+    setTimeout(() => { resultado.innerText = ""; }, 3000);
+  }
+
+  const ACTION_CONFIG = {
+    entrada: { icon: "bi-door-open-fill", defaultMessage: "Entrada registrada" },
+    salida: { icon: "bi-door-closed-fill", defaultMessage: "Salida registrada" },
+    espera: { icon: "bi-hourglass-split", defaultMessage: "Debe esperar 20 segundos" },
+    error: { icon: "bi-exclamation-octagon", defaultMessage: "Error" }
+  };
+
+  function showModal({ action = "entrada", message = "", name = "", detail = "" } = {}) {
+    if (clearTimer) clearTimeout(clearTimer);
+
+    const config = ACTION_CONFIG[action] || ACTION_CONFIG.error;
+    const resolvedMessage = message || config.defaultMessage;
+    const resolvedName = name || "-";
+
+    modalIcon.className = `modal-icon ${action}`;
+    modalIcon.innerHTML = `<i class="bi ${config.icon}"></i>`;
+
+    modalMessage.className = `modal-message ${action}`;
+    modalMessage.innerText = resolvedMessage;
+
+    modalName.innerText = resolvedName;
+
+    if (detail) {
+      modalDetail.textContent = detail;
+      modalDetail.classList.remove("d-none");
+    } else {
+      modalDetail.textContent = "";
+      modalDetail.classList.add("d-none");
     }
 
-    function estadoClass(estadoTxt) {
-      const t = (estadoTxt || "").toLowerCase();
-      if (t.includes("salida")) return "bg-info-subtle text-info";
-      if (t.includes("pend")) return "bg-warning-subtle text-warning";
-      return "bg-success-subtle text-success";
-    }
+    modal.show();
+    clearTimer = setTimeout(() => modal.hide(), 4000);
+  }
 
-    function actionClass(titulo) {
-      const t = (titulo || "").toLowerCase();
-      if (t.includes("salida")) return "text-info";
-      if (t.includes("pend")) return "text-warning";
-      return "text-success";
-    }
+  function getCookie(name) {
+    const v = `; ${document.cookie}`;
+    const parts = v.split(`; ${name}=`);
+    if (parts.length === 2) return parts.pop().split(";").shift();
+    return "";
+  }
 
-    function showModal(titulo, sub, ok = true, estadoTxt = "-", entrada = "-", salida = "-") {
-      if (clearTimer) clearTimeout(clearTimer);
-      document.getElementById("modal-title").innerText = titulo;
-      document.getElementById("modal-title").className = actionClass(titulo);
-      document.getElementById("modal-sub").innerText = sub;
-      document.getElementById("modal-estado").innerText = estadoTxt || "-";
-      document.getElementById("modal-estado").className = "badge rounded-pill fw-semibold " + estadoClass(estadoTxt);
-      document.getElementById("modal-entrada").innerText = entrada || "-";
-      document.getElementById("modal-salida").innerText = salida || "-";
-      const icon = document.getElementById("modal-icon");
-      if (ok) {
-        icon.className = "mb-3 text-success";
-        icon.innerHTML = '<i class="bi bi-check-circle-fill"></i>';
-        modalEl.querySelector(".modal-content").style.borderColor = "rgba(46,204,113,0.6)";
-      } else {
-        icon.className = "mb-3 text-danger";
-        icon.innerHTML = '<i class="bi bi-x-circle-fill"></i>';
-        modalEl.querySelector(".modal-content").style.borderColor = "#c62828";
+  // =============================================
+  // CARGAR HUELLAS DE LA BD (una vez al inicio)
+  // =============================================
+  async function cargarHuellas() {
+    try {
+      const resp = await fetch(HUELLAS_URL);
+      const data = await resp.json();
+      if (data.ok && data.huellas) {
+        huellasCache = data.huellas;
+        console.log(`Cargadas ${huellasCache.length} huellas de la BD`);
       }
-      modal.show();
-      clearTimer = setTimeout(() => modal.hide(), 8000);
+    } catch (err) {
+      console.error("Error cargando huellas:", err);
     }
+  }
 
-    function showFail(msg) {
-      const texto = msg || "Huella no reconocida.";
-      resultado.innerText = texto;
-      setEstado("Esperando huella...", false);
-      if (clearTimer) clearTimeout(clearTimer);
-      clearTimer = setTimeout(() => { resultado.innerText = ""; }, 7000);
-    }
+  // =============================================
+  // CICLO PRINCIPAL DE VALIDACIÓN
+  // =============================================
+  async function ciclo() {
+    if (!running) return;
+    
+    try {
+      setEstado("Capturando... coloca el dedo.");
 
-    async function ciclo() {
-      if (!running) return;
-      try {
-        setEstado("Capturando... coloca el dedo.");
-
-        const resp = await fetch(CAPTURE_URL, { method: "POST" });
-        const txt = await resp.text();
-        let data;
-        try { data = JSON.parse(txt); }
-        catch { throw new Error("Respuesta no es JSON: " + txt); }
-        if (!resp.ok || !data.ok || !data.xml) throw new Error(data.error || "Captura falló");
-
-        const respVal = await fetch(VALIDAR_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
-          body: JSON.stringify({ candidate: data.xml }),
-        });
-        const txtVal = await respVal.text();
-        let valData;
-        try { valData = JSON.parse(txtVal); }
-        catch { throw new Error("Respuesta no es JSON al validar: " + txtVal); }
-
-        // Si el backend responde sin ok (por horario u otra razón), muestra el mensaje y reintenta
-        if (!respVal.ok || valData.ok === false) {
-          throw new Error(valData.mensaje || valData.error || "Sin coincidencia");
-        }
-
-        const nombre = valData.usuario || "Usuario";
-        const msgAsis = valData.asistencia || "";
-        const entrada = valData.entrada || "-";
-        const salida = valData.salida || "-";
-        const estadoTxt = msgAsis || "Registrado";
-        const titulo = msgAsis || "Asistencia registrada";
-        const sub = `Usuario: ${nombre}`;
-        showModal(titulo, sub, true, estadoTxt, entrada, salida);
-        setEstado("Huella validada.", true);
-        resultado.innerText = "";
-      } catch (err) {
-        console.error("Error en ciclo:", err);
-        showFail(err?.message || "Error o sin coincidencia.");
-        setEstado("Huellero no conectado o fuera de horario.", false);
-      } finally {
-        setTimeout(ciclo, 1000);
+      // 1. CAPTURAR HUELLA (localhost:5000/capture)
+      const respCapture = await fetch(CAPTURE_URL, { method: "POST" });
+      const captureData = await respCapture.json();
+      
+      if (!respCapture.ok || !captureData.ok || !captureData.xml) {
+        throw new Error(captureData.error || "Captura falló");
       }
-    }
+      
+      const templateCapturado = captureData.xml;
+      setEstado("Huella capturada. Comparando...");
 
-    function getCookie(name) {
-      const value = `; ${document.cookie}`;
-      const parts = value.split(`; ${name}=`);
-      if (parts.length === 2) return parts.pop().split(";").shift();
-      return "";
-    }
+      // 2. RECARGAR HUELLAS SI ESTÁN VACÍAS
+      if (huellasCache.length === 0) {
+        await cargarHuellas();
+      }
+      
+      if (huellasCache.length === 0) {
+        throw new Error("No hay huellas registradas en el sistema");
+      }
 
-    function startQrScanner() {
+      // 3. COMPARAR EN LOCAL (localhost:5000/match)
+      const enrolledTemplates = huellasCache.map(h => h.template);
+      
+      const respMatch = await fetch(MATCH_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          Candidate: templateCapturado,
+          Enrolled: enrolledTemplates
+        })
+      });
+      
+      const matchData = await respMatch.json();
+      console.log("Respuesta match:", matchData);
+
+      // 4. PROCESAR RESULTADO DEL MATCH
+      // Ajusta esto según la respuesta de tu dpmatcher
+      let matchIndex = -1;
+      
+      if (matchData.ok && matchData.match !== undefined && matchData.match !== null && matchData.match >= 0) {
+        matchIndex = matchData.match;
+      } else if (matchData.index !== undefined && matchData.index >= 0) {
+        matchIndex = matchData.index;
+      } else if (matchData.resultado !== undefined && matchData.resultado >= 0) {
+        matchIndex = matchData.resultado;
+      }
+      
+      if (matchIndex < 0 || matchIndex >= huellasCache.length) {
+        throw new Error("Huella no encontrada en el sistema");
+      }
+
+      const usuarioEncontrado = huellasCache[matchIndex];
+      setEstado(`Identificado: ${usuarioEncontrado.nombre}`);
+
+      // 5. REGISTRAR ASISTENCIA EN DJANGO (enviar solo usuario_id)
+      const respVal = await fetch(VALIDAR_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({ usuario_id: usuarioEncontrado.usuario_id })
+      });
+      
+      const valData = await respVal.json();
+      
+      if (!respVal.ok || !valData.ok) {
+        throw new Error(valData.error || "Error al registrar asistencia");
+      }
+
+      // 6. MOSTRAR RESULTADO
+      const nombre = valData.usuario?.nombre || usuarioEncontrado.nombre;
+      const asistencia = valData.asistencia || {};
+      const action = valData.action || "entrada";
+      const titulo = action === "salida" ? "Salida registrada" : "Entrada registrada";
+
+      setEstado(`¡${nombre} registrado!`, true);
+      showModal({
+        action,
+        message: titulo,
+        name: nombre,
+        detail: valData.message || ""
+      });
+
+      setTimeout(ciclo, 3000);
+      
+    } catch (err) {
+      console.error("Error en ciclo:", err);
+      setEstado("Error: " + err.message, false);
+      showFail(err.message);
+      setTimeout(ciclo, 2000);
+    }
+  }
+
+  // =============================================
+  // SCANNER QR
+  // =============================================
+  const modalQrEl = document.getElementById("modalQr");
+  const qrStatus = document.getElementById("qr-status");
+  let qrScanner = null;
+  let qrBusy = false;
+
+  function startQrScanner() {
       qrBusy = false;
       qrStatus.innerText = "Apunta la cámara al código.";
       if (!qrScanner) {
@@ -223,14 +404,23 @@
       });
     }
 
-    function stopQrScanner() {
+    async function stopQrScanner() {
       qrBusy = false;
-      if (qrScanner) {
-        qrScanner.stop().catch(() => {});
-        qrScanner.clear().catch(() => {});
-        qrScanner = null;
+      if (!qrScanner) return;
+      try {
+        await qrScanner.stop();
+      } catch (err) {
+        console.warn("QR stop error:", err);
       }
+      try {
+        await qrScanner.clear();
+      } catch (err) {
+        console.warn("QR clear error:", err);
+      }
+      qrScanner = null;
     }
+
+    let pendingModal = null;
 
     function onQrScanned(decodedText) {
       if (qrBusy) return;
@@ -245,28 +435,57 @@
         },
         body: JSON.stringify({ dato_qr: decodedText })
       })
-      .then(async r => {
-        if (!r.ok) {
-          const txt = await r.text();
-          throw new Error(txt || ("HTTP " + r.status));
-        }
-        return r.json();
-      })
-      .then(data => {
-        const mensaje = data.mensaje || data.asistencia || "Asistencia registrada";
-        qrStatus.innerText = mensaje;
-        setTimeout(() => {
-          const instance = bootstrap.Modal.getInstance(modalQrEl);
-          if (instance) instance.hide();
-          stopQrScanner();
+        .then(async response => {
+          try {
+            const payload = await response.json();
+            return { httpOk: response.ok, payload };
+          } catch (parseErr) {
+            throw new Error("No se pudo leer la respuesta del servidor.");
+          }
+        })
+        .then(({ httpOk, payload }) => {
+          if (!payload || httpOk === undefined) {
+            throw new Error("Respuesta inválida del servidor.");
+          }
+
+          if (!httpOk || payload.ok === false) {
+            qrStatus.innerText = payload.mensaje || "QR inválido";
+            qrBusy = false;
+            setTimeout(() => {
+              if (modalQrEl.classList.contains("show")) {
+                qrStatus.innerText = "Apunta la cámara al código.";
+              }
+            }, 2500);
+            return;
+          }
+
+          const usuarioNombre = payload.usuario?.nombre || payload.usuario || "Usuario";
+          const action = payload.action === "salida"
+            ? "salida"
+            : (payload.action === "espera" ? "espera" : "entrada");
+          const resumenText = payload.resumen
+            || (action === "salida" ? "Salida registrada" : "Entrada registrada");
+          const detailText = payload.mensaje && payload.mensaje !== resumenText ? payload.mensaje : "";
+
+          pendingModal = {
+            action,
+            message: resumenText,
+            name: usuarioNombre,
+            detail: detailText
+          };
+
+          qrStatus.innerText = detailText || resumenText;
           qrBusy = false;
-          if (!running) { running = true; ciclo(); }
-        }, 5000);
-      })
-      .catch(err => {
-        qrStatus.innerText = "Error: " + (err.message || err);
-        qrBusy = false;
-      });
+
+          stopQrScanner().finally(() => {
+            const instance = bootstrap.Modal.getInstance(modalQrEl);
+            if (instance) instance.hide();
+          });
+        })
+        .catch(err => {
+          qrStatus.innerText = "Error: " + (err.message || err);
+          qrBusy = false;
+        });
     }
 
     modalQrEl.addEventListener("shown.bs.modal", () => {
@@ -274,18 +493,26 @@
       startQrScanner();
     });
 
-    modalQrEl.addEventListener("hidden.bs.modal", () => {
-      stopQrScanner();
+    modalQrEl.addEventListener("hidden.bs.modal", async () => {
+      await stopQrScanner();
       setEstado("Esperando huella...", false);
       running = true;
       ciclo();
       qrStatus.innerText = "";
+      if (pendingModal) {
+        const data = pendingModal;
+        pendingModal = null;
+        showModal(data);
+      }
     });
 
-    window.onload = () => {
-      setEstado("Esperando huella...", false);
-      ciclo();
-    };
-  </script>
+  // =============================================
+  // INICIAR
+  // =============================================
+  window.onload = async () => {
+    await cargarHuellas();  // Cargar huellas al inicio
+    ciclo();                // Iniciar ciclo de validación
+  };
+</script>
 </body>
 </html>

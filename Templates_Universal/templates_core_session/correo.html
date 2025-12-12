@@ -10,20 +10,22 @@
     <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
     <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
     <link rel="stylesheet" href="{% static 'css/core_session/correo.css' %}">
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
 </head>
 <body>
   <div class=" login-container  d-flex flex-column">
-    <div class="d-flex align-items-center justify-content-center m-4">
-      <img src="{% static 'img/logo2.png'%}" class="me-3" width="50px">
-      <h1 class="color3">Recuperar cuenta<h1>
+    <div class="d-flex align-items-center justify-content-center m-4 flex-column text-center">
+      <img src="{% static 'img/logo2.png'%}" class="ms-3" width="60px">
+      <h1 class="color3 mt-3 mb-1">Ingresar Cuenta</h1>
+      <p class="login-subtitle">Entrena. Conecta. Supera.</p>
     </div>
     <div class="car1 d-flex align-items-center justify-content-center">
       <div class=" card2 p-4" style="width: 100%;">
         {% if messages %}
           {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-              <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Cerrar"></button>
+            <div class="alert alert-custom alert-{{ message.tags }} alert-dismissible fade show" role="alert" style="color: #f57a2eff;">
+              <i class="bi bi-info-circle-fill"></i> {{ message }}
+              <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Cerrar"></button>
             </div>
           {% endfor %}
         {% endif %}
@@ -47,7 +49,7 @@
         </form>
       </div>
     </div>
-    <div class="mt-auto text-center py-3">
+    {% comment %} <div class="mt-auto text-center py-3">
       <div class="mt-2 ">
         <a href="https://www.facebook.com/musclefitness.ibague/" target="_blank">
           <svg xmlns="http://www.w3.org/2000/svg" width="30" fill="currentColor" class="bi bi-github m-1 icon-twitter" viewBox="0 0 16 16">
@@ -65,8 +67,17 @@
           </svg>
         </a>
       </div>
-    </div>
+    </div> {% endcomment %}
   </div>
+  <!-- Footer -->
+  <footer class="footer-login">
+      <p>&copy; 2025 <strong>Athletic-Q</strong> - Todos los derechos reservados</p>
+      <div class="footer-links">
+          <a href="https://wa.me/573001234567" target="_blank"><i class="bi bi-whatsapp"></i> Contacto</a>
+          <a href="https://www.facebook.com/musclefitness.ibague/" target="_blank"><i class="bi bi-facebook"></i></a>
+          <a href="https://www.instagram.com/" target="_blank"><i class="bi bi-instagram"></i></a>
+      </div>
+  </footer>
   <script>
     sessionStorage.removeItem("tiempo_restante");
     sessionStorage.removeItem("contador_expirado");

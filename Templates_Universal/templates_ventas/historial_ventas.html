@@ -139,8 +139,8 @@
                 
                 <!-- Cédula del Comprador -->
                 <td>
-                  {% if hv.id_usuario.Cedula %}
-                    <span class="text-muted">{{ hv.id_usuario.Cedula }}</span>
+                  {% if historial.id_venta.Cedula_Vents %}
+                    <span class="text-muted">{{ historial.id_venta.Cedula_Vents }}</span>
                   {% else %}
                     <span class="text-muted">—</span>
                   {% endif %}
@@ -271,7 +271,33 @@
           </span>
         </div>
 
-        <div></div>
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="exportVentas" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-download me-1"></i> Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportVentas">
+            <li>
+              <form method="get" action="{% url 'historial_ventas_export_excel' %}">
+                <input type="hidden" name="search" value="{{ search_query }}">
+                <input type="hidden" name="metodo" value="{{ filter_metodo }}">
+                <input type="hidden" name="fecha" value="{{ filter_fecha }}">
+                <button type="submit" class="dropdown-item">
+                  <i class="bi bi-file-earmark-excel text-success me-2"></i> Descargar Excel
+                </button>
+              </form>
+            </li>
+            <li>
+              <form method="get" action="{% url 'historial_ventas_export_pdf' %}">
+                <input type="hidden" name="search" value="{{ search_query }}">
+                <input type="hidden" name="metodo" value="{{ filter_metodo }}">
+                <input type="hidden" name="fecha" value="{{ filter_fecha }}">
+                <button type="submit" class="dropdown-item">
+                  <i class="bi bi-file-earmark-pdf text-danger me-2"></i> Descargar PDF
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

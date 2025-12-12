@@ -70,6 +70,11 @@ Movimientos de Empleados
             <button class="btn btn-sm btn-primary btn-search">
               <i class="bi bi-search me-1"></i> Buscar
             </button>
+            {% if request.GET.HistEmp or request.GET.HistMovimientos or request.GET.HistModulo or request.GET.HistFecha %}
+            <a href="{% url 'HistorialU' %}" class="btn btn-sm btn-outline-danger">
+              <i class="bi bi-x-circle me-1"></i> Limpiar
+            </a>
+            {% endif %}
 
           </div>
         </form>
@@ -162,6 +167,35 @@ Movimientos de Empleados
         </div>
 
         <!-- Dropdown Exportar -->
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="exportMovimientos" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-download me-1"></i> Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportMovimientos">
+            <li>
+              <form method="get" action="{% url 'historial_export_excel' %}">
+                <input type="hidden" name="HistEmp" value="{{ request.GET.HistEmp|default:'' }}">
+                <input type="hidden" name="HistMovimientos" value="{{ request.GET.HistMovimientos|default:'' }}">
+                <input type="hidden" name="HistModulo" value="{{ request.GET.HistModulo|default:'' }}">
+                <input type="hidden" name="HistFecha" value="{{ request.GET.HistFecha|default:'' }}">
+                <button type="submit" class="dropdown-item">
+                  <i class="bi bi-file-earmark-excel text-success me-2"></i> Descargar Excel
+                </button>
+              </form>
+            </li>
+            <li>
+              <form method="get" action="{% url 'historial_export_pdf' %}">
+                <input type="hidden" name="HistEmp" value="{{ request.GET.HistEmp|default:'' }}">
+                <input type="hidden" name="HistMovimientos" value="{{ request.GET.HistMovimientos|default:'' }}">
+                <input type="hidden" name="HistModulo" value="{{ request.GET.HistModulo|default:'' }}">
+                <input type="hidden" name="HistFecha" value="{{ request.GET.HistFecha|default:'' }}">
+                <button type="submit" class="dropdown-item">
+                  <i class="bi bi-file-earmark-pdf text-danger me-2"></i> Descargar PDF
+                </button>
+              </form>
+            </li>
+          </ul>
+        </div>
       </div>
       {% endif %}
 
@@ -196,6 +230,36 @@ Movimientos de Empleados
 
         <div class="flex-grow-1 text-center">
           <span class="text-muted small"> Registros actuales {{ Conter }}</span>
+        </div>
+
+        <div class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="exportMovimientosFilter" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="bi bi-download me-1"></i> Exportar
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="exportMovimientosFilter">
+            <li>
+              <form method="get" action="{% url 'historial_export_excel' %}">
+                <input type="hidden" name="HistEmp" value="{{ request.GET.HistEmp|default:'' }}">
+                <input type="hidden" name="HistMovimientos" value="{{ request.GET.HistMovimientos|default:'' }}">
+                <input type="hidden" name="HistModulo" value="{{ request.GET.HistModulo|default:'' }}">
+                <input type="hidden" name="HistFecha" value="{{ request.GET.HistFecha|default:'' }}">
+                <button type="submit" class="dropdown-item">
+                  <i class="bi bi-file-earmark-excel text-success me-2"></i> Descargar Excel
+                </button>
+              </form>
+            </li>
+            <li>
+              <form method="get" action="{% url 'historial_export_pdf' %}">
+                <input type="hidden" name="HistEmp" value="{{ request.GET.HistEmp|default:'' }}">
+                <input type="hidden" name="HistMovimientos" value="{{ request.GET.HistMovimientos|default:'' }}">
+                <input type="hidden" name="HistModulo" value="{{ request.GET.HistModulo|default:'' }}">
+                <input type="hidden" name="HistFecha" value="{{ request.GET.HistFecha|default:'' }}">
+                <button type="submit" class="dropdown-item">
+                  <i class="bi bi-file-earmark-pdf text-danger me-2"></i> Descargar PDF
+                </button>
+              </form>
+            </li>
+          </ul>
         </div>
       </div>
       {% endif %}

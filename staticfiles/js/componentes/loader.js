@@ -93,6 +93,35 @@
         hideLoader();
     });
 
+    document.addEventListener('DOMContentLoaded', function() {
+    const pageLoader = document.getElementById('page-loader');
+    
+    // Ocultar loader cuando termina de cargar la página
+    window.addEventListener('load', function() {
+        if (pageLoader) {
+        pageLoader.style.display = 'none';
+        }
+    });
+    
+    // Detectar descargas de archivos
+    document.addEventListener('click', function(e) {
+        const link = e.target.closest('a[href*="/exportar/"], a[href*="/descargar/"]');
+        if (link && pageLoader) {
+        // Ocultar después de 500ms
+        setTimeout(() => {
+            pageLoader.style.display = 'none';
+        }, 500);
+        }
+    });
+    
+    // Detectar cuando la página es visible nuevamente (volver del navegador)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && pageLoader) {
+        pageLoader.style.display = 'none';
+        }
+    });
+    });
+
     // ========================================
     // API PÚBLICA (opcional)
     // ========================================

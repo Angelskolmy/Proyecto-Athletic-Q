@@ -210,6 +210,17 @@ tbody tr:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.3);
 }
 
+.export-fab {
+  position: fixed;
+  right: 25px;
+  bottom: 25px;
+  z-index: 1050;
+}
+
+.export-fab .btn {
+  box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+}
+
 /* ================================
     FOCUS INPUTS
    ================================ */

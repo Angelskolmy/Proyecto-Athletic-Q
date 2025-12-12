@@ -19,16 +19,17 @@
     <link rel="stylesheet" href="{% static 'fonts/source-sans-3-5.0.12/index.css' %}">
 
     <!-- CSS personalizado -->
-<link rel="stylesheet" href="{% static 'css/core_session/codigo_recup.css' %}">
+    <link rel="stylesheet" href="{% static 'css/core_session/codigo_recup.css' %}">
 
-
+    <link rel="icon" type="image/x-icon" href="{% static 'favicon.ico' %}">
 
 </head>
 <body>
     <div class=" login-container  d-flex flex-column">
-        <div class="d-flex align-items-center justify-content-center m-4">
-        <img src="{% static 'img/logo2.png'%}" class="mx-3" width="50px">
-        <h1 class="color3">Código de Autenticacion<h1>
+        <div class="d-flex align-items-center justify-content-center m-4 flex-column text-center">
+            <img src="{% static 'img/logo2.png'%}" class="ms-3" width="60px">
+            <h1 class="color3 mt-3 mb-1">Recuperar Contraseña</h1>
+            
         </div>
         <div class="car1 d-flex align-items-center justify-content-center">
             <div class="px-4">
@@ -73,6 +74,15 @@
             </div>
         </div>
     </div>
+    <!-- Footer -->
+    <footer class="footer-login">
+        <p>&copy; 2025 <strong>Athletic-Q</strong> - Todos los derechos reservados</p>
+        <div class="footer-links">
+            <a href="https://wa.me/573001234567" target="_blank"><i class="bi bi-whatsapp"></i> Contacto</a>
+            <a href="https://www.facebook.com/musclefitness.ibague/" target="_blank"><i class="bi bi-facebook"></i></a>
+            <a href="https://www.instagram.com/" target="_blank"><i class="bi bi-instagram"></i></a>
+        </div>
+    </footer>
 
     <script>
         window.onload = function () {

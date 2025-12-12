@@ -1,3 +1,63 @@
-<h1>404 - Página no encontrada</h1>
-<p>La URL que buscas no existe.</p>
-<a href="{% url 'home' %}">Volver al inicio</a>
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Página No Encontrada | Athletic-Q</title>
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
+    <link rel="stylesheet" href="{% static 'css/errores/404.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
+</head>
+<body>
+    <!-- Formas decorativas -->
+    <div class="shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="bi bi-search"></i>
+        </div>
+        
+        <div class="error-code">404</div>
+        
+        <h1 class="error-title">Página No Encontrada</h1>
+        
+        <p class="error-message">
+            La página que estás buscando no existe o ha sido movida. 
+            Verifica la URL o utiliza los enlaces a continuación.
+        </p>
+        
+        <div class="error-actions">
+            <a href="{% url 'home' %}" class="btn-error btn-primary-error">
+                <i class="bi bi-house-fill"></i> Ir al Inicio
+            </a>
+            <a href="javascript:history.back()" class="btn-error btn-secondary-error">
+                <i class="bi bi-arrow-left"></i> Volver Atrás
+            </a>
+        </div>
+        
+        <div class="quick-links">
+            <h6>Enlaces Rápidos</h6>
+            <div class="quick-links-grid">
+                <a href="{% url 'home' %}" class="quick-link">
+                    <i class="bi bi-speedometer2"></i> Dashboard
+                </a>
+                <a href="{% url 'Empleados' %}" class="quick-link">
+                    <i class="bi bi-people"></i> Usuarios
+                </a>
+                <a href="{% url 'Producto' %}" class="quick-link">
+                    <i class="bi bi-box-seam"></i> Productos
+                </a>
+                <a href="{% url 'Membresias' %}" class="quick-link">
+                    <i class="bi bi-card-text"></i> Membresías
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

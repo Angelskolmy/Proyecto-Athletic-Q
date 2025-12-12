@@ -13,7 +13,76 @@
         }, 5000); // 5 segundos
     </script>
     
+</head>{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>403 - Acceso Denegado | Athletic-Q</title>
+    <link rel="icon" href="{% static 'img/logo.png' %}" type="image/png">
+    <link rel="stylesheet" href="{% static 'dist/css/adminlte.css' %}">
+    <link rel="stylesheet" href="{% static 'bootstrap-icons-1.11.3/font/bootstrap-icons.min.css' %}">
 </head>
+<body>
+    <!-- Partículas decorativas -->
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="error-container">
+        <div class="error-icon">
+            <i class="bi bi-shield-lock-fill"></i>
+        </div>
+        
+        <div class="error-code">403</div>
+        
+        <h1 class="error-title">Acceso Denegado</h1>
+        
+        <p class="error-message">
+            Lo sentimos, no tienes los permisos necesarios para acceder a esta sección. 
+            Si crees que esto es un error, contacta al administrador del sistema.
+        </p>
+        
+        <div class="error-actions">
+            <a href="{% url 'home' %}" class="btn-error btn-primary-error">
+                <i class="bi bi-house-fill"></i> Ir al Inicio
+            </a>
+            <a href="javascript:history.back()" class="btn-error btn-secondary-error">
+                <i class="bi bi-arrow-left"></i> Volver Atrás
+            </a>
+        </div>
+        
+        <p class="countdown">
+            Serás redirigido automáticamente en <span id="timer">10</span> segundos
+        </p>
+    </div>
+
+    <script>
+        let seconds = 10;
+        const timerEl = document.getElementById('timer');
+        
+        const countdown = setInterval(() => {
+            seconds--;
+            timerEl.textContent = seconds;
+            
+            if (seconds <= 0) {
+                clearInterval(countdown);
+                window.location.href = "{% url 'home' %}";
+            }
+        }, 1000);
+    </script>
+</body>
+</html>
 
 <body>
     <h1>403</h1>

@@ -15,11 +15,10 @@ from .models import Membresia
 from .forms import MembresiaForm
 from Empleados.models import User_Empleados
 from Tipo_membresia.models import TipoMembresia
-from Historial.models import Historial_usuario
+from Historial.utils import registrar_movimiento
 
 
-@login_required(login_url='login')
-@permission_required('Membresias.view_membresia', login_url='login')
+@permission_required('Membresias.view_membresia', raise_exception=True)
 @transaction.atomic
 def ListarMembresias(request):  
     search_query = request.GET.get('search', '').strip()
@@ -79,8 +78,7 @@ def ListarMembresias(request):
     return render(request, "templates_membresias/membresias.html", context)
 
 
-@login_required(login_url='login')
-@permission_required('Membresias.add_membresia', login_url='Membresias')
+@permission_required('Membresias.add_membresia', raise_exception=True)
 @transaction.atomic
 def CrearMembresia(request):
     if request.method == 'POST':
@@ -107,18 +105,16 @@ def CrearMembresia(request):
                 histuser5 = request.user
                 histMod5 = 'membresías'
                 histMovs5 = 'ingresar'
-                histFech5 = timezone.now().date()             
                 histNomb5 = membresia.For_Id_tipo_membresia.Nombre
                 histId5 = membresia.Id_membresia
 
-                Historial_usuario.objects.create(
-                    id_usuario= histuser5,
-                    TIpo_Movimiento= histMovs5,
-                    Modulo= histMod5,
-                    Nombre_Objeto= histNomb5,
-                    Id_Objeto= histId5,
-                    Fecha_y_hora= histFech5,
-                )   
+                registrar_movimiento(
+                    user=histuser5,
+                    tipo=histMovs5,
+                    modulo=histMod5,
+                    nombre_objeto=histNomb5,
+                    id_objeto=histId5,
+                )
                 
                 messages.success(
                     request, 
@@ -137,8 +133,7 @@ def CrearMembresia(request):
     return render(request, 'templates_membresias/crear_membresias.html', {'form': form})
 
 
-@login_required(login_url='login')
-@permission_required('Membresias.change_membresia', login_url='Membresias')
+@permission_required('Membresias.change_membresia', raise_exception=True)
 @transaction.atomic
 def EditarMembresia(request, id):
     membresia = get_object_or_404(Membresia, Id_membresia=id)
@@ -160,17 +155,15 @@ def EditarMembresia(request, id):
                 histuser6 = request.user
                 histMod6 = 'membresías'
                 histMovs6 = 'editar'
-                histFech6 = timezone.now().date()             
                 histNomb6 = membresia.For_Id_tipo_membresia.Nombre
                 histId6 = membresia.Id_membresia
 
-                Historial_usuario.objects.create(
-                    id_usuario= histuser6,
-                    TIpo_Movimiento= histMovs6,
-                    Modulo= histMod6,
-                    Nombre_Objeto= histNomb6,
-                    Id_Objeto= histId6,
-                    Fecha_y_hora= histFech6,
+                registrar_movimiento(
+                    user=histuser6,
+                    tipo=histMovs6,
+                    modulo=histMod6,
+                    nombre_objeto=histNomb6,
+                    id_objeto=histId6,
                 )
                 
                 messages.success(request, 'Membresía actualizada exitosamente')
@@ -191,8 +184,7 @@ def EditarMembresia(request, id):
     return render(request, 'templates_membresias/editar_membresias.html', context)
 
 
-@login_required(login_url='login')
-@permission_required('Membresias.view_membresia', login_url='Membresias')
+@permission_required('Membresias.view_membresia', raise_exception=True)
 @transaction.atomic
 def DetalleMembresia(request, id):
     #  OBTENER MEMBRESÍA CON RELACIONES

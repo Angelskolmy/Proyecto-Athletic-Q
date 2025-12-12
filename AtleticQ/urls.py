@@ -21,6 +21,8 @@ urlpatterns = [
     path('', include("Salidas_Entradas.urls")),
 ]
 handler403 = 'Core_session.views.error_403_view'
+handler404 = 'Core_session.views.error_404_view'
+handler500 = 'Core_session.views.error_500_view'
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

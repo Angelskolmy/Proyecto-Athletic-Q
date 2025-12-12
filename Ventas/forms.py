@@ -11,6 +11,22 @@ PAYMENT_CHOICES = [
 ]
 
 class VentaForm(forms.ModelForm):
+    
+    # Campo para seleccionar cliente (usuario registrado o fantasma)
+    cliente = forms.ModelChoiceField(
+        queryset=User_Empleados.objects.filter(
+            groups__name='Usuarios',
+            is_active=True
+        ).order_by('first_name'),
+        widget=forms.Select(attrs={
+            'class': 'form-select',
+            'id': 'cliente-select',
+            'required': True
+        }),
+        label='Cliente (Seleccionar)',
+        required=False  # Hacerlo opcional porque puede ser fantasma
+    )
+    
     metodo_pago = forms.ChoiceField(
         choices=[('', 'Seleccione el metodo de pago...')] + PAYMENT_CHOICES,
         widget=forms.Select(attrs={'class': 'form-select', 'id': 'metodo_pago'}),
@@ -39,18 +55,18 @@ class VentaForm(forms.ModelForm):
             'Cedula_Vents': 'Cédula (comprador)'
         }
 
-    def _init_(self, *args, **kwargs):
-        super()._init_(*args, **kwargs)
-        self.fields['id_usuario'].queryset = User_Empleados.objects.all()
-
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Personalizar la etiqueta del cliente
+        self.fields['cliente'].label_from_instance = lambda obj: (
+            f"{obj.get_full_name()} - Cédula: {obj.Cedula}" 
+            if obj.Cedula != 0 
+            else "Cliente Sin Registro (Fantasma)"
+        )
+    
     def clean_Cedula_Vents(self):
+        """La cédula se llena automáticamente desde el cliente seleccionado"""
         cedula = self.cleaned_data.get('Cedula_Vents')
-        
-        if cedula:
-            # Verificar si la cédula existe en empleados
-            existe_cedula = User_Empleados.objects.filter(Cedula=cedula).exists()
-            if not existe_cedula:
-                # Si no existe, permitir guardarla igual (se usará usuario fantasma)
-                pass
-        
+        # No validar aquí, se llena automáticamente en JavaScript
         return cedula

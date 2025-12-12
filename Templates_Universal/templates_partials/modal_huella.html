@@ -125,32 +125,65 @@
 
         captureCtrl = new AbortController();
         try {
-        const r = await fetch(CAPTURE_URL, { method: "POST", signal: captureCtrl.signal });
-        const data = JSON.parse(await r.text());
-        captureCtrl = null;
-        if (!r.ok || !data.ok || !data.xml) throw new Error(data.error || "Captura falló");
+            // 1. Capturar huella
+            const r = await fetch(CAPTURE_URL, { method: "POST", signal: captureCtrl.signal });
+            const data = JSON.parse(await r.text());
+            captureCtrl = null;
+            if (!r.ok || !data.ok || !data.xml) throw new Error(data.error || "Captura falló");
 
-        setEstado("Guardando huella...","idle");
-        saveCtrl = new AbortController();
-        const resp = await fetch(GUARDAR_URL, {
-            method: "POST",
-            signal: saveCtrl.signal,
-            headers: { "Content-Type": "application/json", "X-CSRFToken": getCookie("csrftoken") },
-            body: JSON.stringify({ usuario_id: userIdActual, templates: [data.xml] })
-        });
-        const saveData = await resp.json();
-        saveCtrl = null;
-        if (resp.status === 409) {
-            setEstado(saveData.error || "Huella ya registrada para otro usuario. Prueba con otro dedo.","err");
-            return;
-        }
-        if (!resp.ok || !saveData.ok) throw new Error(saveData.error || "Error al guardar");
+            setEstado("Verificando duplicados...", "idle");
+            
+            // 2. Verificar duplicados en el servidor de huellas local (Windows)
+            const MATCH_URL = "http://localhost:5000/match";
+            try {
+                const matchResp = await fetch(MATCH_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        template: data.xml, 
+                        usuario_id: userIdActual 
+                    })
+                });
+                const matchData = await matchResp.json();
+                
+                if (matchData.match) {
+                    setEstado(`Huella ya registrada (Usuario ID: ${matchData.usuario_id})`, "err");
+                    return;
+                }
+            } catch (matchError) {
+                // Si falla la verificación local, continuar (se verificará en Django)
+                console.warn("No se pudo verificar duplicados localmente:", matchError);
+            }
 
-        setEstado("Huella guardada correctamente.","ok");
-        window.location.href = REDIR_URL;
+            // 3. Guardar en Django
+            setEstado("Guardando huella...", "idle");
+            saveCtrl = new AbortController();
+            const resp = await fetch(GUARDAR_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": getCookie("csrftoken")
+                },
+                body: JSON.stringify({ usuario_id: userIdActual, templates: [data.xml] }),
+                signal: saveCtrl.signal
+            });
+            const saveData = await resp.json();
+            saveCtrl = null;
+            
+            if (resp.status === 409) {
+                setEstado(saveData.error || "Huella duplicada", "err");
+                return;
+            }
+            if (!resp.ok || !saveData.ok) throw new Error(saveData.error || "Error al guardar");
+
+            setEstado("¡Huella guardada correctamente!", "ok");
+            setTimeout(() => {
+                location.href = REDIR_URL;
+            }, 1500);
+
         } catch (err) {
-        if (err.name === "AbortError") setEstado("Captura cancelada.","err");
-        else { console.error(err); setEstado("Error: " + err.message,"err"); }
+            if (err.name === "AbortError") return;
+            setEstado("Error: " + err.message, "err");
         }
     });
     })();

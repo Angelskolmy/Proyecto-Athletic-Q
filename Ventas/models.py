@@ -57,7 +57,7 @@ class Venta(models.Model):
         db_table = 'venta'
         managed = False
 
-    def _str_(self):
+    def __str__(self):
         return (
             f"Id_venta {self.Id_venta} - Fecha {self.Fecha} - Total {self.Total} - "
             f"id_usuario {self.id_usuario} - Numero_Transaccion {self.Numero_Transaccion} - "
